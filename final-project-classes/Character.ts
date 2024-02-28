@@ -12,9 +12,9 @@ interface Character {
 }
 
 export class MainCharacter implements Character {
-  x: BlockSize;
+  _x: BlockSize;
 
-  y: BlockSize;
+  _y: BlockSize;
 
   jumpSize: BlockSize; // How many blocks he jumps before he reaches peak
 
@@ -27,8 +27,8 @@ export class MainCharacter implements Character {
   _isAlive: boolean;
 
   public constructor(newX: BlockSize, newY: BlockSize) {
-    this.x = newX;
-    this.y = newY;
+    this._x = newX;
+    this._y = newY;
     this.jumpSize = 2;
     this.movementSpeed = 1;
     this._rising = false;
@@ -37,19 +37,27 @@ export class MainCharacter implements Character {
   }
 
   public moveLeft(): void {
-    this.x = this.x - 1;
+    this._x = this._x - 1;
   }
 
   public moveRight(): void {
-    this.x = this.x + 1;
+    this._x = this._x + 1;
   }
 
   public moveDown(): void {
-    this.y = this.y - 1;
+    this._y = this._y - 1;
   }
 
   public moveUp(): void {
-    this.y = this.y + 1; 
+    this._y = this._y + 1; 
+  }
+
+  public get x() {
+    return this._x;
+  }
+
+  public get y() {
+    return this._y;
   }
 
   public set rising(newRising: boolean) {
