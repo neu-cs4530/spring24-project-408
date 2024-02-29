@@ -1,24 +1,19 @@
-export {};
-const BLOCK_WIDTH = 255; // This value can be changed depending on what's easier for future use
+import { GameObject, GameUnit } from "./GameObject";
 
-type BlockSize = number;
-
-interface Character {
-  x: BlockSize; // X in terms of block_width
-  y: BlockSize; // Y in terms of block_width
-  // To Add In Future Sprints:
-  //    Sprites
-  //
+export abstract class Character extends GameObject {
+  constructor(newX: GameUnit, newY: GameUnit, newGameLetter: string) {
+    super(newX, newY, newGameLetter);
+  }
 }
 
-export class MainCharacter implements Character {
-  _x: BlockSize;
+export class MainCharacter extends Character {
+  _x: GameUnit;
 
-  _y: BlockSize;
+  _y: GameUnit;
 
-  jumpSize: BlockSize; // How many blocks he jumps before he reaches peak
+  jumpSize: GameUnit; // How many blocks he jumps before he reaches peak
 
-  movementSpeed: BlockSize; // Moves this many 'BlockSizes' per tick, includes horizontal and vertical speeds
+  movementSpeed: GameUnit; // Moves this many 'BlockSizes' per tick, includes horizontal and vertical speeds
 
   _rising: boolean;
 
@@ -26,14 +21,16 @@ export class MainCharacter implements Character {
 
   _isAlive: boolean;
 
-  public constructor(newX: BlockSize, newY: BlockSize) {
-    this._x = newX;
-    this._y = newY;
+  _currentRiseDuration: number;
+
+  public constructor(newX: GameUnit, newY: GameUnit) {
+    super(newX, newY, 'M');
     this.jumpSize = 2;
     this.movementSpeed = 1;
     this._rising = false;
     this._falling = false;
     this._isAlive = true;
+    this._currentRiseDuration = 0;
   }
 
   public moveLeft(): void {
@@ -82,5 +79,9 @@ export class MainCharacter implements Character {
 
   public get isAlive() {
     return this.isAlive;
+  }
+
+  public get currentRiseDuration() {
+    return this._currentRiseDuration;
   }
 }
