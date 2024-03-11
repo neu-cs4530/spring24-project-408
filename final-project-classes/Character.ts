@@ -42,11 +42,11 @@ export class MainCharacter extends Character {
   }
 
   public moveDown(): void {
-    this._y = this._y - 1;
+    this._y = this._y + 1;
   }
 
   public moveUp(): void {
-    this._y = this._y + 1; 
+    this._y = this._y - 1;
   }
 
   public set rising(newRising: boolean) {
@@ -66,14 +66,20 @@ export class MainCharacter extends Character {
   }
 
   public set isAlive(newAlive: boolean) {
-    this.isAlive = newAlive;
+    this._isAlive = newAlive;
   }
 
   public get isAlive() {
-    return this.isAlive;
+    return this._isAlive;
   }
 
   public get currentRiseDuration() {
     return this._currentRiseDuration;
   }
+
+  public incrementRiseDuration() {
+    if (this._rising && this._currentRiseDuration < this.jumpSize) {
+      this._currentRiseDuration = this._currentRiseDuration + 1;
+    } else this._currentRiseDuration = 0;
+  };
 }
