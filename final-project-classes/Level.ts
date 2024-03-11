@@ -40,8 +40,8 @@ export abstract class Level {
     fillCollidableBlocks(): void {
         const left: GameUnit = this._mario.x - 1;
         const right: GameUnit = this._mario.x + 1;
-        const up: GameUnit = this._mario.y + 1;
-        const down: GameUnit = this._mario.x - 1;
+        const up: GameUnit = this._mario.y - 1;
+        const down: GameUnit = this._mario.x + 1;
 
         this._collidableBlocks["left"] = this._blocks.find(block => block.x === left && block.y === this._mario.y);
         this._collidableBlocks["right"] = this._blocks.find(block => block.x === right && block.y === this._mario.y);
@@ -56,6 +56,10 @@ export abstract class Level {
      * This is to account for is mario moves backward
      */
     updateScore(): void {
+        if (this._gameState !== 'isPlaying') {
+            throw new Error('Cannot update score unless playing the game');
+        }
+
         if(this._mario.x * SCORE_MULTIPLIER > this._score) {
             this._score = this._mario.x * SCORE_MULTIPLIER
         }

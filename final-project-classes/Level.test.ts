@@ -102,5 +102,188 @@ describe('Level Testing', () => {
         })
     })
 
+    describe("fillCollidable testing", () => {
+        let testMario = new MainCharacter(1, 1);
+        test("No blocks around Mario", () => {
+            let testingMap1: GameCell[][] = [
+                [undefined, undefined, undefined],
+                [undefined, testMario, undefined],
+                [undefined, undefined, undefined],
+            ]
+
+            let testLevel = new TestingLevel(testMario, testingMap1);
+            let expectBlocks = {"left": undefined, "right": undefined, "up": undefined, "down": undefined};
+
+            expect(testLevel._collidableBlocks).toEqual(expectBlocks);
+        });
+
+        test("Only platform blocks around Mario", () => {
+            let testingMap1: GameCell[][] = [
+                [new PlatformBlock(0, 0), new PlatformBlock(1, 0), new PlatformBlock(2, 0)],
+                [new PlatformBlock(0, 1), testMario, new PlatformBlock(2, 1)],
+                [new PlatformBlock(0, 2), new PlatformBlock(1, 2), new PlatformBlock(2, 2)],
+            ]
+
+            let testLevel = new TestingLevel(testMario, testingMap1);
+            let expectBlocks = {"left": new PlatformBlock(0,1), "right": new PlatformBlock(2, 1), "up": new PlatformBlock(1, 0), "down": new PlatformBlock(1, 2)};
+
+            expect(testLevel._collidableBlocks).toEqual(expectBlocks);
+        });
+
+        test("Only corners around Mario", () => {
+            let testingMap1: GameCell[][] = [
+                [new PlatformBlock(0, 0), undefined, new PlatformBlock(2, 0)],
+                [undefined, testMario, undefined],
+                [new PlatformBlock(0, 2), undefined, new PlatformBlock(2, 2)],
+            ]
+
+            let testLevel = new TestingLevel(testMario, testingMap1);
+            let expectBlocks = {"left": undefined, "right": undefined, "up": undefined, "down": undefined};
+
+            expect(testLevel._collidableBlocks).toEqual(expectBlocks);
+        });
+
+        test("Only pipe blocks around Mario", () => {
+            let testingMap1: GameCell[][] = [
+                [new PipeBlock(0, 0), new PipeBlock(1, 0), new PipeBlock(2, 0)],
+                [new PipeBlock(0, 1), testMario, new PipeBlock(2, 1)],
+                [new PipeBlock(0, 2), new PipeBlock(1, 2), new PipeBlock(2, 2)],
+            ]
+
+            let testLevel = new TestingLevel(testMario, testingMap1);
+            let expectBlocks = {"left": new PipeBlock(0,1), "right": new PipeBlock(2, 1), "up": new PipeBlock(1, 0), "down": new PipeBlock(1, 2)};
+
+            expect(testLevel._collidableBlocks).toEqual(expectBlocks);
+        });
+
+        test("Only death blocks around Mario", () => {
+            let testingMap1: GameCell[][] = [
+                [new DeathBlock(0, 0), new DeathBlock(1, 0), new DeathBlock(2, 0)],
+                [new DeathBlock(0, 1), testMario, new DeathBlock(2, 1)],
+                [new DeathBlock(0, 2), new DeathBlock(1, 2), new DeathBlock(2, 2)],
+            ]
+
+            let testLevel = new TestingLevel(testMario, testingMap1);
+            let expectBlocks = {"left": new DeathBlock(0,1), "right": new DeathBlock(2, 1), "up": new DeathBlock(1, 0), "down": new DeathBlock(1, 2)};
+
+            expect(testLevel._collidableBlocks).toEqual(expectBlocks);
+        });
+
+        test("Only completion blocks around Mario", () => {
+            let testingMap1: GameCell[][] = [
+                [new CompletionBlock(0, 0), new CompletionBlock(1, 0), new CompletionBlock(2, 0)],
+                [new CompletionBlock(0, 1), testMario, new CompletionBlock(2, 1)],
+                [new CompletionBlock(0, 2), new CompletionBlock(1, 2), new CompletionBlock(2, 2)],
+            ]
+
+            let testLevel = new TestingLevel(testMario, testingMap1);
+            let expectBlocks = {"left": new CompletionBlock(0,1), "right": new CompletionBlock(2, 1), "up": new CompletionBlock(1, 0), "down": new CompletionBlock(1, 2)};
+
+            expect(testLevel._collidableBlocks).toEqual(expectBlocks);
+        });
+
+        test("Only completion blocks around Mario", () => {
+            let testingMap1: GameCell[][] = [
+                [new CompletionBlock(0, 0), new CompletionBlock(1, 0), new CompletionBlock(2, 0)],
+                [new CompletionBlock(0, 1), testMario, new CompletionBlock(2, 1)],
+                [new CompletionBlock(0, 2), new CompletionBlock(1, 2), new CompletionBlock(2, 2)],
+            ]
+
+            let testLevel = new TestingLevel(testMario, testingMap1);
+            let expectBlocks = {"left": new CompletionBlock(0,1), "right": new CompletionBlock(2, 1), "up": new CompletionBlock(1, 0), "down": new CompletionBlock(1, 2)};
+
+            expect(testLevel._collidableBlocks).toEqual(expectBlocks);
+        });
+
+        test("Combination of blocks around Mario", () => {
+            let testingMap1: GameCell[][] = [
+                [new CompletionBlock(0, 0), new CompletionBlock(1, 0), new CompletionBlock(2, 0)],
+                [new PipeBlock(0, 1), testMario, new DeathBlock(2, 1)],
+                [new CompletionBlock(0, 2), new PlatformBlock(1, 2), new CompletionBlock(2, 2)],
+            ]
+
+            let testLevel = new TestingLevel(testMario, testingMap1);
+            let expectBlocks = {"left": new PipeBlock(0,1), "right": new DeathBlock(2, 1), "up": new CompletionBlock(1, 0), "down": new PlatformBlock(1, 2)};
+
+            expect(testLevel._collidableBlocks).toEqual(expectBlocks);
+        });
+
+        test("Map is only Mario", () => {
+            let testMario = new MainCharacter(0, 0);
+            let testingMap1: GameCell[][] = [[testMario]]
+
+            let testLevel = new TestingLevel(testMario, testingMap1);
+            let expectBlocks = {"left": undefined, "right": undefined, "up": undefined, "down": undefined};
+
+            expect(testLevel._collidableBlocks).toEqual(expectBlocks);
+        });
+
+        test("Left is open", () => {
+            let testingMap1: GameCell[][] = [
+                [new PlatformBlock(0, 0), new PlatformBlock(1, 0), new PlatformBlock(2, 0)],
+                [undefined, testMario, new PlatformBlock(2, 1)],
+                [new PlatformBlock(0, 2), new PlatformBlock(1, 2), new PlatformBlock(2, 2)],
+            ]
+
+            let testLevel = new TestingLevel(testMario, testingMap1);
+            let expectBlocks = {"left": undefined, "right": new PlatformBlock(2,1), "up": new PlatformBlock(1, 0), "down": new PlatformBlock(1, 2)};
+
+            expect(testLevel._collidableBlocks).toEqual(expectBlocks);
+        });
+
+        test("right is open", () => {
+            let testingMap1: GameCell[][] = [
+                [new PlatformBlock(0, 0), new PlatformBlock(1, 0), new PlatformBlock(2, 0)],
+                [new PlatformBlock(0, 1), testMario, undefined],
+                [new PlatformBlock(0, 2), new PlatformBlock(1, 2), new PlatformBlock(2, 2)],
+            ]
+
+            let testLevel = new TestingLevel(testMario, testingMap1);
+            let expectBlocks = {"left": new PlatformBlock(0,1), "right": undefined, "up": new PlatformBlock(1, 0), "down": new PlatformBlock(1, 2)};
+
+            expect(testLevel._collidableBlocks).toEqual(expectBlocks);
+        });
+
+        test("up is open", () => {
+            let testingMap1: GameCell[][] = [
+                [new PlatformBlock(0, 0), undefined, new PlatformBlock(2, 0)],
+                [new PlatformBlock(0, 1), testMario, new PlatformBlock(2, 1)],
+                [new PlatformBlock(0, 2), new PlatformBlock(1, 2), new PlatformBlock(2, 2)],
+            ]
+
+            let testLevel = new TestingLevel(testMario, testingMap1);
+            let expectBlocks = {"left": new PlatformBlock(0,1), "right": new PlatformBlock(2, 1), "up": undefined, "down": new PlatformBlock(1, 2)};
+
+            expect(testLevel._collidableBlocks).toEqual(expectBlocks);
+        });
+
+        test("down is open", () => {
+            let testingMap1: GameCell[][] = [
+                [new PlatformBlock(0, 0), new PlatformBlock(1, 0), new PlatformBlock(2, 0)],
+                [new PlatformBlock(0, 1), testMario, new PlatformBlock(2, 1)],
+                [new PlatformBlock(0, 2), undefined, new PlatformBlock(2, 2)],
+            ]
+
+            let testLevel = new TestingLevel(testMario, testingMap1);
+            let expectBlocks = {"left": new PlatformBlock(0,1), "right": new PlatformBlock(2, 1), "up": new PlatformBlock(1, 0), "down": undefined};
+
+            expect(testLevel._collidableBlocks).toEqual(expectBlocks);
+        });
+
+        
+    })
+
     
+    describe("level toString testing", () => {
+        let testingMario = new MainCharacter(0, 1);
+        test("empty map", () => {
+            let testingMap = [
+                [undefined, undefined, undefined],
+                [undefined, undefined, undefined],
+                [undefined, undefined, undefined],
+            ];
+
+            let testingGame = new TestingLevel(testingMario, testingMap);
+        })
+    })
 })
