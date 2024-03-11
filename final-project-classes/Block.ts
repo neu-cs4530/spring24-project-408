@@ -11,6 +11,7 @@ export abstract class Block extends GameObject {
       this._collisionState = collisionState;  
     }
 
+    // this is emitting the collision state
     collision(x: GameUnit, y: GameUnit) : CurrentState | undefined {
       if (this._x === x && this._y === y) {
         return this._collisionState;

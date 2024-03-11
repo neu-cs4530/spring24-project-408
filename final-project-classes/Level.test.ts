@@ -462,7 +462,6 @@ describe('Level Testing', () => {
             expect(testLevel._score).toBe(0);
             expect(testLevel._gameState).toBe("isPlaying");
         })
-
     })
     // restart level
     // death test

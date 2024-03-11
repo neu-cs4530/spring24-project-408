@@ -9,12 +9,14 @@ export type GameCell = GameObject | undefined;
 export abstract class Level {
     _blocks: Block[];
     _mario: MainCharacter;
+    _enemies: Character[];
     _score: number;
     _collidableBlocks: {[direction: string] : Block | undefined} = {};
     _gameState: CurrentState;
     _map: GameCell[][];
 
     constructor(mario: MainCharacter, map: GameCell[][]) {
+        this._enemies = [];
         this._map = map;
         this._blocks = this.fillBlocks();
         this._mario = mario;
@@ -24,7 +26,7 @@ export abstract class Level {
     }
 
     // method for populating blocks with all blocks in the map
-    fillBlocks(): Block[] {
+    public fillBlocks(): Block[] {
         let ret: Block[] = [];
         for (const row of this._map) {
             const gameCellList: GameCell[] = row.filter(cell => cell instanceof Block);
@@ -37,7 +39,7 @@ export abstract class Level {
     }
 
     //method for populating collidable blocks - check four blocks around mario (Sprint 1)
-    fillCollidableBlocks(): void {
+    public fillCollidableBlocks(): void {
         const left: GameUnit = this._mario.x - 1;
         const right: GameUnit = this._mario.x + 1;
         const up: GameUnit = this._mario.y - 1;
@@ -55,7 +57,7 @@ export abstract class Level {
      * If mario's current distance is greater than the current position, THEN we update the score
      * This is to account for is mario moves backward
      */
-    updateScore(): void {
+    public updateScore(): void {
         if (this._gameState !== 'isPlaying') {
             throw new Error('Cannot update score unless playing the game');
         }
@@ -89,7 +91,7 @@ export abstract class Level {
     /**
      * Updates the map object with Mario's new position and makes his old position undefined
      */
-     updateMap(curX: GameUnit, curY: GameUnit): void {
+    public updateMap(curX: GameUnit, curY: GameUnit): void {
         this._map[curX][curY] = undefined;
         this._map[this._mario.x][this._mario.y] = this._mario
     }
@@ -100,7 +102,7 @@ export abstract class Level {
      * print out "YOU WON WOOOOO"
      * print out final score - console.log for now
      */
-    winLevel(): void {
+    public winLevel(): void {
         switch(this._gameState) {
             case 'isDead':
                 throw new Error("Cannot win game when dead");
@@ -114,7 +116,20 @@ export abstract class Level {
         return;
     }
 
-    public characterUp() {
+    public death(): void {
+        switch(this._gameState) {
+            case 'isWinner':
+                throw new Error("Cannot die when you've won");
+            case "isDead":
+                return;
+            default:
+                this._gameState = 'isDead';
+                console.log('YOU DIED');
+                console.log("Final score is: " + this._score.toString());
+        }
+    }
+
+    private characterUp() {
         const mario_x: GameUnit = this._mario.x;
         const mario_y: GameUnit = this._mario.y;
 
@@ -127,20 +142,22 @@ export abstract class Level {
         }
     }
 
-    public characterRight() {
+    private characterRight() {
         const mario_x: GameUnit = this._mario.x;
         const mario_y: GameUnit = this._mario.y;
 
         if (mario_x + 1 < this._map[0].length) {
             this._mario.moveRight();
             this.updateMap(mario_x, mario_y);
+            this.updateScore();
         }
         else {
             throw new Error('Mario Moved Out of Bounds - RIGHT');
         }
     }
 
-    public characterDown() {
+    // this will be used when colliision is implemented
+    private characterDown() {
         const mario_x: GameUnit = this._mario.x;
         const mario_y: GameUnit = this._mario.y;
 
@@ -153,7 +170,7 @@ export abstract class Level {
         }
     }
 
-    public characterLeft() {
+    private characterLeft() {
         const mario_x: GameUnit = this._mario.x;
         const mario_y: GameUnit = this._mario.y;
 
@@ -256,7 +273,9 @@ export class TestingLevel extends Level {
     }
 
     public restartLevel(): Level {
-        return new TestingLevel(this._mario, this._map);
+        if (this._gameState !== 'isPlaying') {
+            return new TestingLevel(this._mario, this._map);
+        }
+        throw new Error('Cannot restart level unless done playing the game');
     }
-    
 }
