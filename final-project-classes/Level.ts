@@ -101,9 +101,17 @@ export abstract class Level {
      * print out final score - console.log for now
      */
     winLevel(): void {
-        this._gameState = 'isWinner';
-        console.log('WINNER WOOOO LEVEL COMPLETE!! its a me mario')
-        console.log("Final score is: " + this._score.toString());
+        switch(this._gameState) {
+            case 'isDead':
+                throw new Error("Cannot win game when dead");
+            case "isWinner":
+                return;
+            default:
+                this._gameState = 'isWinner';
+                console.log('WINNER WOOOO LEVEL COMPLETE!! its a me mario')
+                console.log("Final score is: " + this._score.toString());
+        }
+        return;
     }
 
     public characterUp() {
@@ -164,28 +172,26 @@ export abstract class Level {
      * if gameState is isDead - user can press 'space' to restart level
      */
     public keyPressed(key: string) {
-        switch(key) {
-            case 'up': {
-                this.characterUp();
-                break;
-            }
-            case 'left': {
-                this.characterLeft();
-                break;
-            }
-            case 'right': {
-                this.characterRight();
-                break;
-            }
-            case 'space': {
-                if (this._gameState == 'isWinner' || this._gameState == 'isDead') {
-                    this.restartLevel();
+        if (this._gameState == 'isPlaying') {
+            switch(key) {
+                case 'up': {
+                    this.characterUp();
+                    break;
                 }
-                break;
+                case 'left': {
+                    this.characterLeft();
+                    break;
+                }
+                case 'right': {
+                    this.characterRight();
+                    break;
+                }
+                default: {
+                    break;
+                }
             }
-            default: {
-                break;
-            }
+        } else if (key === 'space') {
+            this.restartLevel();
         }
     }
 
