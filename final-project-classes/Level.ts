@@ -66,12 +66,12 @@ export abstract class Level {
         let ret: string = "";
 
         for(const row of this._map) {
-            for (const col of row) {
-                if(!col) {
+            for (const cell of row) {
+                if(!cell) {
                     ret = ret.concat(" ");
                 }
                 else {
-                    ret = ret.concat(col.toString());
+                    ret = ret.concat(cell.toString());
                 }
             }
 
@@ -106,32 +106,52 @@ export abstract class Level {
         const mario_x: GameUnit = this._mario.x;
         const mario_y: GameUnit = this._mario.y;
 
-        this._mario.moveUp();
-        this.updateMap(mario_x, mario_y);
+        if (mario_y - 1 > 0) {
+            this._mario.moveUp();
+            this.updateMap(mario_x, mario_y);
+        }
+        else {
+            throw new Error('Mario Moved Out of Bounds - UP');
+        }
     }
 
     public characterRight() {
         const mario_x: GameUnit = this._mario.x;
         const mario_y: GameUnit = this._mario.y;
 
-        this._mario.moveRight();
-        this.updateMap(mario_x, mario_y);
+        if (mario_x + 1 < this._map[0].length) {
+            this._mario.moveRight();
+            this.updateMap(mario_x, mario_y);
+        }
+        else {
+            throw new Error('Mario Moved Out of Bounds - RIGHT');
+        }
     }
 
     public characterDown() {
         const mario_x: GameUnit = this._mario.x;
         const mario_y: GameUnit = this._mario.y;
 
-        this._mario.moveDown();
-        this.updateMap(mario_x, mario_y);
+        if (mario_y + 1 < this._map.length) {
+            this._mario.moveDown();
+            this.updateMap(mario_x, mario_y);
+        }
+        else {
+            throw new Error('Mario Moved Out of Bounds - DOWN');
+        }
     }
 
     public characterLeft() {
         const mario_x: GameUnit = this._mario.x;
         const mario_y: GameUnit = this._mario.y;
 
-        this._mario.moveLeft();
-        this.updateMap(mario_x, mario_y);
+        if (mario_x - 1 > 0) {
+            this._mario.moveLeft();
+            this.updateMap(mario_x, mario_y);
+        }
+        else {
+            throw new Error('Mario Moved Out of Bounds - LEFT');
+        }
     }
 
     //on key method?? leave last for sprint 1(Sprint 1)
