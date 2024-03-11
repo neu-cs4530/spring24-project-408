@@ -393,13 +393,77 @@ describe('Level Testing', () => {
     })
 
     describe("OnKey method Tests", () => {
-        let testingMario = new MainCharacter(0, 1);
-        let testingMapPreMove = [
-            [undefined, undefined, undefined],
-            [testingMario, undefined, undefined],
-            [undefined, undefined, undefined],
-        ];
-        let testLevel = new TestingLevel(testingMario, testingMapPreMove)
+        let testingMario: MainCharacter;
+        let testingMapPreMove: GameCell[][];
+        let testLevel: TestingLevel;
+        beforeEach(() => {
+            testingMario = new MainCharacter(1, 2);
+            testingMapPreMove = [
+                [undefined, undefined, undefined],
+                [undefined, undefined, undefined],
+                [undefined, testingMario, undefined],
+            ];
+            testLevel = new TestingLevel(testingMario, testingMapPreMove)
+        });
+        test("while state is playing, if key is right, mario should move right", () => {
+            testLevel.keyPressed("right");
+            expect(testingMario.x).toBe(2);
+        })
+
+        test("while state is playing, if key is up, mario should move up", () => {
+            testLevel.keyPressed("up");
+            expect(testingMario.y).toBe(1);
+        })
+
+        test("while state is playing, if key is left, mario should move left", () => {
+            testLevel.keyPressed("up");
+            expect(testingMario.x).toBe(1);
+        })
+
+        test("while state is playing, if space is pressed, should do nothing", () => {
+            testLevel.keyPressed("space");
+            expect(testingMario.x).toBe(1);
+            expect(testingMario.y).toBe(2);
+        })
+
+        test("while state is not playing, right should not work", () => {
+            testLevel._gameState = "isDead";
+            testLevel.keyPressed("right");
+            expect(testingMario.x).toBe(1);
+            expect(testingMario.y).toBe(2);
+        })
+
+        test("while state is not playing, left should not work", () => {
+            testLevel._gameState = "isDead";
+            testLevel.keyPressed("left");
+            expect(testingMario.x).toBe(1);
+            expect(testingMario.y).toBe(2);
+        })
+
+        test("while state is not playing, up should not work", () => {
+            testLevel._gameState = "isDead";
+            testLevel.keyPressed("up");
+            expect(testingMario.x).toBe(1);
+            expect(testingMario.y).toBe(2);
+        })
+
+        test("while state is not playing, space should call restart level", () => {
+            testingMario.moveRight();
+            testLevel.updateScore();
+            expect(testingMario.x).toBe(2);
+            expect(testingMario.y).toBe(2);
+            expect(testLevel._score).toBe(100);
+            expect(testLevel._gameState).toBe("isPlaying");
+            testLevel._gameState = "isDead";
+            expect(testLevel._gameState).toBe("isDead");
+            testLevel.keyPressed("space");
+            expect(testingMario.x).toBe(1);
+            expect(testingMario.y).toBe(2);
+            expect(testLevel._score).toBe(0);
+            expect(testLevel._gameState).toBe("isPlaying");
+        })
 
     })
+    // restart level
+    // death test
 })
