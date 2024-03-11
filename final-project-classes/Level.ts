@@ -15,12 +15,12 @@ export abstract class Level {
     _map: GameCell[][];
 
     constructor(mario: MainCharacter, map: GameCell[][]) {
+        this._map = map;
         this._blocks = this.fillBlocks();
         this._mario = mario;
         this._score = 0;
         this.fillCollidableBlocks();
         this._gameState = "isPlaying";
-        this._map = map;
     }
 
     // method for populating blocks with all blocks in the map
