@@ -1,5 +1,5 @@
 import { GameObject, GameUnit } from "./GameObject";
-import { Block, DeathBlock, PlatformBlock, CompletionBlock, CurrentState } from "./Block";
+import { Block, DeathBlock, PlatformBlock, CompletionBlock, CurrentState, PipeBlock } from "./Block";
 import { Character, MainCharacter } from "./Character";
 
 export const SCORE_MULTIPLIER = 100;
@@ -23,6 +23,7 @@ export abstract class Level {
         this._map = map;
     }
 
+    // method for populating blocks with all blocks in the map
     fillBlocks(): Block[] {
         let ret: Block[] = [];
         for (const row of this._map) {
@@ -54,7 +55,6 @@ export abstract class Level {
      * If mario's current distance is greater than the current position, THEN we update the score
      * This is to account for is mario moves backward
      */
-
     updateScore(): void {
         if(this._mario.x * SCORE_MULTIPLIER > this._score) {
             this._score = this._mario.x * SCORE_MULTIPLIER
@@ -105,9 +105,8 @@ export abstract class Level {
     //on key method?? leave last for sprint 1(Sprint 1)
     /**
      * arrow keys for movement
-     * if gameState is isDead - user can press 'R' to restart level
+     * if gameState is isDead - user can press 'space' to restart level
      */
-
     public keyPressed(key: string) {
         const mario_x: GameUnit = this._mario.x;
         const mario_y: GameUnit = this._mario.y;
@@ -115,25 +114,16 @@ export abstract class Level {
             case 'up': {
                 this._mario.moveUp();
                 this.updateMap(mario_x, mario_y);
-                //call update map here?
-                break;
-            }
-            case 'down': {
-                this._mario.moveDown();
-                this.updateMap(mario_x, mario_y);
-                //call update map here?
                 break;
             }
             case 'left': {
                 this._mario.moveLeft();
                 this.updateMap(mario_x, mario_y);
-                //call update map here?
                 break;
             }
             case 'right': {
                 this._mario.moveRight();
                 this.updateMap(mario_x, mario_y);
-                //call update map here?
                 break;
 
             }
@@ -148,11 +138,6 @@ export abstract class Level {
             }
         }
     }
-
-    //updateMap method
-    /**
-     * 
-     */
 
     public abstract restartLevel(): Level;
     
@@ -189,18 +174,17 @@ export abstract class Level {
 /**
  * Implement restartLevel method
  */
-
 export class LevelOne extends Level {
 
     constructor(mario: MainCharacter) {
         super(new MainCharacter(0, 3), [
-            [undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, new CompletionBlock(13, 6)],
-            [undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, new CompletionBlock(13, 5)],
-            [undefined, undefined, undefined, new PlatformBlock(3, 4), undefined, undefined, undefined, undefined, new PlatformBlock(8, 4), new PlatformBlock(9, 4), undefined, undefined, undefined, new CompletionBlock(13, 4)],
-            [mario, undefined, new PlatformBlock(2, 3), new PlatformBlock(3, 3), undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, new CompletionBlock(13, 3)],
-            [new PlatformBlock(0, 2), new PlatformBlock(1, 2), new PlatformBlock(2, 2), new PlatformBlock(3, 2), undefined, undefined, new PlatformBlock(6, 2), new PlatformBlock(7, 2), new PlatformBlock(8, 2), new PlatformBlock(9, 2), new PlatformBlock(10, 2), new PlatformBlock(11, 2), new PlatformBlock(12, 2), new CompletionBlock(13, 2)],
-            [new PlatformBlock(0, 1), new PlatformBlock(1, 1), new PlatformBlock(2, 1), new PlatformBlock(3, 1), undefined, undefined, new PlatformBlock(6, 1), new PlatformBlock(7, 1), new PlatformBlock(8, 1), new PlatformBlock(9, 1), new PlatformBlock(10, 1), new PlatformBlock(11, 1), new PlatformBlock(12, 1), new PlatformBlock(13, 1)],
-            [new PlatformBlock(0, 0), new PlatformBlock(1, 0), new PlatformBlock(2, 0), new PlatformBlock(3, 0), new DeathBlock(4,0), new DeathBlock(5,0), new PlatformBlock(6, 0), new PlatformBlock(7, 0), new PlatformBlock(8, 0), new PlatformBlock(9, 0), new PlatformBlock(10, 0), new PlatformBlock(11, 0), new PlatformBlock(12, 0), new PlatformBlock(13, 0)],
+            [undefined,                 undefined,                  undefined,                  undefined,                  undefined,              undefined,               undefined,                 undefined,                  undefined,                  undefined,                  undefined,                  undefined,                  undefined,                  new CompletionBlock(13, 0)],
+            [undefined,                 undefined,                  undefined,                  undefined,                  undefined,              undefined,               undefined,                 undefined,                  undefined,                  undefined,                  undefined,                  undefined,                  undefined,                  new CompletionBlock(13, 1)],
+            [undefined,                 undefined,                  undefined,                  new PipeBlock(3, 2),        undefined,              undefined,               undefined,                 undefined,                  new PlatformBlock(8, 2),    new PlatformBlock(9, 2),    undefined,                  undefined,                  undefined,                  new CompletionBlock(13, 2)],
+            [mario,                     undefined,                  new PlatformBlock(2, 3),    new PlatformBlock(3, 3),    undefined,              undefined,               undefined,                 undefined,                  undefined,                  undefined,                  undefined,                  undefined,                  undefined,                  new CompletionBlock(13, 3)],
+            [new PlatformBlock(0, 4),   new PlatformBlock(1, 4),    new PlatformBlock(2, 4),    new PlatformBlock(3, 4),    undefined,              undefined,               new PlatformBlock(6, 4),   new PlatformBlock(7, 4),    new PlatformBlock(8, 4),    new PlatformBlock(9, 4),    new PlatformBlock(10, 4),   new PlatformBlock(11, 4),   new PlatformBlock(12, 4),   new CompletionBlock(13, 4)],
+            [new PlatformBlock(0, 5),   new PlatformBlock(1, 5),    new PlatformBlock(2, 5),    new PlatformBlock(3, 5),    undefined,              undefined,               new PlatformBlock(6, 5),   new PlatformBlock(7, 5),    new PlatformBlock(8, 5),    new PlatformBlock(9, 5),    new PlatformBlock(10, 5),   new PlatformBlock(11, 5),   new PlatformBlock(12, 5),   new PlatformBlock(13, 5)],
+            [new PlatformBlock(0, 6),   new PlatformBlock(1, 6),    new PlatformBlock(2, 6),    new PlatformBlock(3, 6),    new DeathBlock(4,6),    new DeathBlock(5,6),     new PlatformBlock(6, 6),   new PlatformBlock(7, 6),    new PlatformBlock(8, 6),    new PlatformBlock(9, 6),    new PlatformBlock(10, 6),   new PlatformBlock(11, 6),   new PlatformBlock(12, 6),   new PlatformBlock(13, 6)],
         ]);
     }
 
