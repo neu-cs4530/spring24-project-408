@@ -16,4 +16,12 @@ export abstract class GameObject {
     public toString() {
         return this._gameLetter;
     }
+
+    public get x() {
+        return this._x;
+    }
+
+    public get y() {
+        return this._y;
+    }
 }

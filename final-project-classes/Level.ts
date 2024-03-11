@@ -1,5 +1,5 @@
 import { GameObject, GameUnit } from "./GameObject";
-import { Block, DeathBlock, PlatformBlock, CompletionBlock, CurrentState } from "./Block";
+import { Block, DeathBlock, PlatformBlock, CompletionBlock, CurrentState, PipeBlock } from "./Block";
 import { Character, MainCharacter } from "./Character";
 
 export const SCORE_MULTIPLIER = 100;
@@ -179,13 +179,13 @@ export class LevelOne extends Level {
 
     constructor(mario: MainCharacter) {
         super(new MainCharacter(0, 3), [
-            [undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, new CompletionBlock(13, 6)],
-            [undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, new CompletionBlock(13, 5)],
-            [undefined, undefined, undefined, new PlatformBlock(3, 4), undefined, undefined, undefined, undefined, new PlatformBlock(8, 4), new PlatformBlock(9, 4), undefined, undefined, undefined, new CompletionBlock(13, 4)],
-            [mario, undefined, new PlatformBlock(2, 3), new PlatformBlock(3, 3), undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, new CompletionBlock(13, 3)],
-            [new PlatformBlock(0, 2), new PlatformBlock(1, 2), new PlatformBlock(2, 2), new PlatformBlock(3, 2), undefined, undefined, new PlatformBlock(6, 2), new PlatformBlock(7, 2), new PlatformBlock(8, 2), new PlatformBlock(9, 2), new PlatformBlock(10, 2), new PlatformBlock(11, 2), new PlatformBlock(12, 2), new CompletionBlock(13, 2)],
-            [new PlatformBlock(0, 1), new PlatformBlock(1, 1), new PlatformBlock(2, 1), new PlatformBlock(3, 1), undefined, undefined, new PlatformBlock(6, 1), new PlatformBlock(7, 1), new PlatformBlock(8, 1), new PlatformBlock(9, 1), new PlatformBlock(10, 1), new PlatformBlock(11, 1), new PlatformBlock(12, 1), new PlatformBlock(13, 1)],
-            [new PlatformBlock(0, 0), new PlatformBlock(1, 0), new PlatformBlock(2, 0), new PlatformBlock(3, 0), new DeathBlock(4,0), new DeathBlock(5,0), new PlatformBlock(6, 0), new PlatformBlock(7, 0), new PlatformBlock(8, 0), new PlatformBlock(9, 0), new PlatformBlock(10, 0), new PlatformBlock(11, 0), new PlatformBlock(12, 0), new PlatformBlock(13, 0)],
+            [undefined,                 undefined,                  undefined,                  undefined,                  undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, new CompletionBlock(13, 6)],
+            [undefined,                 undefined,                  undefined,                  undefined,                  undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, new CompletionBlock(13, 5)],
+            [undefined,                 undefined,                  undefined,                  new PipeBlock(3, 4),    undefined, undefined, undefined, undefined, new PlatformBlock(8, 4), new PlatformBlock(9, 4), undefined, undefined, undefined, new CompletionBlock(13, 4)],
+            [mario,                     undefined,                  new PlatformBlock(2, 3),    new PlatformBlock(3, 3),    undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, new CompletionBlock(13, 3)],
+            [new PlatformBlock(0, 2),   new PlatformBlock(1, 2),    new PlatformBlock(2, 2),    new PlatformBlock(3, 2),    undefined, undefined, new PlatformBlock(6, 2), new PlatformBlock(7, 2), new PlatformBlock(8, 2), new PlatformBlock(9, 2), new PlatformBlock(10, 2), new PlatformBlock(11, 2), new PlatformBlock(12, 2), new CompletionBlock(13, 2)],
+            [new PlatformBlock(0, 1),   new PlatformBlock(1, 1),    new PlatformBlock(2, 1),    new PlatformBlock(3, 1),    undefined, undefined, new PlatformBlock(6, 1), new PlatformBlock(7, 1), new PlatformBlock(8, 1), new PlatformBlock(9, 1), new PlatformBlock(10, 1), new PlatformBlock(11, 1), new PlatformBlock(12, 1), new PlatformBlock(13, 1)],
+            [new PlatformBlock(0, 0),   new PlatformBlock(1, 0),    new PlatformBlock(2, 0),    new PlatformBlock(3, 0),    new DeathBlock(4,0), new DeathBlock(5,0), new PlatformBlock(6, 0), new PlatformBlock(7, 0), new PlatformBlock(8, 0), new PlatformBlock(9, 0), new PlatformBlock(10, 0), new PlatformBlock(11, 0), new PlatformBlock(12, 0), new PlatformBlock(13, 0)],
         ]);
     }
 

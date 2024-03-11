@@ -49,14 +49,6 @@ export class MainCharacter extends Character {
     this._y = this._y + 1; 
   }
 
-  public get x() {
-    return this._x;
-  }
-
-  public get y() {
-    return this._y;
-  }
-
   public set rising(newRising: boolean) {
     this._rising = newRising;
   }
