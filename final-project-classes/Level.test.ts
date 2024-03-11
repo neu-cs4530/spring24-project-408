@@ -273,7 +273,70 @@ describe('Level Testing', () => {
         
     })
 
-    
+    describe("updateScore", () => {
+        let testingMario: MainCharacter;
+            let testingGame: TestingLevel;
+            let testingMap: GameCell[][]; 
+            beforeEach(() => {
+                testingMario = new MainCharacter(0,1);
+                testingMap = [
+                    [undefined, undefined, undefined],
+                    [testingMario, undefined, undefined],
+                    [undefined, undefined, undefined],
+                ];
+                testingGame = new TestingLevel(testingMario, testingMap);
+        
+            });
+            test("if distance is 0, score should not change", () => {
+                testingGame.updateScore();
+                expect(testingGame._score).toBe(0);
+            });
+            test("if distance is 1, score should increase by 100", () => {
+                testingMario.moveRight();
+                testingGame.updateScore();
+                expect(testingGame._score).toBe(100);
+            });
+            test("if distance is less than current max, score should not change", () => {
+                testingMario.moveRight();
+                testingGame.updateScore();
+                expect(testingGame._score).toBe(100);
+                testingMario.moveLeft();
+                testingGame.updateScore();
+                expect(testingGame._score).toBe(100);
+            });
+            test("if distance is greater than current max, score should increase by 100", () => {
+                testingMario.moveRight();
+                testingGame.updateScore();
+                expect(testingGame._score).toBe(100);
+                testingMario.moveRight();
+                testingGame.updateScore();
+                expect(testingGame._score).toBe(200);
+            });
+            test("if distance is the same as current max, score should not change", () => {
+                testingMario.moveRight();
+                testingGame.updateScore();
+                expect(testingGame._score).toBe(100);
+                testingMario.moveUp();
+                testingGame.updateScore();
+                expect(testingGame._score).toBe(100);
+            });
+            test("if gameState is isDead, score should not change", () => {
+                testingMario.moveRight();
+                testingGame.updateScore();
+                expect(testingGame._score).toBe(100);
+                testingGame._gameState = "isDead";
+                testingMario.moveRight();
+                expect(() => testingGame.updateScore()).toThrowError();
+            });
+            test("if gameState is isWinner, score should not change", () => {
+                testingMario.moveRight();
+                testingGame.updateScore();
+                expect(testingGame._score).toBe(100);
+                testingGame._gameState = "isWinner";
+                testingMario.moveRight();
+                expect(() => testingGame.updateScore()).toThrowError();
+            });
+        });
     describe("level toString testing", () => {
         let testingMario = new MainCharacter(0, 1);
         test("empty map", () => {
@@ -284,6 +347,59 @@ describe('Level Testing', () => {
             ];
 
             let testingGame = new TestingLevel(testingMario, testingMap);
+            expect(testingGame.toString()).toBe("   \n   \n   \n");
         })
+
+        test("only block map", () => {
+            let testingMap = [
+                [new PlatformBlock(0,0), new PlatformBlock(1,0), new PlatformBlock(2,0)],
+                [new PlatformBlock(0,1), new PlatformBlock(1,1), new PlatformBlock(2,1)],
+                [new PlatformBlock(0,2), new PlatformBlock(1,2), new PlatformBlock(2,2)],
+            ];
+
+            let testingGame = new TestingLevel(testingMario, testingMap);
+            expect(testingGame.toString()).toBe("XXX\nXXX\nXXX\n");
+        })
+
+        test("only mario map", () => {
+            let testingMap = [
+                [undefined, undefined, undefined],
+                [testingMario, undefined, undefined],
+                [undefined, undefined, undefined],
+            ];
+
+            let testingGame = new TestingLevel(testingMario, testingMap);
+            expect(testingGame.toString()).toBe("   \nM  \n   \n");
+        })
+
+        test("only mario map", () => {
+            let testingMap = [
+                [undefined, undefined, undefined],
+                [testingMario, undefined, undefined],
+                [undefined, undefined, undefined],
+            ];
+
+            let testingGame = new TestingLevel(testingMario, testingMap);
+            expect(testingGame.toString()).toBe("   \nM  \n   \n");
+        })
+
+        test("level one map testing", () => {
+            let levelOneTest = new LevelOne(new MainCharacter(0,3));
+            let resultString = "             C\n             C\n   P    XX   C\nM XX         C\nXXXX  XXXXXXXC\nXXXX  XXXXXXXX\nXXXXDDXXXXXXXX\n"
+            
+            expect(levelOneTest.toString()).toBe(resultString)
+        })
+
+    })
+
+    describe("OnKey method Tests", () => {
+        let testingMario = new MainCharacter(0, 1);
+        let testingMapPreMove = [
+            [undefined, undefined, undefined],
+            [testingMario, undefined, undefined],
+            [undefined, undefined, undefined],
+        ];
+        let testLevel = new TestingLevel(testingMario, testingMapPreMove)
+
     })
 })
