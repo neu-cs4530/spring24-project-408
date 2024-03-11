@@ -102,30 +102,56 @@ export abstract class Level {
         console.log("Final score is: " + this._score.toString());
     }
 
+    public characterUp() {
+        const mario_x: GameUnit = this._mario.x;
+        const mario_y: GameUnit = this._mario.y;
+
+        this._mario.moveUp();
+        this.updateMap(mario_x, mario_y);
+    }
+
+    public characterRight() {
+        const mario_x: GameUnit = this._mario.x;
+        const mario_y: GameUnit = this._mario.y;
+
+        this._mario.moveRight();
+        this.updateMap(mario_x, mario_y);
+    }
+
+    public characterDown() {
+        const mario_x: GameUnit = this._mario.x;
+        const mario_y: GameUnit = this._mario.y;
+
+        this._mario.moveDown();
+        this.updateMap(mario_x, mario_y);
+    }
+
+    public characterLeft() {
+        const mario_x: GameUnit = this._mario.x;
+        const mario_y: GameUnit = this._mario.y;
+
+        this._mario.moveLeft();
+        this.updateMap(mario_x, mario_y);
+    }
+
     //on key method?? leave last for sprint 1(Sprint 1)
     /**
      * arrow keys for movement
      * if gameState is isDead - user can press 'space' to restart level
      */
     public keyPressed(key: string) {
-        const mario_x: GameUnit = this._mario.x;
-        const mario_y: GameUnit = this._mario.y;
         switch(key) {
             case 'up': {
-                this._mario.moveUp();
-                this.updateMap(mario_x, mario_y);
+                this.characterUp();
                 break;
             }
             case 'left': {
-                this._mario.moveLeft();
-                this.updateMap(mario_x, mario_y);
+                this.characterLeft();
                 break;
             }
             case 'right': {
-                this._mario.moveRight();
-                this.updateMap(mario_x, mario_y);
+                this.characterRight();
                 break;
-
             }
             case 'space': {
                 if (this._gameState == 'isWinner' || this._gameState == 'isDead') {
