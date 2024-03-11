@@ -217,4 +217,16 @@ export class LevelOne extends Level {
     public restartLevel(): Level {
         return new LevelOne(this._mario);
     }
-}   
+}  
+
+export class TestingLevel extends Level {
+
+    constructor(mario: MainCharacter, map: GameCell[][]) {
+        super(mario, map);
+    }
+
+    public restartLevel(): Level {
+        return new TestingLevel(this._mario, this._map);
+    }
+    
+}
