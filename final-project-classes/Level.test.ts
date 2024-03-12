@@ -459,11 +459,11 @@ describe('Level Testing', () => {
             expect(testLevel._gameState).toBe("isPlaying");
             testLevel._gameState = "isDead";
             expect(testLevel._gameState).toBe("isDead");
-            testLevel.keyPressed("space");
-            expect(testingMario.x).toBe(1);
-            expect(testingMario.y).toBe(2);
-            expect(testLevel._score).toBe(0);
-            expect(testLevel._gameState).toBe("isPlaying");
+            let testLevel2 = testLevel.restartLevel();
+            expect(testLevel2._mario.x).toBe(1);
+            expect(testLevel2._mario.y).toBe(2);
+            expect(testLevel2._score).toBe(0);
+            expect(testLevel2._gameState).toBe("isPlaying");
         })
         test("while state not is playing, if random key is pressed, should do nothing", () => {
             testLevel._gameState = "isDead";
