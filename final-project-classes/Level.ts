@@ -9,6 +9,7 @@ export type GameCell = GameObject | undefined;
 export abstract class Level {
     _blocks: Block[];
     _mario: MainCharacter;
+    _startingMario: MainCharacter;
     _enemies: Character[];
     _score: number;
     _collidableBlocks: {[direction: string] : Block | undefined} = {};
@@ -20,6 +21,7 @@ export abstract class Level {
         this._map = map;
         this._blocks = this.fillBlocks();
         this._mario = mario;
+        this._startingMario = new MainCharacter(this._mario.x, this._mario.y);
         this._score = 0;
         this.fillCollidableBlocks();
         this._gameState = "isPlaying";
@@ -263,7 +265,7 @@ export class LevelOne extends Level {
 
     public restartLevel(): Level {
         if (this._gameState !== 'isPlaying') {
-            return new LevelOne(this._mario);
+            return new LevelOne(this._startingMario);
         }
         throw new Error('Cannot restart level unless done playing the game');
     }
@@ -277,7 +279,7 @@ export class TestingLevel extends Level {
 
     public restartLevel(): Level {
         if (this._gameState !== 'isPlaying') {
-            return new TestingLevel(this._mario, this._map);
+            return new TestingLevel(this._startingMario, this._map);
         }
         throw new Error('Cannot restart level unless done playing the game');
     }
