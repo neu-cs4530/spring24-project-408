@@ -495,11 +495,11 @@ describe('Level Testing', () => {
             expect(testLevel._gameState).toBe("isPlaying");
             testLevel._gameState = "isDead";
             expect(testLevel._gameState).toBe("isDead");
-            testLevel.restartLevel();
-            expect(testingMario.x).toBe(1);
-            expect(testingMario.y).toBe(2);
-            expect(testLevel._score).toBe(0);
-            expect(testLevel._gameState).toBe("isPlaying");
+            let testLevel2 = testLevel.restartLevel();
+            expect(testLevel2._mario.x).toBe(1);
+            expect(testLevel2._mario.y).toBe(2);
+            expect(testLevel2._score).toBe(0);
+            expect(testLevel2._gameState).toBe("isPlaying");
         })
         test("if mario is winner, should restart level", () => {
             testingMario.moveRight();
@@ -510,11 +510,11 @@ describe('Level Testing', () => {
             expect(testLevel._gameState).toBe("isPlaying");
             testLevel._gameState = "isWinner";
             expect(testLevel._gameState).toBe("isWinner");
-            testLevel.restartLevel();
-            expect(testingMario.x).toBe(1);
-            expect(testingMario.y).toBe(2);
-            expect(testLevel._score).toBe(0);
-            expect(testLevel._gameState).toBe("isPlaying");
+            let testLevel2 = testLevel.restartLevel();
+            expect(testLevel2._mario.x).toBe(1);
+            expect(testLevel2._mario.y).toBe(2);
+            expect(testLevel2._score).toBe(0);
+            expect(testLevel2._gameState).toBe("isPlaying");
         })
         test("if mario is playing, should throw error", () => {
             expect(() => testLevel.restartLevel()).toThrowError('Cannot restart level unless done playing the game');
