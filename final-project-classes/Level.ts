@@ -265,7 +265,9 @@ export class LevelOne extends Level {
 
     public restartLevel(): Level {
         if (this._gameState !== 'isPlaying') {
-            return new LevelOne(this._startingMario);
+            this._mario._x = this._startingMario.x;
+            this._mario._y = this._startingMario.y;
+            return new LevelOne(this._mario);
         }
         throw new Error('Cannot restart level unless done playing the game');
     }
@@ -279,7 +281,9 @@ export class TestingLevel extends Level {
 
     public restartLevel(): Level {
         if (this._gameState !== 'isPlaying') {
-            return new TestingLevel(this._startingMario, this._map);
+            this._mario._x = this._startingMario.x;
+            this._mario._y = this._startingMario.y;
+            return new TestingLevel(this._mario, this._map);
         }
         throw new Error('Cannot restart level unless done playing the game');
     }
