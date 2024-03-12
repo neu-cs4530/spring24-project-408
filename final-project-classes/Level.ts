@@ -262,7 +262,10 @@ export class LevelOne extends Level {
     }
 
     public restartLevel(): Level {
-        return new LevelOne(this._mario);
+        if (this._gameState !== 'isPlaying') {
+            return new LevelOne(this._mario);
+        }
+        throw new Error('Cannot restart level unless done playing the game');
     }
 }  
 

@@ -409,50 +409,53 @@ describe('Level Testing', () => {
             testLevel.keyPressed("right");
             expect(testingMario.x).toBe(2);
         })
-
         test("while state is playing, if key is up, mario should move up", () => {
             testLevel.keyPressed("up");
             expect(testingMario.y).toBe(1);
         })
-
         test("while state is playing, if key is left, mario should move left", () => {
             testLevel.keyPressed("up");
             expect(testingMario.x).toBe(1);
         })
-
         test("while state is playing, if space is pressed, should do nothing", () => {
             testLevel.keyPressed("space");
             expect(testingMario.x).toBe(1);
             expect(testingMario.y).toBe(2);
         })
-
+        test("while state is playing, if down is pressed, should do nothing", () => {
+            testLevel.keyPressed("down");
+            expect(testingMario.x).toBe(1);
+            expect(testingMario.y).toBe(2);
+        })
+        test("while state is playing, if random key is pressed, should do nothing", () => {
+            testLevel.keyPressed("r");
+            expect(testingMario.x).toBe(1);
+            expect(testingMario.y).toBe(2);
+        })
         test("while state is not playing, right should not work", () => {
             testLevel._gameState = "isDead";
             testLevel.keyPressed("right");
             expect(testingMario.x).toBe(1);
             expect(testingMario.y).toBe(2);
         })
-
         test("while state is not playing, left should not work", () => {
             testLevel._gameState = "isDead";
             testLevel.keyPressed("left");
             expect(testingMario.x).toBe(1);
             expect(testingMario.y).toBe(2);
         })
-
         test("while state is not playing, up should not work", () => {
             testLevel._gameState = "isDead";
             testLevel.keyPressed("up");
             expect(testingMario.x).toBe(1);
             expect(testingMario.y).toBe(2);
         })
-
         test("while state is not playing, space should call restart level", () => {
             testingMario.moveRight();
             testLevel.updateScore();
             expect(testingMario.x).toBe(2);
             expect(testingMario.y).toBe(2);
-            expect(testLevel._score).toBe(100);
+            expect(testLevel._score).toBe(200);
             expect(testLevel._gameState).toBe("isPlaying");
             testLevel._gameState = "isDead";
             expect(testLevel._gameState).toBe("isDead");
@@ -462,7 +465,132 @@ describe('Level Testing', () => {
             expect(testLevel._score).toBe(0);
             expect(testLevel._gameState).toBe("isPlaying");
         })
+        test("while state not is playing, if random key is pressed, should do nothing", () => {
+            testLevel._gameState = "isDead";
+            testLevel.keyPressed("r");
+            expect(testingMario.x).toBe(1);
+            expect(testingMario.y).toBe(2);
+        })
     })
-    // restart level
-    // death test
+
+    describe("restartLevel", () => {
+        let testingMario: MainCharacter;
+        let testingMapPreMove: GameCell[][];
+        let testLevel: TestingLevel;
+        beforeEach(() => {
+            testingMario = new MainCharacter(1, 2);
+            testingMapPreMove = [
+                [undefined, undefined, undefined],
+                [undefined, undefined, undefined],
+                [undefined, testingMario, undefined],
+            ];
+            testLevel = new TestingLevel(testingMario, testingMapPreMove)
+        });
+        test("if mario is dead, should restart level", () => {
+            testingMario.moveRight();
+            testLevel.updateScore();
+            expect(testingMario.x).toBe(2);
+            expect(testingMario.y).toBe(2);
+            expect(testLevel._score).toBe(200);
+            expect(testLevel._gameState).toBe("isPlaying");
+            testLevel._gameState = "isDead";
+            expect(testLevel._gameState).toBe("isDead");
+            testLevel.restartLevel();
+            expect(testingMario.x).toBe(1);
+            expect(testingMario.y).toBe(2);
+            expect(testLevel._score).toBe(0);
+            expect(testLevel._gameState).toBe("isPlaying");
+        })
+        test("if mario is winner, should restart level", () => {
+            testingMario.moveRight();
+            testLevel.updateScore();
+            expect(testingMario.x).toBe(2);
+            expect(testingMario.y).toBe(2);
+            expect(testLevel._score).toBe(200);
+            expect(testLevel._gameState).toBe("isPlaying");
+            testLevel._gameState = "isWinner";
+            expect(testLevel._gameState).toBe("isWinner");
+            testLevel.restartLevel();
+            expect(testingMario.x).toBe(1);
+            expect(testingMario.y).toBe(2);
+            expect(testLevel._score).toBe(0);
+            expect(testLevel._gameState).toBe("isPlaying");
+        })
+        test("if mario is playing, should throw error", () => {
+            expect(() => testLevel.restartLevel()).toThrowError('Cannot restart level unless done playing the game');
+        })
+    });
+
+    describe("winLevel", () => {
+        let testingMario = new MainCharacter(1, 1);
+        test("Mario wins", () => {
+            let testingMap = [
+                [new CompletionBlock(0, 0), new CompletionBlock(1, 0), new CompletionBlock(2, 0)],
+                [new CompletionBlock(0, 1), testingMario, new CompletionBlock(2, 1)],
+                [new CompletionBlock(0, 2), new CompletionBlock(1, 2), new CompletionBlock(2, 2)],
+            ];
+
+            let testingGame = new TestingLevel(testingMario, testingMap);
+            testingGame.winLevel();
+            expect(testingGame._gameState).toBe("isWinner");
+        }); 
+        test("Mario cannot win when dead", () => {
+            let testingMap = [
+                [new CompletionBlock(0, 0), new CompletionBlock(1, 0), new CompletionBlock(2, 0)],
+                [new CompletionBlock(0, 1), testingMario, new DeathBlock(2, 1)],
+                [new CompletionBlock(0, 2), new DeathBlock(1, 2), new CompletionBlock(2, 2)],
+            ];
+            let testingGame = new TestingLevel(testingMario, testingMap);
+            testingGame._gameState = 'isDead'
+            expect(() => testingGame.winLevel()).toThrowError("Cannot win game when dead");
+        });
+        test("If already won, game state stays isWinner", () => {
+            let testingMap = [
+                [new CompletionBlock(0, 0), new CompletionBlock(1, 0), new CompletionBlock(2, 0)],
+                [new CompletionBlock(0, 1), testingMario, new CompletionBlock(2, 1)],
+                [new CompletionBlock(0, 2), new CompletionBlock(1, 2), new CompletionBlock(2, 2)],
+            ];
+            let testingGame = new TestingLevel(testingMario, testingMap);
+            testingGame.winLevel();
+            expect(testingGame._gameState).toBe("isWinner");
+            testingGame.winLevel();
+            expect(testingGame._gameState).toBe("isWinner");
+        });
+    });
+
+    describe("death test", () => {
+        let testingMario = new MainCharacter(1, 1);
+        test("Mario is dead", () => {
+            let testingMap = [
+                [new CompletionBlock(0, 0), new CompletionBlock(1, 0), new CompletionBlock(2, 0)],
+                [new CompletionBlock(0, 1), testingMario, new DeathBlock(2, 1)],
+                [new CompletionBlock(0, 2), new DeathBlock(1, 2), new CompletionBlock(2, 2)],
+            ];
+            let testingGame = new TestingLevel(testingMario, testingMap);
+            testingGame.death();
+            expect(testingGame._gameState).toBe("isDead");
+        }); 
+        test("Mario cannot die when won", () => {
+            let testingMap = [
+                [new CompletionBlock(0, 0), new CompletionBlock(1, 0), new CompletionBlock(2, 0)],
+                [new CompletionBlock(0, 1), testingMario, new CompletionBlock(2, 1)],
+                [new CompletionBlock(0, 2), new CompletionBlock(1, 2), new CompletionBlock(2, 2)],
+            ];
+            let testingGame = new TestingLevel(testingMario, testingMap);
+            testingGame._gameState = 'isWinner'
+            expect(() => testingGame.death()).toThrowError("Cannot die when you've won");
+        });
+        test("If already dead, game state stays isDeadr", () => {
+            let testingMap = [
+                [new CompletionBlock(0, 0), new CompletionBlock(1, 0), new CompletionBlock(2, 0)],
+                [new CompletionBlock(0, 1), testingMario, new DeathBlock(2, 1)],
+                [new CompletionBlock(0, 2), new DeathBlock(1, 2), new CompletionBlock(2, 2)],
+            ];
+            let testingGame = new TestingLevel(testingMario, testingMap);
+            testingGame.death();
+            expect(testingGame._gameState).toBe("isDead");
+            testingGame.death();
+            expect(testingGame._gameState).toBe("isDead");
+        });
+    });
 })
