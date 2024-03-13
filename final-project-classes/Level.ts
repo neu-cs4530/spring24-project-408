@@ -5,7 +5,17 @@ import { Character, MainCharacter } from "./Character";
 export const SCORE_MULTIPLIER = 100;
 export type GameCell = GameObject | undefined;
 
-// export type GameState = 'isPlaying' | 'hasWon' | 'isDead'
+/**
+ * GameObject is an object in the Mario game. 
+ * @param _blocks represents all of the blocks in the level.
+ * @param _mario represents the main character object that we will be moving / updating. 
+ * @param _startingMario is the main character object that represents the starting position.
+ * @param _enemies is the list of all enemies in the level.
+ * @param _score is the current max score that the player has achieved.
+ * @param _collidableBlocks is the four blocks (up right left and down) which is possible for the main character to interact with.
+ * @param _gameState is what game the level is currently in (isDead, isPlaying, isWinner)
+ * @param _map is an internal representation of the layout of the level via a 2D array of GameObject | undefined
+ */
 export abstract class Level {
     _blocks: Block[];
     _mario: MainCharacter;
@@ -27,7 +37,11 @@ export abstract class Level {
         this._gameState = "isPlaying";
     }
 
-    // method for populating blocks with all blocks in the map
+    /**
+     * fillBlocks is a method that gets all of the 'Blocks' in a level and returns it as a list
+     * 
+     * @returns the list of Blocks in this level
+     */
     public fillBlocks(): Block[] {
         let ret: Block[] = [];
         for (const row of this._map) {
@@ -40,7 +54,11 @@ export abstract class Level {
         return ret;
     }
 
-    //method for populating collidable blocks - check four blocks around mario (Sprint 1)
+    
+    /**
+     * Determines which blocks (if any) are in every direction of mario that he can collide with (up right left down)
+     * and fill up the this._collidableBlocks with them
+     */
     public fillCollidableBlocks(): void {
         const left: GameUnit = this._mario.x - 1;
         const right: GameUnit = this._mario.x + 1;
@@ -53,11 +71,11 @@ export abstract class Level {
         this._collidableBlocks["down"] = this._blocks.find(block => block.x === this._mario.x && block.y === down);
     }
 
-    //update score method (Sprint 1)
     /**
-     * Use mario's distance from the 0 x position times 100
-     * If mario's current distance is greater than the current position, THEN we update the score
-     * This is to account for is mario moves backward
+     * Determines the score that the player has achieved so far by multiplying the main character's
+     * distance traveled by SCORE_MULITPLIER
+     * 
+     * @throws Error - Cannot update score unless playing the game if the game state is not 'isPlaying'
      */
     public updateScore(): void {
         if (this._gameState !== 'isPlaying') {
@@ -69,7 +87,11 @@ export abstract class Level {
         }
     }
 
-    //toString - "prints" the game objects from the map double array ()
+    /**
+     * Converts the entire level layout into string format
+     * 
+     * @returns a string representing every GameObject in the level map
+     */
     public toString(): string {
         let ret: string = "";
 
@@ -89,7 +111,6 @@ export abstract class Level {
         return ret;
     }
 
-    //update map method
     /**
      * Updates the map object with Mario's new position and makes his old position undefined
      */
@@ -118,6 +139,10 @@ export abstract class Level {
         return;
     }
 
+    /**
+     * If the main character dies, calls this method to close out the level, printing 'YOU DIED' and the 
+     * player's score
+     */
     public death(): void {
         switch(this._gameState) {
             case 'isWinner':
@@ -131,6 +156,14 @@ export abstract class Level {
         }
     }
 
+    /**
+     * Convenience method for moving the character up.
+     * 
+     * Checks if moving up is a valid move
+     * (Future) checks upward collision
+     * Moves the character up
+     * updates the internal map representation to show mario's movement
+     */
     private characterUp() {
         const mario_x: GameUnit = this._mario.x;
         const mario_y: GameUnit = this._mario.y;
@@ -144,6 +177,14 @@ export abstract class Level {
         }
     }
 
+    /**
+     * Convenience method for moving the character right.
+     * 
+     * Checks if moving right is a valid move
+     * (Future) checks right collision
+     * Moves the character right
+     * updates the internal map representation to show mario's movement
+     */
     private characterRight() {
         const mario_x: GameUnit = this._mario.x;
         const mario_y: GameUnit = this._mario.y;
@@ -158,7 +199,14 @@ export abstract class Level {
         }
     }
 
-    // this will be used when colliision is implemented
+    /**
+     * Convenience method for moving the character down.
+     * 
+     * Checks if moving down is a valid move
+     * (Future) checks downward collision
+     * Moves the character down
+     * updates the internal map representation to show mario's movement
+     */
     private characterDown() {
         const mario_x: GameUnit = this._mario.x;
         const mario_y: GameUnit = this._mario.y;
@@ -172,6 +220,14 @@ export abstract class Level {
         }
     }
 
+    /**
+     * Convenience method for moving the character left.
+     * 
+     * Checks if moving left is a valid move
+     * (Future) checks leftward collision
+     * Moves the character left
+     * updates the internal map representation to show mario's movement
+     */
     private characterLeft() {
         const mario_x: GameUnit = this._mario.x;
         const mario_y: GameUnit = this._mario.y;
@@ -185,9 +241,9 @@ export abstract class Level {
         }
     }
 
-    //on key method?? leave last for sprint 1(Sprint 1)
     /**
-     * arrow keys for movement
+     * Basic method resembling onKey method to map to arrow keys in the future.
+     * Moves the main character as well as restarts the level (arrow keys and space except down arrow)
      * if gameState is isDead - user can press 'space' to restart level
      */
     public keyPressed(key: string) {
@@ -214,6 +270,11 @@ export abstract class Level {
         }
     }
 
+    /**
+     * Resets the level from the beginning, resetting the score to 0, the main character to his original position
+     * 
+     * @throws Error - Cannot restart level unless done playing the game if game stat is not 'isPlaying'
+     */
     public abstract restartLevel(): Level;
     
 
@@ -245,9 +306,8 @@ export abstract class Level {
 
 }
 
-//implement Level One - blocks and their positions, Mario, and completion blocks
 /**
- * Implement restartLevel method
+ * Class representing the first level of the game, including map layout and character placement
  */
 export class LevelOne extends Level {
 
@@ -273,6 +333,9 @@ export class LevelOne extends Level {
     }
 }  
 
+/**
+ * Class representing a fake level used for testing
+ */
 export class TestingLevel extends Level {
 
     constructor(mario: MainCharacter, map: GameCell[][]) {
