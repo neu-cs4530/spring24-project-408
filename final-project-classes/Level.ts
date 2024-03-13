@@ -9,7 +9,7 @@ export type GameCell = GameObject | undefined;
  * GameObject is an object in the Mario game. 
  * @param _blocks represents all of the blocks in the level.
  * @param _mario represents the main character object that we will be moving / updating. 
- * @param _startingMario is the main character object that represents the starting position.
+ * @param _startingMarioPos is a list of the main character's starting position.
  * @param _enemies is the list of all enemies in the level.
  * @param _score is the current max score that the player has achieved.
  * @param _collidableBlocks is the four blocks (up right left and down) which is possible for the main character to interact with.
@@ -19,7 +19,7 @@ export type GameCell = GameObject | undefined;
 export abstract class Level {
     _blocks: Block[];
     _mario: MainCharacter;
-    _startingMario: MainCharacter;
+    _startingMarioPos: number[];
     _enemies: Character[];
     _score: number;
     _collidableBlocks: {[direction: string] : Block | undefined} = {};
@@ -31,7 +31,7 @@ export abstract class Level {
         this._map = map;
         this._blocks = this.fillBlocks();
         this._mario = mario;
-        this._startingMario = new MainCharacter(this._mario.x, this._mario.y);
+        this._startingMarioPos = [this._mario.x, this._mario.y];
         this._score = 0;
         this.fillCollidableBlocks();
         this._gameState = "isPlaying";
@@ -276,34 +276,6 @@ export abstract class Level {
      * @throws Error - Cannot restart level unless done playing the game if game stat is not 'isPlaying'
      */
     public abstract restartLevel(): Level;
-    
-
-    //restart level method (Sprint 1)
-    /**
-     * Simply returns a new level object with everything restarted
-     */
-
-    //on tick method (SPRINT 2)
-    /**
-     * 
-     * call fillCollidableBlocks
-     * call update score
-     * implement death - checking if mario has collided with a death block - call restart level
-     * implement level completion - checking if mario has collided with a completition block - call level completion method
-     * handle jumping / collision with blocks when jumping
-     */
-
-
-    //TODO for Monday (March 11):
-    /**
-     * explain everything to Mihir / get his opinions
-     * figure out "emit" logistics
-     * do we need to implement onTick for sprint 1? (we don't think so)
-     * implement death and level completition are kinda iffy (should we have basic collision implemented for sprint 1?)
-     * write tests
-     */
-
-
 }
 
 /**
@@ -323,31 +295,17 @@ export class LevelOne extends Level {
         ]);
     }
 
+    /**
+     * Resets the level from the beginning, resetting the score to 0, the main character to his original position
+     * 
+     * @throws Error - Cannot restart level unless done playing the game if game stat is not 'isPlaying'
+     */
     public restartLevel(): Level {
         if (this._gameState !== 'isPlaying') {
-            this._mario._x = this._startingMario.x;
-            this._mario._y = this._startingMario.y;
+            this._mario._x = this._startingMarioPos[0];
+            this._mario._y = this._startingMarioPos[1];
             return new LevelOne(this._mario);
         }
         throw new Error('Cannot restart level unless done playing the game');
     }
 }  
-
-/**
- * Class representing a fake level used for testing
- */
-export class TestingLevel extends Level {
-
-    constructor(mario: MainCharacter, map: GameCell[][]) {
-        super(mario, map);
-    }
-
-    public restartLevel(): Level {
-        if (this._gameState !== 'isPlaying') {
-            this._mario._x = this._startingMario.x;
-            this._mario._y = this._startingMario.y;
-            return new TestingLevel(this._mario, this._map);
-        }
-        throw new Error('Cannot restart level unless done playing the game');
-    }
-}
