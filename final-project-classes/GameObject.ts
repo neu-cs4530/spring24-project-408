@@ -5,7 +5,7 @@
 const BLOCK_WIDTH = 255; // This value can be changed depending on what's easier for future use
 
 /**
-* A Gameunit is a type that is a number in the game.
+* A GameUnit is a type that is a number in the game.
 * It represents a unit of the game.
 */
 export type GameUnit = number;
@@ -26,6 +26,7 @@ export abstract class GameObject {
         this._y = newY;
         this._gameLetter = newGameLetter;
     }
+
     /**
     * Converts the _gameLetter to a string.
     */
@@ -33,15 +34,16 @@ export abstract class GameObject {
         return this._gameLetter;
     }
 
-  /**
-  * Gets the x coordinate value of a GameObject.
-  */
+    /**
+    * Gets the x coordinate value of a GameObject.
+    */
     public get x() {
         return this._x;
     }
-/**
-* Gets the y coordinate value of a GameObject.
-*/
+
+    /**
+    * Gets the y coordinate value of a GameObject.
+    */
     public get y() {
         return this._y;
     }

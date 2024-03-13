@@ -1,5 +1,5 @@
 import { Console } from 'console';
-import {GameCell, Level, LevelOne} from './Level';
+import { GameCell, Level, LevelOne } from './Level';
 import { Block, DeathBlock, PlatformBlock, CompletionBlock, CurrentState, PipeBlock } from "./Block";
 import { Character, MainCharacter } from "./Character";
 

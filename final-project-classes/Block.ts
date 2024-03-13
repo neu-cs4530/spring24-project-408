@@ -1,7 +1,8 @@
 import { GameObject, GameUnit } from "./GameObject"
 
 /**
-* A CurrentState is a type that represents a state of a Super Mairo game.
+* A CurrentState is a type that represents a state of a Super Mario game.
+*
 * @value isDead indicates that Mario has died and the game has ended.
 * @value isWinner indicates that Mario has completed the level. The player has won, and the game has ended.
 * @value isPlaying indicates that Mario has not won or died, and the game is still in play. 
@@ -12,6 +13,7 @@ export type CurrentState = "isDead" | "revert" | "isWinner" | "isPlaying";
 
 /**
 * A Block represents a Block in the game.
+*
 * @param _collisionState represents a CurrentState of the game.
 * @param _x represents the x position of a Block in the game.
 * @param _y represents the y position of a Block in the game.
@@ -27,6 +29,7 @@ export abstract class Block extends GameObject {
 
     /**
     * collision -> Checks the current collision state of the game. This is our emit method. 
+    * 
     * @param x is the x position of a GameUnit.
     * @param y is the y poisiton of a GameUnit.
     * @return provides CurrentState of the game.
@@ -42,6 +45,7 @@ export abstract class Block extends GameObject {
 
   /**
   * class DeathBlock represents a Block that would kill Mario if he collides with it.
+  * 
   * @param x is the x position of the DeathBlock.
   * @param y is the y position of the DeathBlock.
   */
@@ -52,7 +56,8 @@ export abstract class Block extends GameObject {
   }
 
   /**
-  * class PlatformBlock represents a block that is a stadard traversable platform block in the game. 
+  * class PlatformBlock represents a block that is a standard traversable platform block in the game. 
+  * 
   * @param x is the x position of the PlatformBlock. 
   * @param y is the y position of the PlatformBlock.
   */
@@ -64,6 +69,7 @@ export abstract class Block extends GameObject {
 
   /**
   * class CompletionBlock represents a block completes the game if Mario collides with it.
+  * 
   * @param x is the x position of the CompleitionBlock. 
   * @param y is the y position of the CompletionBlock.
   */
@@ -74,7 +80,8 @@ export abstract class Block extends GameObject {
   }
 
   /**
-  * class PipeBlock represents a traverseable pipe in the game.
+  * class PipeBlock represents a traversable pipe in the game.
+  * 
   * @param x is the x position of the PipeBlock. 
   * @param y is the y position of the PipeBlock.
   */

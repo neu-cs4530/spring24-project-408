@@ -16,9 +16,9 @@ export abstract class Character extends GameObject {
 * MainCharacter represents the main Character of the game. This is Mario.
 * @param _x is the x value of the main charachter.
 * @param _y is the y value of the main character.
-* @param jumpSize represents how many blocks the main charachter rizes before reaching the peak of the jump.
+* @param jumpSize represents how many blocks the main charachter rises before reaching the peak of the jump.
 * @param movementSpeed represents how many 'BlockSizes' the main character may move per tick. 
-* @param _rising reprsents whether or not the main character is rising. 
+* @param _rising represents whether or not the main character is rising. 
 * @param _falling represents whether or not the main character is falling. 
 * @param _isAlive represents whether or not the main character is alive in the game.
 * @param _currentRiseDuration represents how far the character is from the peak of a jump when jumping. 
@@ -51,32 +51,33 @@ export class MainCharacter extends Character {
   }
 
   /**
-  * moveLeft is a method that moves the charachter left by 1 (x) value
+  * moveLeft is a method that moves the character left by 1 GameUnit
   */
   public moveLeft(): void {
     this._x = this._x - 1;
   }
 
   /**
-  * moveRight is a method that moves the charachter right by 1 (x) value
+  * moveRight is a method that moves the charachter right by 1 GameUnit
   */
   public moveRight(): void {
     this._x = this._x + 1;
   }
 
   /**
-  * moveDown is a method that moves the charachter down by 1 (y) value
+  * moveDown is a method that moves the charachter down by 1 GameUnit
   */
   public moveDown(): void {
     this._y = this._y + 1;
   }
 
   /**
-  * moveUp is a method that moves the charachter up by 1 (y) value
+  * moveUp is a method that moves the charachter up by 1 GameUnit
   */
   public moveUp(): void {
     this._y = this._y - 1;
   }
+
  /**
  * Sets the rising value for the main charcter.
  */
@@ -127,8 +128,8 @@ export class MainCharacter extends Character {
   }
 
   /**
-  * incrementRiseDuration changes the value of currentRiseDuaration according to the jump being perfromed by
-  * the main charachter. 
+  * incrementRiseDuration changes the value of currentRiseDuaration according to the jump being performed by
+  * the main character. 
   */
   public incrementRiseDuration() {
     if (this._rising && this._currentRiseDuration < this.jumpSize) {

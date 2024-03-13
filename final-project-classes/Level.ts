@@ -6,10 +6,11 @@ export const SCORE_MULTIPLIER = 100;
 export type GameCell = GameObject | undefined;
 
 /**
- * GameObject is an object in the Mario game. 
+ * A Level is one level in the broader world of the Mario game.
+ * 
  * @param _blocks represents all of the blocks in the level.
  * @param _mario represents the main character object that we will be moving / updating. 
- * @param _startingMarioPos is a list of the main character's starting position.
+ * @param _startingMarioPos is a list of the main character's starting x and y posiitoins.
  * @param _enemies is the list of all enemies in the level.
  * @param _score is the current max score that the player has achieved.
  * @param _collidableBlocks is the four blocks (up right left and down) which is possible for the main character to interact with.
@@ -19,7 +20,7 @@ export type GameCell = GameObject | undefined;
 export abstract class Level {
     _blocks: Block[];
     _mario: MainCharacter;
-    _startingMarioPos: number[];
+    _startingMarioPos: GameUnit[];
     _enemies: Character[];
     _score: number;
     _collidableBlocks: {[direction: string] : Block | undefined} = {};
@@ -54,7 +55,6 @@ export abstract class Level {
         return ret;
     }
 
-    
     /**
      * Determines which blocks (if any) are in every direction of mario that he can collide with (up right left down)
      * and fill up the this._collidableBlocks with them
@@ -119,7 +119,6 @@ export abstract class Level {
         this._map[this._mario.x][this._mario.y] = this._mario
     }
 
-    //level completion method
     /**
      * Change gamestate to has won
      * print out "YOU WON WOOOOO"
