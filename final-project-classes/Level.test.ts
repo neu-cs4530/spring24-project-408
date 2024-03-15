@@ -145,7 +145,7 @@ describe('Level Testing', () => {
             let testLevel = new TestingLevel(testMario, testingMap1);
             let expectBlocks = {"left": undefined, "right": undefined, "up": undefined, "down": undefined};
 
-            expect(testLevel._collidableBlocks).toEqual(expectBlocks);
+            expect(testLevel._collidableObjects).toEqual(expectBlocks);
         });
 
         test("Only platform blocks around Mario", () => {
@@ -158,7 +158,7 @@ describe('Level Testing', () => {
             let testLevel = new TestingLevel(testMario, testingMap1);
             let expectBlocks = {"left": new PlatformBlock(0,1), "right": new PlatformBlock(2, 1), "up": new PlatformBlock(1, 0), "down": new PlatformBlock(1, 2)};
 
-            expect(testLevel._collidableBlocks).toEqual(expectBlocks);
+            expect(testLevel._collidableObjects).toEqual(expectBlocks);
         });
 
         test("Only corners around Mario", () => {
@@ -171,7 +171,7 @@ describe('Level Testing', () => {
             let testLevel = new TestingLevel(testMario, testingMap1);
             let expectBlocks = {"left": undefined, "right": undefined, "up": undefined, "down": undefined};
 
-            expect(testLevel._collidableBlocks).toEqual(expectBlocks);
+            expect(testLevel._collidableObjects).toEqual(expectBlocks);
         });
 
         test("Only pipe blocks around Mario", () => {
@@ -184,7 +184,7 @@ describe('Level Testing', () => {
             let testLevel = new TestingLevel(testMario, testingMap1);
             let expectBlocks = {"left": new PipeBlock(0,1), "right": new PipeBlock(2, 1), "up": new PipeBlock(1, 0), "down": new PipeBlock(1, 2)};
 
-            expect(testLevel._collidableBlocks).toEqual(expectBlocks);
+            expect(testLevel._collidableObjects).toEqual(expectBlocks);
         });
 
         test("Only death blocks around Mario", () => {
@@ -197,7 +197,7 @@ describe('Level Testing', () => {
             let testLevel = new TestingLevel(testMario, testingMap1);
             let expectBlocks = {"left": new DeathBlock(0,1), "right": new DeathBlock(2, 1), "up": new DeathBlock(1, 0), "down": new DeathBlock(1, 2)};
 
-            expect(testLevel._collidableBlocks).toEqual(expectBlocks);
+            expect(testLevel._collidableObjects).toEqual(expectBlocks);
         });
 
         test("Only completion blocks around Mario", () => {
@@ -210,7 +210,7 @@ describe('Level Testing', () => {
             let testLevel = new TestingLevel(testMario, testingMap1);
             let expectBlocks = {"left": new CompletionBlock(0,1), "right": new CompletionBlock(2, 1), "up": new CompletionBlock(1, 0), "down": new CompletionBlock(1, 2)};
 
-            expect(testLevel._collidableBlocks).toEqual(expectBlocks);
+            expect(testLevel._collidableObjects).toEqual(expectBlocks);
         });
 
         test("Only completion blocks around Mario", () => {
@@ -223,7 +223,7 @@ describe('Level Testing', () => {
             let testLevel = new TestingLevel(testMario, testingMap1);
             let expectBlocks = {"left": new CompletionBlock(0,1), "right": new CompletionBlock(2, 1), "up": new CompletionBlock(1, 0), "down": new CompletionBlock(1, 2)};
 
-            expect(testLevel._collidableBlocks).toEqual(expectBlocks);
+            expect(testLevel._collidableObjects).toEqual(expectBlocks);
         });
 
         test("Combination of blocks around Mario", () => {
@@ -236,7 +236,7 @@ describe('Level Testing', () => {
             let testLevel = new TestingLevel(testMario, testingMap1);
             let expectBlocks = {"left": new PipeBlock(0,1), "right": new DeathBlock(2, 1), "up": new CompletionBlock(1, 0), "down": new PlatformBlock(1, 2)};
 
-            expect(testLevel._collidableBlocks).toEqual(expectBlocks);
+            expect(testLevel._collidableObjects).toEqual(expectBlocks);
         });
 
         test("Map is only Mario", () => {
@@ -246,7 +246,7 @@ describe('Level Testing', () => {
             let testLevel = new TestingLevel(testMario, testingMap1);
             let expectBlocks = {"left": undefined, "right": undefined, "up": undefined, "down": undefined};
 
-            expect(testLevel._collidableBlocks).toEqual(expectBlocks);
+            expect(testLevel._collidableObjects).toEqual(expectBlocks);
         });
 
         test("Left is open", () => {
@@ -259,7 +259,7 @@ describe('Level Testing', () => {
             let testLevel = new TestingLevel(testMario, testingMap1);
             let expectBlocks = {"left": undefined, "right": new PlatformBlock(2,1), "up": new PlatformBlock(1, 0), "down": new PlatformBlock(1, 2)};
 
-            expect(testLevel._collidableBlocks).toEqual(expectBlocks);
+            expect(testLevel._collidableObjects).toEqual(expectBlocks);
         });
 
         test("right is open", () => {
@@ -272,7 +272,7 @@ describe('Level Testing', () => {
             let testLevel = new TestingLevel(testMario, testingMap1);
             let expectBlocks = {"left": new PlatformBlock(0,1), "right": undefined, "up": new PlatformBlock(1, 0), "down": new PlatformBlock(1, 2)};
 
-            expect(testLevel._collidableBlocks).toEqual(expectBlocks);
+            expect(testLevel._collidableObjects).toEqual(expectBlocks);
         });
 
         test("up is open", () => {
@@ -285,7 +285,7 @@ describe('Level Testing', () => {
             let testLevel = new TestingLevel(testMario, testingMap1);
             let expectBlocks = {"left": new PlatformBlock(0,1), "right": new PlatformBlock(2, 1), "up": undefined, "down": new PlatformBlock(1, 2)};
 
-            expect(testLevel._collidableBlocks).toEqual(expectBlocks);
+            expect(testLevel._collidableObjects).toEqual(expectBlocks);
         });
 
         test("down is open", () => {
@@ -298,7 +298,7 @@ describe('Level Testing', () => {
             let testLevel = new TestingLevel(testMario, testingMap1);
             let expectBlocks = {"left": new PlatformBlock(0,1), "right": new PlatformBlock(2, 1), "up": new PlatformBlock(1, 0), "down": undefined};
 
-            expect(testLevel._collidableBlocks).toEqual(expectBlocks);
+            expect(testLevel._collidableObjects).toEqual(expectBlocks);
         });
 
         

@@ -58,8 +58,6 @@ export class Goomba extends Enemy {
       throw new Error("Invalid collision direction value");
     }
     else if (collisionFrom === 'down') {
-      this._health = this._health - 1;
-      this._isAlive = false;
       return 'enemyDead';
     }
     else {
@@ -181,19 +179,10 @@ export class MainCharacter extends Character {
     if ((collisionFrom !== "down") && (collisionFrom !== "up") && (collisionFrom !== "left") && (collisionFrom !== "right")) {
       throw new Error("Invalid collision direction value");
     }
-    if (this._health > 0) {
-      if (collisionFrom === 'up') {
-        return 'enemyDead';
-      }
-      else {
-        this._health = this._health - 1;
-        return 'resetStartPos';
-      }
-    }
-    else return 'isDead';
+    return this._takeDamage();
   }
 
-  public takeDamage(): CollisionState {
+  private _takeDamage(): CollisionState {
     if (this._health > 0) {
       this._health = this._health - 1;
       return 'resetStartPos';

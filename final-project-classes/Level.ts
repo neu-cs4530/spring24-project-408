@@ -65,10 +65,10 @@ export abstract class Level {
         const up: GameUnit = this._mario.y - 1;
         const down: GameUnit = this._mario.x + 1;
 
-        this._collidableObjects["left"] = this._map[this._mario.y][left];
-        this._collidableObjects["right"] = this._map[this._mario.y][right];
-        this._collidableObjects["up"] = this._map[up][this._mario.x];
-        this._collidableObjects["down"] = this._map[down][this._mario.x];
+        this._collidableObjects["left"] = (left >= 0) ? this._map[this._mario.y][left] : undefined;
+        this._collidableObjects["right"] = (right < this._map[0].length) ? this._map[this._mario.y][right] : undefined;
+        this._collidableObjects["up"] = (up >= 0) ? this._map[up][this._mario.x] : undefined;
+        this._collidableObjects["down"] = (down < this._map.length) ? this._map[down][this._mario.x] : undefined;
     }
 
     /**
