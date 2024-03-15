@@ -53,11 +53,11 @@ export class Goomba extends Enemy {
     super(newX, newY, 'G');
   }
 
-  public collision(collisionFrom: string): CollisionState | undefined {
-    if ((collisionFrom !== "down") && (collisionFrom !== "up") && (collisionFrom !== "left") && (collisionFrom !== "right")) {
+  public collision(colliderDir: string): CollisionState | undefined {
+    if ((colliderDir !== "down") && (colliderDir !== "up") && (colliderDir !== "left") && (colliderDir !== "right")) {
       throw new Error("Invalid collision direction value");
     }
-    else if (collisionFrom === 'down') {
+    else if (colliderDir === 'down') {
       return 'enemyDead';
     }
     else {
@@ -175,8 +175,8 @@ export class MainCharacter extends Character {
     } else this._currentRiseDuration = 0;
   };
 
-  public collision(collisionFrom: string): CollisionState | undefined {
-    if ((collisionFrom !== "down") && (collisionFrom !== "up") && (collisionFrom !== "left") && (collisionFrom !== "right")) {
+  public collision(colliderDir: string): CollisionState | undefined {
+    if ((colliderDir !== "down") && (colliderDir !== "up") && (colliderDir !== "left") && (colliderDir !== "right")) {
       throw new Error("Invalid collision direction value");
     }
     return this._takeDamage();

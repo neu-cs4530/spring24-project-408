@@ -63,5 +63,5 @@ export abstract class GameObject {
     /**
      * Checks the current collision state of the game. This is our emit method.
      */
-    public abstract collision(collisionFrom: string): CollisionState | undefined;
+    public abstract collision(colliderDir: string): CollisionState | undefined;
 }

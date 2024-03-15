@@ -19,12 +19,12 @@ export abstract class Block extends GameObject {
     /**
     * collision -> Checks the current collision state of the game. This is our emit method. 
     * 
-    * @param collisionFrom is the direction from which the collision is coming from.
+    * @param colliderDir is the direction the collider is moving in.
     * @throws an error if the collisionFrom is not a valid direction.
     * @returns the current collision state of the game.
     */
-   public collision(collisionFrom: string): CollisionState | undefined {
-    if ((collisionFrom !== "down") && (collisionFrom !== "up") && (collisionFrom !== "left") && (collisionFrom !== "right")) {
+   public collision(colliderDir: string): CollisionState | undefined {
+    if ((colliderDir !== "down") && (colliderDir !== "up") && (colliderDir !== "left") && (colliderDir !== "right")) {
       throw new Error("Invalid collision direction value");
     }
     return this._collisionState;

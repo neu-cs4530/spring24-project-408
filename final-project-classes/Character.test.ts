@@ -123,20 +123,50 @@ describe('MainCharacter', () => {
         test('When the Goomba is collided from an invalid direction, throw an error', () => {
             expect(() => goomba.collision('bruh')).toThrowError('Invalid collision direction value');
         });
-        test('When the Mario is collided from above by another GameObject (or down for the GameObject), return mario dead', () => { 
+        test('When an Enemy or DeathBlock collides down into mario', () => { 
             expect(mario.collision('down')).toBe('resetStartPos');
         });
-        test('When the Mario is collided from below by another GameObject (or up for the GameObject), return enemy dead', () => { 
+        test('When an Enemy or DeathBlock collides down into mario 3 times and dies', () => { 
             expect(mario.collision('down')).toBe('resetStartPos');
+            expect(mario.collision('down')).toBe('resetStartPos');
+            expect(mario.collision('down')).toBe('resetStartPos');
+            expect(mario.collision('down')).toBe('isDead');
         });
-        test('When the Mario is collided from the left by another GameObject (or right for the GameObject), return mario dead', () => { 
+        test('When an Enemy or DeathBlock collides up into mario', () => { 
+            expect(mario.collision('up')).toBe('resetStartPos');
+        });
+        test('When an Enemy or DeathBlock collides up into mario 3 times and dies', () => { 
+            expect(mario.collision('up')).toBe('resetStartPos');
+            expect(mario.collision('up')).toBe('resetStartPos');
+            expect(mario.collision('up')).toBe('resetStartPos');
+            expect(mario.collision('up')).toBe('isDead');
+        });
+        test('When an Enemy or DeathBlock collides right into mario', () => { 
             expect(mario.collision('right')).toBe('resetStartPos');
         });
-        test('When the Mario is collided from the right by another GameObject (or left for the GameObject), return mario dead', () => { 
+        test('When an Enemy or DeathBlock collides right into mario 3 times and dies', () => { 
+            expect(mario.collision('right')).toBe('resetStartPos');
+            expect(mario.collision('right')).toBe('resetStartPos');
+            expect(mario.collision('right')).toBe('resetStartPos');
+            expect(mario.collision('right')).toBe('isDead');
+        });
+        test('When an Enemy or DeathBlock collides left into mario', () => { 
             expect(mario.collision('left')).toBe('resetStartPos');
+        });
+        test('When an Enemy or DeathBlock collides left into mario 3 times and dies', () => { 
+            expect(mario.collision('left')).toBe('resetStartPos');
+            expect(mario.collision('left')).toBe('resetStartPos');
+            expect(mario.collision('left')).toBe('resetStartPos');
+            expect(mario.collision('left')).toBe('isDead');
         });
         test('When the Mario is collided from an invalid direction, throw an error', () => { 
             expect(() => mario.collision('bruh')).toThrowError('Invalid collision direction value');
+        });
+        test('When an Enemy or DeathBlock is collided with from various directions and mario dies', () => {
+            expect(mario.collision('down')).toBe('resetStartPos');
+            expect(mario.collision('up')).toBe('resetStartPos');
+            expect(mario.collision('right')).toBe('resetStartPos');
+            expect(mario.collision('left')).toBe('isDead');
         });
     })
 });
