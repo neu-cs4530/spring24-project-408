@@ -39,7 +39,7 @@ export abstract class Block extends GameObject {
   */
   export class DeathBlock extends Block {
     constructor(x: GameUnit, y: GameUnit){
-       super("isDead", x, y, 'D');
+       super("marioTakeDamage", x, y, 'D');
     }
   }
 

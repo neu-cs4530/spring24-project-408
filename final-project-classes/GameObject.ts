@@ -14,7 +14,7 @@ const BLOCK_WIDTH = 255; // This value can be changed depending on what's easier
 * @value revert indicates that the user has attempted to perfrom an impermissible action, and Mario
 * thus reverts back to his state and position prior to the attepted impermissible move.
 */
-export type CollisionState = "isDead" | "revert" | "isWinner" | "isPlaying" | "enemyDead";
+export type CollisionState = "isDead" | "revert" | "isWinner" | "isPlaying" | "enemyDead" | "marioTakeDamage" | "resetStartPos";
 
 /**
 * A GameUnit is a type that is a number in the game.

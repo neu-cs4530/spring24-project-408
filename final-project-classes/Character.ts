@@ -63,7 +63,7 @@ export class Goomba extends Enemy {
       return 'enemyDead';
     }
     else {
-      return 'isDead';
+      return 'marioTakeDamage';
     }
   }
 }
@@ -101,6 +101,7 @@ export class MainCharacter extends Character {
     this._rising = false;
     this._falling = false;
     this._currentRiseDuration = 0;
+    this._health = 3;
   }
 
   /**
@@ -188,6 +189,14 @@ export class MainCharacter extends Character {
         this._health = this._health - 1;
         return 'resetStartPos';
       }
+    }
+    else return 'isDead';
+  }
+
+  public takeDamage(): CollisionState {
+    if (this._health > 0) {
+      this._health = this._health - 1;
+      return 'resetStartPos';
     }
     else return 'isDead';
   }

@@ -23,7 +23,7 @@ export abstract class Level {
     _startingMarioPos: GameUnit[];
     _enemies: Character[];
     _score: number;
-    _collidableBlocks: {[direction: string] : Block | undefined} = {};
+    _collidableObjects: {[direction: string] : GameObject | undefined} = {};
     _gameState: CollisionState;
     _map: GameCell[][];
 
@@ -34,7 +34,7 @@ export abstract class Level {
         this._mario = mario;
         this._startingMarioPos = [this._mario.x, this._mario.y];
         this._score = 0;
-        this.fillCollidableBlocks();
+        this.fillCollidableObjects();
         this._gameState = "isPlaying";
     }
 
@@ -59,16 +59,16 @@ export abstract class Level {
      * Determines which blocks (if any) are in every direction of mario that he can collide with (up right left down)
      * and fill up the this._collidableBlocks with them
      */
-    public fillCollidableBlocks(): void {
+    public fillCollidableObjects(): void {
         const left: GameUnit = this._mario.x - 1;
         const right: GameUnit = this._mario.x + 1;
         const up: GameUnit = this._mario.y - 1;
         const down: GameUnit = this._mario.x + 1;
 
-        this._collidableBlocks["left"] = this._blocks.find(block => block.x === left && block.y === this._mario.y);
-        this._collidableBlocks["right"] = this._blocks.find(block => block.x === right && block.y === this._mario.y);
-        this._collidableBlocks["up"] = this._blocks.find(block => block.x === this._mario.x && block.y === up);
-        this._collidableBlocks["down"] = this._blocks.find(block => block.x === this._mario.x && block.y === down);
+        this._collidableObjects["left"] = this._map[this._mario.y][left];
+        this._collidableObjects["right"] = this._map[this._mario.y][right];
+        this._collidableObjects["up"] = this._map[up][this._mario.x];
+        this._collidableObjects["down"] = this._map[down][this._mario.x];
     }
 
     /**
