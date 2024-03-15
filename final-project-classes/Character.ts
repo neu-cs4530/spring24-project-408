@@ -145,13 +145,6 @@ export class MainCharacter extends Character {
     return this._falling;
   }
 
-  public set isAlive(newAlive: boolean) {
-    this._isAlive = newAlive;
-  }
-
-  public get isAlive() {
-    return this._isAlive;
-  }
 
   /**
   * Gets the current rise duration of the main charachter.
