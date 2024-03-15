@@ -1,6 +1,12 @@
 import { is } from "ramda";
 import { GameObject, GameUnit } from "./GameObject";
 
+/**
+* Character represents a character in the Mario game.
+* @param newX represents the x position of the character. 
+* @param newY represents the y position of the character. 
+* @param newGameLetter represents the letter used to display the character.
+*/
 export abstract class Character extends GameObject {
   _isAlive: boolean;
   _health: number;
@@ -48,6 +54,17 @@ export class Goomba extends Enemy {
   }
 }
 
+/**
+* MainCharacter represents the main Character of the game. This is Mario.
+* @param _x is the x value of the main charachter.
+* @param _y is the y value of the main character.
+* @param jumpSize represents how many blocks the main charachter rises before reaching the peak of the jump.
+* @param movementSpeed represents how many 'BlockSizes' the main character may move per tick. 
+* @param _rising represents whether or not the main character is rising. 
+* @param _falling represents whether or not the main character is falling. 
+* @param _isAlive represents whether or not the main character is alive in the game.
+* @param _currentRiseDuration represents how far the character is from the peak of a jump when jumping. 
+*/
 export class MainCharacter extends Character {
   _x: GameUnit;
 
@@ -72,42 +89,81 @@ export class MainCharacter extends Character {
     this._currentRiseDuration = 0;
   }
 
+  /**
+  * moveLeft is a method that moves the character left by 1 GameUnit
+  */
   public moveLeft(): void {
     this._x = this._x - 1;
   }
 
+  /**
+  * moveRight is a method that moves the charachter right by 1 GameUnit
+  */
   public moveRight(): void {
     this._x = this._x + 1;
   }
 
+  /**
+  * moveDown is a method that moves the charachter down by 1 GameUnit
+  */
   public moveDown(): void {
     this._y = this._y + 1;
   }
 
+  /**
+  * moveUp is a method that moves the charachter up by 1 GameUnit
+  */
   public moveUp(): void {
     this._y = this._y - 1;
   }
 
+ /**
+ * Sets the rising value for the main charcter.
+ */
   public set rising(newRising: boolean) {
     this._rising = newRising;
   }
 
+  /**
+  * Gets the rising value from the main character.
+  */
   public get rising() {
     return this._rising;
   }
 
+  /**
+  * Sets the falling value for the main character.
+  */
   public set falling(newFalling: boolean) {
     this._falling = newFalling;
   }
 
+  /**
+  * Gets the falling value for the main charachter.
+  */
   public get falling() {
     return this._falling;
   }
 
+  public set isAlive(newAlive: boolean) {
+    this._isAlive = newAlive;
+  }
+
+  public get isAlive() {
+    return this._isAlive;
+  }
+
+  /**
+  * Gets the current rise duration of the main charachter.
+  */
   public get currentRiseDuration() {
     return this._currentRiseDuration;
   }
 
+  /**
+  * incrementRiseDuration changes the value of currentRiseDuaration according to the jump being performed by
+  * the main character. 
+  */
   public incrementRiseDuration() {
     if (this._rising && this._currentRiseDuration < this.jumpSize) {
       this._currentRiseDuration = this._currentRiseDuration + 1;

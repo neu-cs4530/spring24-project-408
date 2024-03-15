@@ -1,9 +1,39 @@
 import { Console } from 'console';
-import {GameCell, Level, LevelOne, TestingLevel} from './Level';
+import { GameCell, Level, LevelOne } from './Level';
 import { Block, DeathBlock, PlatformBlock, CompletionBlock, CurrentState, PipeBlock } from "./Block";
 import { Character, MainCharacter } from "./Character";
 
 const logger = new Console(process.stdout, process.stderr);
+
+
+/**
+ * Class representing a fake level used for testing
+ */
+class TestingLevel extends Level {
+
+    constructor(mario: MainCharacter, map: GameCell[][]) {
+        super(mario, map);
+    }
+
+    /**
+     * Resets the level from the beginning, resetting the score to 0, the main character to his original position
+     * 
+     * @throws Error - Cannot restart level unless done playing the game if game stat is not 'isPlaying'
+     */
+    public restartLevel(): Level {
+        if (this._gameState !== 'isPlaying') {
+            this._map[this._mario._y][this._mario._x] = undefined;
+            this._map[this._startingMarioPos[1]][this._startingMarioPos[0]] = this._mario;
+
+            this._mario._x = this._startingMarioPos[0];
+            this._mario._y = this._startingMarioPos[1];
+
+            
+            return new TestingLevel(this._mario, this._map);
+        }
+        throw new Error('Cannot restart level unless done playing the game');
+    }
+}
 
 describe('Level Testing', () => { 
     
