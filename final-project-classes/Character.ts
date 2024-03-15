@@ -1,5 +1,5 @@
 import { is } from "ramda";
-import { GameObject, GameUnit } from "./GameObject";
+import { CollisionState, GameObject, GameUnit } from "./GameObject";
 
 /**
 * Character represents a character in the Mario game.
@@ -51,6 +51,20 @@ export class Goomba extends Enemy {
 
   public constructor(newX: GameUnit, newY: GameUnit) {
     super(newX, newY, 'G');
+  }
+
+  public collision(collisionFrom: string): CollisionState | undefined {
+    if ((collisionFrom !== "down") && (collisionFrom !== "up") && (collisionFrom !== "left") && (collisionFrom !== "right")) {
+      throw new Error("Invalid collision direction value");
+    }
+    else if (collisionFrom === 'down') {
+      this._health = this._health - 1;
+      this._isAlive = false;
+      return 'enemyDead';
+    }
+    else {
+      return 'isDead';
+    }
   }
 }
 
@@ -145,7 +159,6 @@ export class MainCharacter extends Character {
     return this._falling;
   }
 
-
   /**
   * Gets the current rise duration of the main charachter.
   */
@@ -162,4 +175,20 @@ export class MainCharacter extends Character {
       this._currentRiseDuration = this._currentRiseDuration + 1;
     } else this._currentRiseDuration = 0;
   };
+
+  public collision(collisionFrom: string): CollisionState | undefined {
+    if ((collisionFrom !== "down") && (collisionFrom !== "up") && (collisionFrom !== "left") && (collisionFrom !== "right")) {
+      throw new Error("Invalid collision direction value");
+    }
+    if (this._health > 0) {
+      if (collisionFrom === 'up') {
+        return 'enemyDead';
+      }
+      else {
+        this._health = this._health - 1;
+        return 'resetStartPos';
+      }
+    }
+    else return 'isDead';
+  }
 }

@@ -1,15 +1,4 @@
-import { GameObject, GameUnit } from "./GameObject"
-
-/**
-* A CurrentState is a type that represents a state of a Super Mario game.
-*
-* @value isDead indicates that Mario has died and the game has ended.
-* @value isWinner indicates that Mario has completed the level. The player has won, and the game has ended.
-* @value isPlaying indicates that Mario has not won or died, and the game is still in play. 
-* @value revert indicates that the user has attempted to perfrom an impermissible action, and Mario
-* thus reverts back to his state and position prior to the attepted impermissible move.
-*/
-export type CurrentState = "isDead" | "revert" | "isWinner" | "isPlaying";
+import { GameObject, GameUnit, CollisionState } from "./GameObject"
 
 /**
 * A Block represents a Block in the game.
@@ -19,10 +8,10 @@ export type CurrentState = "isDead" | "revert" | "isWinner" | "isPlaying";
 * @param _y represents the y position of a Block in the game.
 */
 export abstract class Block extends GameObject {
-    _collisionState: CurrentState;
+    _collisionState: CollisionState;
     _x: GameUnit;
     _y: GameUnit;
-    constructor(collisionState: CurrentState, x: GameUnit, y: GameUnit, newGameLetter: string) {
+    constructor(collisionState: CollisionState, x: GameUnit, y: GameUnit, newGameLetter: string) {
       super(x, y, newGameLetter) 
       this._collisionState = collisionState;  
     }
@@ -30,17 +19,16 @@ export abstract class Block extends GameObject {
     /**
     * collision -> Checks the current collision state of the game. This is our emit method. 
     * 
-    * @param x is the x position of a GameUnit.
-    * @param y is the y poisiton of a GameUnit.
-    * @return provides CurrentState of the game.
-    * else, returns undefined.
+    * @param collisionFrom is the direction from which the collision is coming from.
+    * @throws an error if the collisionFrom is not a valid direction.
+    * @returns the current collision state of the game.
     */
-    collision(x: GameUnit, y: GameUnit) : CurrentState | undefined {
-      if (this._x === x && this._y === y) {
-        return this._collisionState;
-      }
-      else return undefined;
+   public collision(collisionFrom: string): CollisionState | undefined {
+    if ((collisionFrom !== "down") && (collisionFrom !== "up") && (collisionFrom !== "left") && (collisionFrom !== "right")) {
+      throw new Error("Invalid collision direction value");
     }
+    return this._collisionState;
+   }
   }
 
   /**

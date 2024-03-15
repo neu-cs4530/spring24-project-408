@@ -1,4 +1,4 @@
-import { MainCharacter } from "./Character";
+import { MainCharacter, Goomba } from "./Character";
 //const mario = new MainCharacter(1, 3);
 describe('MainCharacter', () => {
     let mario: MainCharacter;
@@ -100,5 +100,40 @@ describe('MainCharacter', () => {
             expect(mario.currentRiseDuration).toBe(0);
         });
     });
+
+    describe('Collisions', () => { 
+        const mario = new MainCharacter(2,3);
+        const goomba = new Goomba(1, 2);
+        test('When the Goomba is collided from above (or down for mario) return enemy dead', () => {
+            expect(goomba.collision('down')).toBe('enemyDead');
+        });
+        test('When the Goomba is collided from below (or up for mario) return mario dead', () => {
+            expect(goomba.collision('up')).toBe('isDead');
+        });
+        test('When the Goomba is collided from the right (or left for mario) return mario dead', () => {
+            expect(goomba.collision('left')).toBe('isDead');
+        });
+        test('When the Goomba is collided from the left (or right for mario) return mario dead', () => {
+            expect(goomba.collision('right')).toBe('isDead');
+        });
+        test('When the Goomba is collided from an invalid direction, throw an error', () => {
+            expect(() => goomba.collision('bruh')).toThrowError('Invalid collision direction value');
+        });
+        test('When the Mario is collided from  above by another GameObject (or down for the GameObject), return mario dead', () => { 
+            expect(mario.collision('down')).toBe('isDead');
+        });
+        test('When the Mario is collided from below by another GameObject (or up for the GameObject), return enemy dead', () => { 
+            expect(mario.collision('up')).toBe('enemyDead');
+        });
+        test('When the Mario is collided from the left by another GameObject (or right for the GameObject), return mario dead', () => { 
+            expect(mario.collision('right')).toBe('isDead');
+        });
+        test('When the Mario is collided from the right by another GameObject (or left for the GameObject), return mario dead', () => { 
+            expect(mario.collision('left')).toBe('isDead');
+        });
+        test('When the Mario is collided from an invalid direction, throw an error', () => { 
+            expect(() => mario.collision('bruh')).toThrowError('Invalid collision direction value');
+        });
+    })
 });
 

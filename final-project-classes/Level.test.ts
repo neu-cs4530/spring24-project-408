@@ -1,7 +1,8 @@
 import { Console } from 'console';
 import { GameCell, Level, LevelOne } from './Level';
-import { Block, DeathBlock, PlatformBlock, CompletionBlock, CurrentState, PipeBlock } from "./Block";
+import { Block, DeathBlock, PlatformBlock, CompletionBlock, PipeBlock } from "./Block";
 import { Character, MainCharacter } from "./Character";
+import { CollisionState } from './GameObject';
 
 const logger = new Console(process.stdout, process.stderr);
 

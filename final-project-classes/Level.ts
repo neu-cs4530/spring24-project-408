@@ -1,5 +1,5 @@
-import { GameObject, GameUnit } from "./GameObject";
-import { Block, DeathBlock, PlatformBlock, CompletionBlock, CurrentState, PipeBlock } from "./Block";
+import { GameObject, GameUnit, CollisionState } from "./GameObject";
+import { Block, DeathBlock, PlatformBlock, CompletionBlock, PipeBlock } from "./Block";
 import { Character, MainCharacter } from "./Character";
 
 export const SCORE_MULTIPLIER = 100;
@@ -24,7 +24,7 @@ export abstract class Level {
     _enemies: Character[];
     _score: number;
     _collidableBlocks: {[direction: string] : Block | undefined} = {};
-    _gameState: CurrentState;
+    _gameState: CollisionState;
     _map: GameCell[][];
 
     constructor(mario: MainCharacter, map: GameCell[][]) {

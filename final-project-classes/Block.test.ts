@@ -106,37 +106,49 @@ describe('Block', () => {
         });
     });
     describe('Collision', () => {
-        test('collision returns isWinner', () => {
+        test('completion collision returns isWinner - all directions', () => {
             const completionBlock = new CompletionBlock(1, 1);
-            expect(completionBlock.collision(1, 1)).toBe('isWinner');
+            expect(completionBlock.collision('right')).toBe('isWinner');
+            expect(completionBlock.collision('up')).toBe('isWinner');
+            expect(completionBlock.collision('down')).toBe('isWinner');
+            expect(completionBlock.collision('left')).toBe('isWinner');
         });
-        test('collision returns isDead', () => {
+        test('death collision returns isDead - all directions', () => {
             const deathBlock = new DeathBlock(1, 1);
-            expect(deathBlock.collision(1, 1)).toBe('isDead');
+            expect(deathBlock.collision('right')).toBe('isDead');
+            expect(deathBlock.collision('left')).toBe('isDead');
+            expect(deathBlock.collision('up')).toBe('isDead');
+            expect(deathBlock.collision('down')).toBe('isDead');
         });
-        test('collision returns revert', () => {
+        test('platform collision returns revert - all directions', () => {
             const platformBlock = new PlatformBlock(1, 1);
-            expect(platformBlock.collision(1, 1)).toBe('revert');
+            expect(platformBlock.collision('right')).toBe('revert');
+            expect(platformBlock.collision('left')).toBe('revert');
+            expect(platformBlock.collision('up')).toBe('revert');
+            expect(platformBlock.collision('down')).toBe('revert');
         });
-        test('collision returns revert', () => {
+        test('pipe collision returns revert - all directions', () => {
             const pipeBlock = new PipeBlock(1, 1);
-            expect(pipeBlock.collision(1, 1)).toBe('revert');
+            expect(pipeBlock.collision('right')).toBe('revert');
+            expect(pipeBlock.collision('left')).toBe('revert');
+            expect(pipeBlock.collision('up')).toBe('revert');
+            expect(pipeBlock.collision('down')).toBe('revert');
         });
         test('collision returns undefined, completion', () => {
             const completionBlock = new CompletionBlock(1, 1);
-            expect(completionBlock.collision(1, 2)).toBe(undefined);
+            expect(() => completionBlock.collision('bruh')).toThrowError('Invalid collision direction value');
         });
-        test('collision returns undefined, death', () => {
+        test('collision from unknown direction throws error - death block', () => {
             const deathBlock = new DeathBlock(1, 1);
-            expect(deathBlock.collision(1, 2)).toBe(undefined);
+            expect(() => deathBlock.collision('bruh')).toThrowError('Invalid collision direction value');
         });
-        test('collision returns undefined, platform', () => {
+        test('collision from unknown direction throws error - platform block', () => {
             const platformBlock = new PlatformBlock(1, 1);
-            expect(platformBlock.collision(1, 2)).toBe(undefined);
+            expect(() => platformBlock.collision('bruh')).toThrowError('Invalid collision direction value');
         });
-        test('collision returns undefined, pipe', () => {
+        test('collision from unknown direction throws error - pipe block', () => {
             const pipeBlock = new PipeBlock(1, 1);
-            expect(pipeBlock.collision(1, 2)).toBe(undefined);
+            expect(() => pipeBlock.collision('bruh')).toThrowError('Invalid collision direction value');
         });
     });
 });
