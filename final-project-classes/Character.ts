@@ -1,8 +1,50 @@
+import { is } from "ramda";
 import { GameObject, GameUnit } from "./GameObject";
 
 export abstract class Character extends GameObject {
+  _isAlive: boolean;
+  _health: number;
+
   constructor(newX: GameUnit, newY: GameUnit, newGameLetter: string) {
     super(newX, newY, newGameLetter);
+    this._isAlive = true;
+    this._health = 1;
+  }
+
+  public set isAlive(newAlive: boolean) {
+    this._isAlive = newAlive;
+  }
+
+  public get isAlive() {
+    return this._isAlive;
+  }
+
+  public set health(newHealth: number) {
+    this._health = newHealth;
+  }
+
+  public get health() {
+    return this._health;
+  }
+}
+
+export abstract class Enemy extends Character {
+  _x: GameUnit;
+
+  _y: GameUnit;
+
+  public constructor(newX: GameUnit, newY: GameUnit, newGameLetter: string) {
+    super(newX, newY, newGameLetter);
+  }
+}
+
+export class Goomba extends Enemy {
+  _x: GameUnit;
+
+  _y: GameUnit;
+
+  public constructor(newX: GameUnit, newY: GameUnit) {
+    super(newX, newY, 'G');
   }
 }
 
@@ -19,8 +61,6 @@ export class MainCharacter extends Character {
 
   _falling: boolean;
 
-  _isAlive: boolean;
-
   _currentRiseDuration: number;
 
   public constructor(newX: GameUnit, newY: GameUnit) {
@@ -29,7 +69,6 @@ export class MainCharacter extends Character {
     this.movementSpeed = 1;
     this._rising = false;
     this._falling = false;
-    this._isAlive = true;
     this._currentRiseDuration = 0;
   }
 
@@ -63,14 +102,6 @@ export class MainCharacter extends Character {
 
   public get falling() {
     return this._falling;
-  }
-
-  public set isAlive(newAlive: boolean) {
-    this._isAlive = newAlive;
-  }
-
-  public get isAlive() {
-    return this._isAlive;
   }
 
   public get currentRiseDuration() {
