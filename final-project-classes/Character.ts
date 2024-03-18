@@ -86,9 +86,9 @@ export class MainCharacter extends Character {
 
   movementSpeed: GameUnit; // Moves this many 'BlockSizes' per tick, includes horizontal and vertical speeds
 
-  _rising: boolean;
+  _rising: boolean; //Is Mario rising?
 
-  _currentRiseDuration: number;
+  _currentRiseDuration: number; //How long Mario has been rising for
 
 
 
@@ -129,12 +129,18 @@ export class MainCharacter extends Character {
     this._y = this._y - 1;
   }
 
+  /**
+   * Signifies that Mario is rising, moves the character up, and increments his rise duration
+   */
   public jump(): void {
     this.rising = true;
     this.moveUp();
     this.incrementRiseDuration();
   }
 
+  /**
+   * Called when Mario reaches the peak of his jump - resets his rise duraction and signifies that he is not rising
+   */
   public stopRising() {
     this.rising = false;
     this._currentRiseDuration = 0;

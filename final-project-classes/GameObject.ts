@@ -17,7 +17,7 @@ const BLOCK_WIDTH = 255; // This value can be changed depending on what's easier
 export type CollisionState = "isDead" | "revert" | "isWinner" | "enemyDead" | "marioTakeDamage" | "resetStartPos"; //all possible collision states of a game object
 export type MarioCollisionState = 'resetStartPos' | 'isDead'; //states that mario.collision() produces
 export type EnemyCollisionState = 'enemyDead' | 'marioTakeDamage'; //states that goomba.collision() produces
-export type BlockCollisionState = 'revert' | "isWinner" | "marioTakeDamage";
+export type BlockCollisionState = 'revert' | "isWinner" | "marioTakeDamage"; //states that Block.collision() produces
 
 /**
 * A GameUnit is a type that is a number in the game.

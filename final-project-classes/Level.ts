@@ -39,55 +39,32 @@ export abstract class Level {
         this._gameState = "isPlaying";
     }
 
-        /**
-     * This method is called every 'tick' or second that the game is running and updates everything necessary
-     * - add specific updates we make here**
+    /**
+     * This method is called every second or 'tick' the game is running
+     * On every tick we want to:
+     * - see what 4 objects are surrounding Mario - these are his collidable objects
+     * - handle gravity - this means as long as Mario hasn't reached the peak of his jump, he will always be moving up and then down after (and collisions will be handled accordingly)
      */
-         public onTick(): void {
-            /**
-             * PSUEDO CODE:
-             * Populate collidableBlcoks 
-    
-                If Mario is Rising: 
-    
-                check rise duration with jump duration (set variable) 
-    
-                If rise duration === jump duration 
-    
-                Set rising === false 
-    
-                If rise duration < jump duration 
-    
-                Increase rise duration 
-    
-                Call mario.move up  
-    
-                Call collidableBlocks[up].collision(x,y) 
-    
-                Potentially pass in Mario.x + 1, Mario.y + 1 into collision, meaning before actually updating Mario’s position we check if the new position potentially collides with the block – if returns undefined, then call Mario.moveup 
-    
-                Else if mario is not rising: 
-    
-                Call mario.move down 
-    
-                Call collidableBlocks[down].collision(x,y)
-             */
-            //populate the 4 surrounding collidable objects of mario
-            if (this._gameState === 'isPlaying') {
-                this.fillCollidableObjects();
+    public onTick(): void {
+        //populate the 4 surrounding collidable objects of mario
+        if (this._gameState === 'isPlaying') {
+            this.fillCollidableObjects();
 
-                //Jump logic
-                if(this._mario.rising) {
-                    if (this._mario.currentRiseDuration === this._mario.jumpSize) {
-                        this._mario.stopRising();
-                    } else if (this._mario.currentRiseDuration < this._mario.jumpSize) {
-                        this.characterUp(); //FIX: add collision stuff, add incrementRiseDuration, if there is a collision rising should be set to false (HUGE)
-                    }
-                } else {
-                    this.characterDown(); //same thing, handle collision logic in there
+            //Jump logic
+            if(this._mario.rising) {
+                //If Mario has reached the peak of his jump, stop rising
+                if (this._mario.currentRiseDuration === this._mario.jumpSize) {
+                    this._mario.stopRising();
+                } else if (this._mario.currentRiseDuration < this._mario.jumpSize) {
+                    //Otherwise, continue moving up
+                    this.characterUp();
                 }
+            } else {
+                //Constant gravity
+                this.characterDown(); 
             }
         }
+    }
 
     /**
      * fillBlocks is a method that gets all of the 'Blocks' in a level and returns it as a list
@@ -231,7 +208,13 @@ export abstract class Level {
 
     
     /**
-     * 
+     * Using the 4 collidable objects around Mario, here we handle all the possible types of collisions that can happen.
+     * For 'revert', we largely keep Mario's position the same, except when Mario is moving up and collides with an object - then Mario stops rising
+     * For 'enemyDead', we remove the collided enemy from the map and list of enemies
+     * For 'marioTakeDamage', we let Mario decide whether he has enough hearts to continue. If Mario is out of hearts, we end the game for the player and otherwise, we restart Mario from the 
+     * beginning of the game with one less heart.
+     * For 'isWinner', we display the appropriate messages and the user's score
+     * Lastly, if there is no block in Mario's direction we will update his location accordingly.
      * @param colliderDir Direction the collider is moving towards
      * @param mario_x Mario's current x position
      * @param mario_y Mario's current y position
@@ -258,11 +241,11 @@ export abstract class Level {
                     }
                     break;
                 case 'marioTakeDamage':
-                    let marioCollisionState = this._mario.collision(colliderDir); //helperify this?
+                    let marioCollisionState = this._mario.collision(colliderDir); 
                     if (marioCollisionState === 'isDead') {
                         this.death();
                     } else {
-                        this.restartLevel(); //Fix restart level to differ between restarting a level when mario is dead, and when mario loses a heart (loseHeart method?)
+                        this.restartLevel();
                     }
                     break;
                 case 'isWinner':
@@ -275,6 +258,11 @@ export abstract class Level {
             }
     }
 
+    /**
+     * Abstracted method that moves Mario in the specified direction while ensuring the character doesn't move off the map
+     * @param characterDir Direction Mario is moving in
+     * @param borderCheck The boolean appropriate for Mario's direction to check if he is moving off the map.
+     */
     private characterMovement(characterDir: string, borderCheck: boolean) {
         const mario_x: GameUnit = this._mario.x;
         const mario_y: GameUnit = this._mario.y;
@@ -290,88 +278,48 @@ export abstract class Level {
      * Convenience method for moving the character up.
      * 
      * Checks if moving up is a valid move
-     * (Future) checks upward collision
+     * Checks upward collision
      * Moves the character up
      * updates the internal map representation to show mario's movement
      */
     private characterUp() {
         this.characterMovement('up', (this._mario.y - 1 > 0));
-        /*
-        const mario_x: GameUnit = this._mario.x;
-        const mario_y: GameUnit = this._mario.y;
-
-        if (mario_y - 1 > 0) {
-            this.handleEnemyandBlockCollisions("up", mario_x, mario_y);
-        }
-        else {
-            throw new Error('Mario Moved Out of Bounds - UP');
-        }*/
     }
 
     /**
      * Convenience method for moving the character right.
      * 
      * Checks if moving right is a valid move
-     * (Future) checks right collision
+     * Checks right collision
      * Moves the character right
      * updates the internal map representation to show mario's movement
      */
     private characterRight() {
         this.characterMovement('right', (this._mario.x + 1 < this._map[0].length));
-        /*
-        const mario_x: GameUnit = this._mario.x;
-        const mario_y: GameUnit = this._mario.y;
-
-        if (mario_x + 1 < this._map[0].length) {
-            this.handleEnemyandBlockCollisions('right', mario_x, mario_y);
-        }
-        else {
-            throw new Error('Mario Moved Out of Bounds - RIGHT');
-        }*/
     }
 
     /**
      * Convenience method for moving the character down.
      * 
      * Checks if moving down is a valid move
-     * (Future) checks downward collision
+     * Checks downward collision
      * Moves the character down
      * updates the internal map representation to show mario's movement
      */
     private characterDown() {
         this.characterMovement('down', (this._mario.y + 1 < this._map.length));
-        /*
-        const mario_x: GameUnit = this._mario.x;
-        const mario_y: GameUnit = this._mario.y;
-
-        if (mario_y + 1 < this._map.length) {
-            this.handleEnemyandBlockCollisions("down", mario_x, mario_y);
-        }
-        else {
-            throw new Error('Mario Moved Out of Bounds - DOWN');
-        }*/
     }
 
     /**
      * Convenience method for moving the character left.
      * 
      * Checks if moving left is a valid move
-     * (Future) checks leftward collision
+     * Checks leftward collision
      * Moves the character left
      * updates the internal map representation to show mario's movement
      */
     private characterLeft() {
         this.characterMovement('left', (this._mario.x - 1 > 0));
-        /*
-        const mario_x: GameUnit = this._mario.x;
-        const mario_y: GameUnit = this._mario.y;
-
-        if (mario_x - 1 > 0) {
-            this.handleEnemyandBlockCollisions("left", mario_x, mario_y);
-        }
-        else {
-            throw new Error('Mario Moved Out of Bounds - LEFT');
-        }*/
     }
 
     /**
@@ -385,7 +333,6 @@ export abstract class Level {
                 case 'up': {
                     if (this._collidableObjects['down']?.collision('down') === 'revert' && !this._mario.rising) {
                         this.characterUp();
-                        //incrementRD was here if the gamestate was playing
                     }
                     break;
                 }
@@ -437,6 +384,13 @@ export class LevelOne extends Level {
 
     /**
      * Resets the level from the beginning, resetting the score to 0, the main character to his original position
+     * 3 cases this method considers
+         * if isWin:
+         * - EVERYTHING is reset, health, startingPos, risingDuration, enemies and everything (create and pass in new mario object)
+         * if Die:
+         * -  EVERYTHING is reset, health, startingPos, risingDuration, enemies and everything (create and pass in new mario object)
+         * if Lose heart:
+         * - Everything resets, except for health
      * 
      * @throws Error - Cannot restart level unless done playing the game if game stat is not 'isPlaying'
      */
@@ -449,15 +403,5 @@ export class LevelOne extends Level {
             this.resetMarioPosition();
             return new LevelOne(this._mario);
         }
-        /**
-         * 3 cases we wanna consider we talking out the logc!
-         * 
-         * if isWin:
-         * - EVERYTHING is reset, health, startingPos, risingDuration, enemies and everything (create and pass in new mario object)
-         * if Die:
-         * -  EVERYTHING is reset, health, startingPos, risingDuration, enemies and everything (create and pass in new mario object)
-         * if Lose heart:
-         * - Everything resets, except for health
-         */
     }
 }  
