@@ -79,7 +79,7 @@ export abstract class Level {
                 //Jump logic
                 if(this._mario.rising) {
                     if (this._mario.currentRiseDuration === this._mario.jumpSize) {
-                        this._mario.rising = false;
+                        this._mario.stopRising();
                     } else if (this._mario.currentRiseDuration < this._mario.jumpSize) {
                         this.characterUp(); //FIX: add collision stuff, add incrementRiseDuration, if there is a collision rising should be set to false (HUGE)
                     }
@@ -163,6 +163,13 @@ export abstract class Level {
     }
 
     /**
+     * Resets Mario's position to its starting position in the game, ONLY called from restart level
+     */
+    public resetMarioPosition(): void {
+        this._mario.setPosition(this._startingMarioPos[0], this._startingMarioPos[1]);
+    }
+
+    /**
      * Updates the map object with Mario's new position and makes his old position undefined
      */
     private _updateMap(curX: GameUnit, curY: GameUnit): void {
@@ -231,7 +238,7 @@ export abstract class Level {
      */
     private handleEnemyandBlockCollisions(colliderDir: string, mario_x: GameUnit, mario_y: GameUnit) {
         const functionMap: {[direction: string] : () => void} = {
-            'up' : this._mario.moveUp,
+            'up' : this._mario.jump,
             'down' : this._mario.moveDown,
             'right' : this._mario.moveRight,
             'left' : this._mario.moveLeft,
@@ -242,7 +249,7 @@ export abstract class Level {
             switch(collState) {
                 case 'revert':
                     if (colliderDir === 'up') {
-                        this._mario.rising = false;
+                        this._mario.stopRising();
                     }
                     break;
                 case 'enemyDead':
@@ -376,9 +383,9 @@ export abstract class Level {
         if (this._gameState == 'isPlaying') {
             switch(key) {
                 case 'up': {
-                    this.characterUp();
-                    if (this._gameState === 'isPlaying') {
-                        this._mario.incrementRiseDuration();
+                    if (this._collidableObjects['down']?.collision('down') === 'revert' && !this._mario.rising) {
+                        this.characterUp();
+                        //incrementRD was here if the gamestate was playing
                     }
                     break;
                 }
@@ -417,7 +424,7 @@ export abstract class Level {
 export class LevelOne extends Level {
 
     constructor(mario: MainCharacter) {
-        super(new MainCharacter(0, 3), [
+        super(mario, [
             [undefined,                 undefined,                  undefined,                  undefined,                  undefined,              undefined,               undefined,                 undefined,                  undefined,                  undefined,                  undefined,                  undefined,                  undefined,                  new CompletionBlock(13, 0)],
             [undefined,                 undefined,                  undefined,                  undefined,                  undefined,              undefined,               undefined,                 undefined,                  undefined,                  undefined,                  undefined,                  undefined,                  undefined,                  new CompletionBlock(13, 1)],
             [undefined,                 undefined,                  undefined,                  new PipeBlock(3, 2),        undefined,              undefined,               undefined,                 undefined,                  new PlatformBlock(8, 2),    new PlatformBlock(9, 2),    undefined,                  undefined,                  undefined,                  new CompletionBlock(13, 2)],
@@ -434,9 +441,12 @@ export class LevelOne extends Level {
      * @throws Error - Cannot restart level unless done playing the game if game stat is not 'isPlaying'
      */
     public restartLevel(): Level {
+
         if (this._gameState !== 'isPlaying') {
-            this._mario._x = this._startingMarioPos[0];
-            this._mario._y = this._startingMarioPos[1];
+            const newMario = new MainCharacter(this._startingMarioPos[0], this._startingMarioPos[1]);
+            return new LevelOne(newMario);
+        } else {
+            this.resetMarioPosition();
             return new LevelOne(this._mario);
         }
         /**
@@ -449,6 +459,5 @@ export class LevelOne extends Level {
          * if Lose heart:
          * - Everything resets, except for health
          */
-        throw new Error('Cannot restart level unless done playing the game');
     }
 }  

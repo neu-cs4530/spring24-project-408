@@ -90,6 +90,8 @@ export class MainCharacter extends Character {
 
   _currentRiseDuration: number;
 
+
+
   public constructor(newX: GameUnit, newY: GameUnit) {
     super(newX, newY, 'M');
     this.jumpSize = 2;
@@ -125,6 +127,27 @@ export class MainCharacter extends Character {
   */
   public moveUp(): void {
     this._y = this._y - 1;
+  }
+
+  public jump(): void {
+    this.rising = true;
+    this.moveUp();
+    this.incrementRiseDuration();
+  }
+
+  public stopRising() {
+    this.rising = false;
+    this._currentRiseDuration = 0;
+  }
+
+  /**
+   * Resets this character's x and y fields to those passed in
+   * @param newX The desired x position
+   * @param newY The desired y position
+   */
+  public setPosition(newX: GameUnit, newY: GameUnit) {
+    this._x = newX;
+    this._y = newY;
   }
 
  /**
