@@ -1,4 +1,4 @@
-import { GameObject, GameUnit, CollisionState } from "./GameObject"
+import { GameObject, GameUnit, CollisionState, BlockCollisionState } from "./GameObject"
 
 /**
 * A Block represents a Block in the game.
@@ -8,10 +8,10 @@ import { GameObject, GameUnit, CollisionState } from "./GameObject"
 * @param _y represents the y position of a Block in the game.
 */
 export abstract class Block extends GameObject {
-    _collisionState: CollisionState;
+    _collisionState: BlockCollisionState;
     _x: GameUnit;
     _y: GameUnit;
-    constructor(collisionState: CollisionState, x: GameUnit, y: GameUnit, newGameLetter: string) {
+    constructor(collisionState: BlockCollisionState, x: GameUnit, y: GameUnit, newGameLetter: string) {
       super(x, y, newGameLetter) 
       this._collisionState = collisionState;  
     }
@@ -23,7 +23,7 @@ export abstract class Block extends GameObject {
     * @throws an error if the collisionFrom is not a valid direction.
     * @returns the current collision state of the game.
     */
-   public collision(colliderDir: string): CollisionState | undefined {
+   public collision(colliderDir: string): BlockCollisionState | undefined {
     if ((colliderDir !== "down") && (colliderDir !== "up") && (colliderDir !== "left") && (colliderDir !== "right")) {
       throw new Error("Invalid collision direction value");
     }

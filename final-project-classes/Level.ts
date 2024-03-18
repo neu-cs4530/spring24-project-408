@@ -1,9 +1,10 @@
 import { GameObject, GameUnit, CollisionState } from "./GameObject";
 import { Block, DeathBlock, PlatformBlock, CompletionBlock, PipeBlock } from "./Block";
-import { Character, MainCharacter } from "./Character";
+import { Character, Enemy, MainCharacter } from "./Character";
 
 export const SCORE_MULTIPLIER = 100;
 export type GameCell = GameObject | undefined;
+export type GameState = 'isPlaying' | 'isDead' | 'isWinner';
 
 /**
  * A Level is one level in the broader world of the Mario game.
@@ -21,10 +22,10 @@ export abstract class Level {
     _blocks: Block[];
     _mario: MainCharacter;
     _startingMarioPos: GameUnit[];
-    _enemies: Character[];
+    _enemies: Enemy[];
     _score: number;
     _collidableObjects: {[direction: string] : GameObject | undefined} = {};
-    _gameState: CollisionState;
+    _gameState: GameState;
     _map: GameCell[][];
 
     constructor(mario: MainCharacter, map: GameCell[][]) {
@@ -37,6 +38,56 @@ export abstract class Level {
         this.fillCollidableObjects();
         this._gameState = "isPlaying";
     }
+
+        /**
+     * This method is called every 'tick' or second that the game is running and updates everything necessary
+     * - add specific updates we make here**
+     */
+         public onTick(): void {
+            /**
+             * PSUEDO CODE:
+             * Populate collidableBlcoks 
+    
+                If Mario is Rising: 
+    
+                check rise duration with jump duration (set variable) 
+    
+                If rise duration === jump duration 
+    
+                Set rising === false 
+    
+                If rise duration < jump duration 
+    
+                Increase rise duration 
+    
+                Call mario.move up  
+    
+                Call collidableBlocks[up].collision(x,y) 
+    
+                Potentially pass in Mario.x + 1, Mario.y + 1 into collision, meaning before actually updating Mario’s position we check if the new position potentially collides with the block – if returns undefined, then call Mario.moveup 
+    
+                Else if mario is not rising: 
+    
+                Call mario.move down 
+    
+                Call collidableBlocks[down].collision(x,y)
+             */
+            //populate the 4 surrounding collidable objects of mario
+            if (this._gameState === 'isPlaying') {
+                this.fillCollidableObjects();
+
+                //Jump logic
+                if(this._mario.rising) {
+                    if (this._mario.currentRiseDuration === this._mario.jumpSize) {
+                        this._mario.rising = false;
+                    } else if (this._mario.currentRiseDuration < this._mario.jumpSize) {
+                        this.characterUp(); //FIX: add collision stuff, add incrementRiseDuration, if there is a collision rising should be set to false (HUGE)
+                    }
+                } else {
+                    this.characterDown(); //same thing, handle collision logic in there
+                }
+            }
+        }
 
     /**
      * fillBlocks is a method that gets all of the 'Blocks' in a level and returns it as a list
@@ -114,9 +165,9 @@ export abstract class Level {
     /**
      * Updates the map object with Mario's new position and makes his old position undefined
      */
-    public updateMap(curX: GameUnit, curY: GameUnit): void {
-        this._map[curX][curY] = undefined;
-        this._map[this._mario.x][this._mario.y] = this._mario
+    private _updateMap(curX: GameUnit, curY: GameUnit): void {
+        this._map[curY][curX] = undefined;
+        this._map[this._mario.y][this._mario.x] = this._mario
     }
 
     /**
@@ -132,8 +183,9 @@ export abstract class Level {
                 return;
             default:
                 this._gameState = 'isWinner';
-                console.log('WINNER WOOOO LEVEL COMPLETE!! its a me mario')
+                console.log('WINNER WOOOO LEVEL COMPLETE!! its a me mario');
                 console.log("Final score is: " + this._score.toString());
+                console.log("Press space to play again!");
         }
         return;
     }
@@ -152,6 +204,78 @@ export abstract class Level {
                 this._gameState = 'isDead';
                 console.log('YOU DIED');
                 console.log("Final score is: " + this._score.toString());
+                console.log("Press space to try again!");
+        }
+    }
+
+    /**
+     * Removes the enemy below Mario from the enemies list and from the map
+     * We use collidableObject['down'] object here as this method is only called when 
+     * Mario is above an enemy to kill it.
+     */
+    private killEnemy(): void {
+        if (this._collidableObjects['down']) {
+            const enemyX = this._collidableObjects['down'].x;
+            const enemyY = this._collidableObjects['down'].y;
+            this._enemies = this._enemies.filter(enemy => enemy.x !== enemyX && enemy.y !== enemyY);
+            this._map[enemyY][enemyX] = undefined;
+        }
+    }
+
+    
+    /**
+     * 
+     * @param colliderDir Direction the collider is moving towards
+     * @param mario_x Mario's current x position
+     * @param mario_y Mario's current y position
+     */
+    private handleEnemyandBlockCollisions(colliderDir: string, mario_x: GameUnit, mario_y: GameUnit) {
+        const functionMap: {[direction: string] : () => void} = {
+            'up' : this._mario.moveUp,
+            'down' : this._mario.moveDown,
+            'right' : this._mario.moveRight,
+            'left' : this._mario.moveLeft,
+        };
+
+
+        let collState = this._collidableObjects[colliderDir]?.collision(colliderDir);
+            switch(collState) {
+                case 'revert':
+                    if (colliderDir === 'up') {
+                        this._mario.rising = false;
+                    }
+                    break;
+                case 'enemyDead':
+                    if (colliderDir === 'down') {
+                        this.killEnemy();
+                    }
+                    break;
+                case 'marioTakeDamage':
+                    let marioCollisionState = this._mario.collision(colliderDir); //helperify this?
+                    if (marioCollisionState === 'isDead') {
+                        this.death();
+                    } else {
+                        this.restartLevel(); //Fix restart level to differ between restarting a level when mario is dead, and when mario loses a heart (loseHeart method?)
+                    }
+                    break;
+                case 'isWinner':
+                    this.winLevel();
+                    break;
+                default:
+                    functionMap[colliderDir]();
+                    this._updateMap(mario_x, mario_y);
+                    break;
+            }
+    }
+
+    private characterMovement(characterDir: string, borderCheck: boolean) {
+        const mario_x: GameUnit = this._mario.x;
+        const mario_y: GameUnit = this._mario.y;
+        if (borderCheck) {
+            this.handleEnemyandBlockCollisions(characterDir, mario_x, mario_y);
+        }
+        else {
+            throw new Error('Mario Moved Out of Bounds - ' + characterDir);
         }
     }
 
@@ -164,16 +288,17 @@ export abstract class Level {
      * updates the internal map representation to show mario's movement
      */
     private characterUp() {
+        this.characterMovement('up', (this._mario.y - 1 > 0));
+        /*
         const mario_x: GameUnit = this._mario.x;
         const mario_y: GameUnit = this._mario.y;
 
         if (mario_y - 1 > 0) {
-            this._mario.moveUp();
-            this.updateMap(mario_x, mario_y);
+            this.handleEnemyandBlockCollisions("up", mario_x, mario_y);
         }
         else {
             throw new Error('Mario Moved Out of Bounds - UP');
-        }
+        }*/
     }
 
     /**
@@ -185,17 +310,17 @@ export abstract class Level {
      * updates the internal map representation to show mario's movement
      */
     private characterRight() {
+        this.characterMovement('right', (this._mario.x + 1 < this._map[0].length));
+        /*
         const mario_x: GameUnit = this._mario.x;
         const mario_y: GameUnit = this._mario.y;
 
         if (mario_x + 1 < this._map[0].length) {
-            this._mario.moveRight();
-            this.updateMap(mario_x, mario_y);
-            this.updateScore();
+            this.handleEnemyandBlockCollisions('right', mario_x, mario_y);
         }
         else {
             throw new Error('Mario Moved Out of Bounds - RIGHT');
-        }
+        }*/
     }
 
     /**
@@ -207,16 +332,17 @@ export abstract class Level {
      * updates the internal map representation to show mario's movement
      */
     private characterDown() {
+        this.characterMovement('down', (this._mario.y + 1 < this._map.length));
+        /*
         const mario_x: GameUnit = this._mario.x;
         const mario_y: GameUnit = this._mario.y;
 
         if (mario_y + 1 < this._map.length) {
-            this._mario.moveDown();
-            this.updateMap(mario_x, mario_y);
+            this.handleEnemyandBlockCollisions("down", mario_x, mario_y);
         }
         else {
             throw new Error('Mario Moved Out of Bounds - DOWN');
-        }
+        }*/
     }
 
     /**
@@ -228,16 +354,17 @@ export abstract class Level {
      * updates the internal map representation to show mario's movement
      */
     private characterLeft() {
+        this.characterMovement('left', (this._mario.x - 1 > 0));
+        /*
         const mario_x: GameUnit = this._mario.x;
         const mario_y: GameUnit = this._mario.y;
 
         if (mario_x - 1 > 0) {
-            this._mario.moveLeft();
-            this.updateMap(mario_x, mario_y);
+            this.handleEnemyandBlockCollisions("left", mario_x, mario_y);
         }
         else {
             throw new Error('Mario Moved Out of Bounds - LEFT');
-        }
+        }*/
     }
 
     /**
@@ -250,6 +377,9 @@ export abstract class Level {
             switch(key) {
                 case 'up': {
                     this.characterUp();
+                    if (this._gameState === 'isPlaying') {
+                        this._mario.incrementRiseDuration();
+                    }
                     break;
                 }
                 case 'left': {
@@ -258,6 +388,7 @@ export abstract class Level {
                 }
                 case 'right': {
                     this.characterRight();
+                    this.updateScore();
                     break;
                 }
                 default: {
@@ -269,10 +400,13 @@ export abstract class Level {
         }
     }
 
+
+
     /**
      * Resets the level from the beginning, resetting the score to 0, the main character to his original position
      * 
      * @throws Error - Cannot restart level unless done playing the game if game stat is not 'isPlaying'
+     * maybe add a 'restarted' state? to keep track that this level is not playing but the one returned is
      */
     public abstract restartLevel(): Level;
 }
@@ -305,6 +439,16 @@ export class LevelOne extends Level {
             this._mario._y = this._startingMarioPos[1];
             return new LevelOne(this._mario);
         }
+        /**
+         * 3 cases we wanna consider we talking out the logc!
+         * 
+         * if isWin:
+         * - EVERYTHING is reset, health, startingPos, risingDuration, enemies and everything (create and pass in new mario object)
+         * if Die:
+         * -  EVERYTHING is reset, health, startingPos, risingDuration, enemies and everything (create and pass in new mario object)
+         * if Lose heart:
+         * - Everything resets, except for health
+         */
         throw new Error('Cannot restart level unless done playing the game');
     }
 }  

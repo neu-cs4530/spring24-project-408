@@ -1,5 +1,5 @@
 import { is } from "ramda";
-import { CollisionState, GameObject, GameUnit } from "./GameObject";
+import { CollisionState, GameObject, GameUnit, MarioCollisionState, EnemyCollisionState } from "./GameObject";
 
 /**
 * Character represents a character in the Mario game.
@@ -53,7 +53,7 @@ export class Goomba extends Enemy {
     super(newX, newY, 'G');
   }
 
-  public collision(colliderDir: string): CollisionState | undefined {
+  public collision(colliderDir: string): EnemyCollisionState {
     if ((colliderDir !== "down") && (colliderDir !== "up") && (colliderDir !== "left") && (colliderDir !== "right")) {
       throw new Error("Invalid collision direction value");
     }
@@ -88,8 +88,6 @@ export class MainCharacter extends Character {
 
   _rising: boolean;
 
-  _falling: boolean;
-
   _currentRiseDuration: number;
 
   public constructor(newX: GameUnit, newY: GameUnit) {
@@ -97,7 +95,6 @@ export class MainCharacter extends Character {
     this.jumpSize = 2;
     this.movementSpeed = 1;
     this._rising = false;
-    this._falling = false;
     this._currentRiseDuration = 0;
     this._health = 3;
   }
@@ -145,20 +142,6 @@ export class MainCharacter extends Character {
   }
 
   /**
-  * Sets the falling value for the main character.
-  */
-  public set falling(newFalling: boolean) {
-    this._falling = newFalling;
-  }
-
-  /**
-  * Gets the falling value for the main charachter.
-  */
-  public get falling() {
-    return this._falling;
-  }
-
-  /**
   * Gets the current rise duration of the main charachter.
   */
   public get currentRiseDuration() {
@@ -175,14 +158,14 @@ export class MainCharacter extends Character {
     } else this._currentRiseDuration = 0;
   };
 
-  public collision(colliderDir: string): CollisionState | undefined {
+  public collision(colliderDir: string): MarioCollisionState {
     if ((colliderDir !== "down") && (colliderDir !== "up") && (colliderDir !== "left") && (colliderDir !== "right")) {
       throw new Error("Invalid collision direction value");
     }
     return this._takeDamage();
   }
 
-  private _takeDamage(): CollisionState {
+  private _takeDamage(): MarioCollisionState {
     if (this._health > 0) {
       this._health = this._health - 1;
       return 'resetStartPos';
