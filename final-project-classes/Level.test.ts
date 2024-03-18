@@ -491,7 +491,7 @@ describe('Level Testing', () => {
             testLevel._gameState = "isDead";
             expect(testLevel._gameState).toBe("isDead");
             let testLevel2 = testLevel.restartLevel();
-            expect(testLevel2._mario.x).toBe(1);
+            expect(testLevel2._mario.x).toBe(1) ;
             expect(testLevel2._mario.y).toBe(2);
             expect(testLevel2._score).toBe(0);
             expect(testLevel2._gameState).toBe("isPlaying");
