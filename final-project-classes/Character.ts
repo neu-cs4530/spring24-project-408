@@ -58,6 +58,8 @@ export class Goomba extends Enemy {
       throw new Error("Invalid collision direction value");
     }
     else if (colliderDir === 'down') {
+      this._health = 0;
+      this._isAlive = false;
       return 'enemyDead';
     }
     else {
@@ -195,10 +197,13 @@ export class MainCharacter extends Character {
   }
 
   private _takeDamage(): MarioCollisionState {
+    this._health = this._health - 1;
     if (this._health > 0) {
-      this._health = this._health - 1;
       return 'resetStartPos';
     }
-    else return 'isDead';
+    else {
+      this._isAlive = false;
+      return 'isDead';
+    }
   }
 }

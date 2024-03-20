@@ -50,7 +50,7 @@ describe('Block', () => {
         });
         test('DeathBlock collisionState is isDead', () => {
             const deathBlock = new DeathBlock(1, 1);
-            expect(deathBlock._collisionState).toBe('isDead');
+            expect(deathBlock._collisionState).toBe('marioTakeDamage');
         });
     });
     describe('CompletionBlock', () => {
@@ -113,12 +113,12 @@ describe('Block', () => {
             expect(completionBlock.collision('down')).toBe('isWinner');
             expect(completionBlock.collision('left')).toBe('isWinner');
         });
-        test('death collision returns isDead - all directions', () => {
+        test('death collision returns marioTakeDamage - all directions', () => {
             const deathBlock = new DeathBlock(1, 1);
-            expect(deathBlock.collision('right')).toBe('isDead');
-            expect(deathBlock.collision('left')).toBe('isDead');
-            expect(deathBlock.collision('up')).toBe('isDead');
-            expect(deathBlock.collision('down')).toBe('isDead');
+            expect(deathBlock.collision('right')).toBe('marioTakeDamage');
+            expect(deathBlock.collision('left')).toBe('marioTakeDamage');
+            expect(deathBlock.collision('up')).toBe('marioTakeDamage');
+            expect(deathBlock.collision('down')).toBe('marioTakeDamage');
         });
         test('platform collision returns revert - all directions', () => {
             const platformBlock = new PlatformBlock(1, 1);
