@@ -1,6 +1,6 @@
 import { GameObject, GameUnit, CollisionState } from "./GameObject";
 import { Block, DeathBlock, PlatformBlock, CompletionBlock, PipeBlock } from "./Block";
-import { Character, Enemy, MainCharacter } from "./Character";
+import { Character, Enemy, Goomba, MainCharacter } from "./Character";
 
 export const SCORE_MULTIPLIER = 100;
 export type GameCell = GameObject | undefined;
@@ -30,13 +30,15 @@ export abstract class Level {
 
     constructor(mario: MainCharacter, map: GameCell[][]) {
         this._enemies = [];
+        this._gameState = "isPlaying";
         this._map = map;
         this._blocks = this.fillBlocks();
         this._mario = mario;
         this._startingMarioPos = [this._mario.x, this._mario.y];
         this._score = 0;
+        this.updateScore();
         this.fillCollidableObjects();
-        this._gameState = "isPlaying";
+        
     }
 
     /**
@@ -54,15 +56,21 @@ export abstract class Level {
             if(this._mario.rising) {
                 //If Mario has reached the peak of his jump, stop rising
                 if (this._mario.currentRiseDuration === this._mario.jumpSize) {
+                    console.log('mario has reached the peak of his jump, he is now falling');
                     this._mario.stopRising();
                 } else if (this._mario.currentRiseDuration < this._mario.jumpSize) {
                     //Otherwise, continue moving up
+                    console.log('mario hasnt reached the peak of his jump, he is still rising');
                     this.characterUp();
                 }
             } else {
                 //Constant gravity
                 this.characterDown(); 
+                console.log('gravity applied - mario moved down');
             }
+        }
+        else {
+            console.log("game is not currently playing");
         }
     }
 
@@ -91,7 +99,7 @@ export abstract class Level {
         const left: GameUnit = this._mario.x - 1;
         const right: GameUnit = this._mario.x + 1;
         const up: GameUnit = this._mario.y - 1;
-        const down: GameUnit = this._mario.x + 1;
+        const down: GameUnit = this._mario.y + 1;
 
         this._collidableObjects["left"] = (left >= 0) ? this._map[this._mario.y][left] : undefined;
         this._collidableObjects["right"] = (right < this._map[0].length) ? this._map[this._mario.y][right] : undefined;
@@ -220,11 +228,11 @@ export abstract class Level {
      * @param mario_y Mario's current y position
      */
     private handleEnemyandBlockCollisions(colliderDir: string, mario_x: GameUnit, mario_y: GameUnit) {
-        const functionMap: {[direction: string] : () => void} = {
-            'up' : this._mario.jump,
-            'down' : this._mario.moveDown,
-            'right' : this._mario.moveRight,
-            'left' : this._mario.moveLeft,
+        const functionMap: {[direction: string] : ()=> void} = {
+            'up' : () => this._mario.jump(),
+            'down' : () => this._mario.moveDown(),
+            'right' : () => this._mario.moveRight(),
+            'left' :  () => this._mario.moveLeft(),
         };
 
 
@@ -254,6 +262,7 @@ export abstract class Level {
                 default:
                     functionMap[colliderDir]();
                     this._updateMap(mario_x, mario_y);
+                    this.fillCollidableObjects();
                     break;
             }
     }
@@ -283,7 +292,7 @@ export abstract class Level {
      * updates the internal map representation to show mario's movement
      */
     private characterUp() {
-        this.characterMovement('up', (this._mario.y - 1 > 0));
+        this.characterMovement('up', (this._mario.y - 1 >= 0));
     }
 
     /**
@@ -319,7 +328,7 @@ export abstract class Level {
      * updates the internal map representation to show mario's movement
      */
     private characterLeft() {
-        this.characterMovement('left', (this._mario.x - 1 > 0));
+        this.characterMovement('left', (this._mario.x - 1 >= 0));
     }
 
     /**
@@ -375,7 +384,7 @@ export class LevelOne extends Level {
             [undefined,                 undefined,                  undefined,                  undefined,                  undefined,              undefined,               undefined,                 undefined,                  undefined,                  undefined,                  undefined,                  undefined,                  undefined,                  new CompletionBlock(13, 0)],
             [undefined,                 undefined,                  undefined,                  undefined,                  undefined,              undefined,               undefined,                 undefined,                  undefined,                  undefined,                  undefined,                  undefined,                  undefined,                  new CompletionBlock(13, 1)],
             [undefined,                 undefined,                  undefined,                  new PipeBlock(3, 2),        undefined,              undefined,               undefined,                 undefined,                  new PlatformBlock(8, 2),    new PlatformBlock(9, 2),    undefined,                  undefined,                  undefined,                  new CompletionBlock(13, 2)],
-            [mario,                     undefined,                  new PlatformBlock(2, 3),    new PlatformBlock(3, 3),    undefined,              undefined,               undefined,                 undefined,                  undefined,                  undefined,                  undefined,                  undefined,                  undefined,                  new CompletionBlock(13, 3)],
+            [mario,                     undefined,                  new PlatformBlock(2, 3),    new PlatformBlock(3, 3),    undefined,              undefined,               undefined,                 new Goomba(7,3),            undefined,                  undefined,                  undefined,                  undefined,                  undefined,                  new CompletionBlock(13, 3)],
             [new PlatformBlock(0, 4),   new PlatformBlock(1, 4),    new PlatformBlock(2, 4),    new PlatformBlock(3, 4),    undefined,              undefined,               new PlatformBlock(6, 4),   new PlatformBlock(7, 4),    new PlatformBlock(8, 4),    new PlatformBlock(9, 4),    new PlatformBlock(10, 4),   new PlatformBlock(11, 4),   new PlatformBlock(12, 4),   new CompletionBlock(13, 4)],
             [new PlatformBlock(0, 5),   new PlatformBlock(1, 5),    new PlatformBlock(2, 5),    new PlatformBlock(3, 5),    undefined,              undefined,               new PlatformBlock(6, 5),   new PlatformBlock(7, 5),    new PlatformBlock(8, 5),    new PlatformBlock(9, 5),    new PlatformBlock(10, 5),   new PlatformBlock(11, 5),   new PlatformBlock(12, 5),   new PlatformBlock(13, 5)],
             [new PlatformBlock(0, 6),   new PlatformBlock(1, 6),    new PlatformBlock(2, 6),    new PlatformBlock(3, 6),    new DeathBlock(4,6),    new DeathBlock(5,6),     new PlatformBlock(6, 6),   new PlatformBlock(7, 6),    new PlatformBlock(8, 6),    new PlatformBlock(9, 6),    new PlatformBlock(10, 6),   new PlatformBlock(11, 6),   new PlatformBlock(12, 6),   new PlatformBlock(13, 6)],
