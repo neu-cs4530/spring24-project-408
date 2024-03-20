@@ -53,6 +53,13 @@ export class Goomba extends Enemy {
     super(newX, newY, 'G');
   }
 
+  /**
+   * When a Goomba collides with Mario, it will kill Mario if the collision is from above, 
+   * and Mario will take damage if the collision is from the side.
+   * 
+   * @param colliderDir The direction from which the collision is coming
+   * @returns the collisionState of the game in response to the collision
+   */
   public collision(colliderDir: string): EnemyCollisionState {
     if ((colliderDir !== "down") && (colliderDir !== "up") && (colliderDir !== "left") && (colliderDir !== "right")) {
       throw new Error("Invalid collision direction value");
@@ -189,6 +196,14 @@ export class MainCharacter extends Character {
     } else this._currentRiseDuration = 0;
   };
 
+  /**
+   * When Mario collides with an enemy or a deathBlock, he will take damage.
+   * Mario will lose a health everytime he takes damage
+   * If Mario's health reaches 0, he will die and the game will end.
+   * 
+   * @param colliderDir The direction from which the collision is coming
+   * @returns the collisionState of the game in response to the collision
+   */
   public collision(colliderDir: string): MarioCollisionState {
     if ((colliderDir !== "down") && (colliderDir !== "up") && (colliderDir !== "left") && (colliderDir !== "right")) {
       throw new Error("Invalid collision direction value");
