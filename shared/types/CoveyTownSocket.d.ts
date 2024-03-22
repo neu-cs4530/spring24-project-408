@@ -110,6 +110,7 @@ export interface MarioGameState extends WinnableGameState {
   player?: PlayerID;
   moves: ReadonlyArray<MarioMove>;
   score: number;
+  health: 3;
 }
 
 /**
