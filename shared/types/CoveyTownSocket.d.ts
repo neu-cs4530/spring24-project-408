@@ -100,6 +100,24 @@ export interface GameMove<MoveType> {
 
 export type TicTacToeGridPosition = 0 | 1 | 2;
 
+export type MarioMovement = 'up' | 'left' | 'right';
+
+/**
+ * Type for the state of a Mario game
+ * The state of the game is represented as a list of moves, and the playerID of the player
+ */
+export interface MarioGameState extends WinnableGameState {
+  player: PlayerID;
+  moves: ReadonlyArray<MarioMove>;
+}
+
+/**
+ * Type for a move in Mario
+ */
+export interface MarioMove {
+  movementDir: MarioMovement;
+}
+
 /**
  * Type for a move in TicTacToe
  */

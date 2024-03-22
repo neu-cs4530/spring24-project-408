@@ -359,7 +359,7 @@ export abstract class Level {
                 }
             }
         } else if (key === 'space') {
-            this.restartLevel();
+            //const newLevel = this.restartLevel();
         }
     }
 
