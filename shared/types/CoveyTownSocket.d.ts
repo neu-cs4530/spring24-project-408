@@ -110,7 +110,7 @@ export interface MarioGameState extends WinnableGameState {
   player?: PlayerID;
   moves: ReadonlyArray<MarioMove>;
   score: number;
-  health: 3;
+  health?: number;
 }
 
 /**
@@ -236,7 +236,7 @@ interface InteractableCommandBase {
   type: string;
 }
 
-export type InteractableCommand =  ViewingAreaUpdateCommand | JoinGameCommand | GameMoveCommand<TicTacToeMove> | GameMoveCommand<ConnectFourMove> | StartGameCommand | LeaveGameCommand;
+export type InteractableCommand =  ViewingAreaUpdateCommand | JoinGameCommand | GameMoveCommand<TicTacToeMove> | GameMoveCommand<ConnectFourMove> | StartGameCommand | LeaveGameCommand | GameMoveCommand<MarioMove>;
 export interface ViewingAreaUpdateCommand  {
   type: 'ViewingAreaUpdate';
   update: ViewingArea;
