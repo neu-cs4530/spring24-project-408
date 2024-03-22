@@ -13,6 +13,7 @@ import {
   MarioGameState,
 } from '../../types/CoveyTownSocket';
 import GameArea from './GameArea';
+import MarioGame from './MarioGame';
 
 /**
  * The ConnectFourGameArea class is responsible for managing the state of a single game area for Connect Four.
@@ -82,9 +83,10 @@ export default class MarioGameArea extends GameArea<MarioGame> {
       if (this._game?.id !== command.gameID) {
         throw new InvalidParametersError(GAME_ID_MISSMATCH_MESSAGE);
       }
-      if (player.id !== game.player.id) {
+      if (player.id !== game.state.player) {
         throw new InvalidParametersError(PLAYER_NOT_IN_GAME_MESSAGE); // Maybe make a new error message? perhaps?
       }
+
       game.applyMove({
         gameID: command.gameID,
         playerID: player.id,

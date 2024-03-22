@@ -1,6 +1,8 @@
-import { GameObject, GameUnit, CollisionState } from "./GameObject";
+/* eslint-disable prettier/prettier */
+// eslint-disable-next-line max-classes-per-file
+import { GameObject, GameUnit } from "./GameObject";
 import { Block, DeathBlock, PlatformBlock, CompletionBlock, PipeBlock } from "./Block";
-import { Character, Enemy, Goomba, MainCharacter } from "./Character";
+import { Enemy, Goomba, MainCharacter } from "./Character";
 
 export const SCORE_MULTIPLIER = 100;
 export type GameCell = GameObject | undefined;
@@ -20,12 +22,19 @@ export type GameState = 'isPlaying' | 'isDead' | 'isWinner';
  */
 export abstract class Level {
     _blocks: Block[];
+
     _mario: MainCharacter;
+
     _startingMarioPos: GameUnit[];
+
     _enemies: Enemy[];
+
     _score: number;
+
     _collidableObjects: {[direction: string] : GameObject | undefined} = {};
+
     _gameState: GameState;
+
     _map: GameCell[][];
 
     constructor(mario: MainCharacter, map: GameCell[][]) {
@@ -48,24 +57,24 @@ export abstract class Level {
      * - handle gravity - this means as long as Mario hasn't reached the peak of his jump, he will always be moving up and then down after (and collisions will be handled accordingly)
      */
     public onTick(): void {
-        //populate the 4 surrounding collidable objects of mario
+        // populate the 4 surrounding collidable objects of mario
         if (this._gameState === 'isPlaying') {
             this.fillCollidableObjects();
 
-            //Jump logic
+            // Jump logic
             if(this._mario.rising) {
-                //If Mario has reached the peak of his jump, stop rising
+                // If Mario has reached the peak of his jump, stop rising
                 if (this._mario.currentRiseDuration === this._mario.jumpSize) {
                     console.log('mario has reached the peak of his jump, he is now falling');
                     this._mario.stopRising();
                 } else if (this._mario.currentRiseDuration < this._mario.jumpSize) {
-                    //Otherwise, continue moving up
+                    // Otherwise, continue moving up
                     console.log('mario hasnt reached the peak of his jump, he is still rising');
-                    this.characterUp();
+                    this._characterUp();
                 }
             } else {
-                //Constant gravity
-                this.characterDown(); 
+                // Constant gravity
+                this._characterDown(); 
                 console.log('gravity applied - mario moved down');
             }
         }
@@ -80,7 +89,7 @@ export abstract class Level {
      * @returns the list of Blocks in this level
      */
     public fillBlocks(): Block[] {
-        let ret: Block[] = [];
+        const ret: Block[] = [];
         for (const row of this._map) {
             const gameCellList: GameCell[] = row.filter(cell => cell instanceof Block);
             const blockList: Block[] = gameCellList.map(cell => cell as Block);
@@ -101,10 +110,10 @@ export abstract class Level {
         const up: GameUnit = this._mario.y - 1;
         const down: GameUnit = this._mario.y + 1;
 
-        this._collidableObjects["left"] = (left >= 0) ? this._map[this._mario.y][left] : undefined;
-        this._collidableObjects["right"] = (right < this._map[0].length) ? this._map[this._mario.y][right] : undefined;
-        this._collidableObjects["up"] = (up >= 0) ? this._map[up][this._mario.x] : undefined;
-        this._collidableObjects["down"] = (down < this._map.length) ? this._map[down][this._mario.x] : undefined;
+        this._collidableObjects.left = (left >= 0) ? this._map[this._mario.y][left] : undefined;
+        this._collidableObjects.right = (right < this._map[0].length) ? this._map[this._mario.y][right] : undefined;
+        this._collidableObjects.up = (up >= 0) ? this._map[up][this._mario.x] : undefined;
+        this._collidableObjects.down = (down < this._map.length) ? this._map[down][this._mario.x] : undefined;
     }
 
     /**
@@ -129,7 +138,7 @@ export abstract class Level {
      * @returns a string representing every GameObject in the level map
      */
     public toString(): string {
-        let ret: string = "";
+        let ret = "";
 
         for(const row of this._map) {
             for (const cell of row) {
@@ -176,10 +185,10 @@ export abstract class Level {
             default:
                 this._gameState = 'isWinner';
                 console.log('WINNER WOOOO LEVEL COMPLETE!! its a me mario');
-                console.log("Final score is: " + this._score.toString());
+                console.log(`Final score is: ${  this._score.toString()}`);
                 console.log("Press space to play again!");
         }
-        return;
+        
     }
 
     /**
@@ -195,7 +204,7 @@ export abstract class Level {
             default:
                 this._gameState = 'isDead';
                 console.log('YOU DIED');
-                console.log("Final score is: " + this._score.toString());
+                console.log(`Final score is: ${  this._score.toString()}`);
                 console.log("Press space to try again!");
         }
     }
@@ -205,10 +214,10 @@ export abstract class Level {
      * We use collidableObject['down'] object here as this method is only called when 
      * Mario is above an enemy to kill it.
      */
-    private killEnemy(): void {
-        if (this._collidableObjects['down']) {
-            const enemyX = this._collidableObjects['down'].x;
-            const enemyY = this._collidableObjects['down'].y;
+    private _killEnemy(): void {
+        if (this._collidableObjects.down) {
+            const enemyX = this._collidableObjects.down.x;
+            const enemyY = this._collidableObjects.down.y;
             this._enemies = this._enemies.filter(enemy => enemy.x !== enemyX && enemy.y !== enemyY);
             this._map[enemyY][enemyX] = undefined;
         }
@@ -227,7 +236,7 @@ export abstract class Level {
      * @param mario_x Mario's current x position
      * @param mario_y Mario's current y position
      */
-    private handleEnemyandBlockCollisions(colliderDir: string, mario_x: GameUnit, mario_y: GameUnit) {
+    private _handleEnemyandBlockCollisions(colliderDir: string, mario_x: GameUnit, mario_y: GameUnit) {
         const functionMap: {[direction: string] : ()=> void} = {
             'up' : () => this._mario.jump(),
             'down' : () => this._mario.moveDown(),
@@ -236,7 +245,7 @@ export abstract class Level {
         };
 
 
-        let collState = this._collidableObjects[colliderDir]?.collision(colliderDir);
+        const collState = this._collidableObjects[colliderDir]?.collision(colliderDir);
             switch(collState) {
                 case 'revert':
                     if (colliderDir === 'up') {
@@ -245,11 +254,12 @@ export abstract class Level {
                     break;
                 case 'enemyDead':
                     if (colliderDir === 'down') {
-                        this.killEnemy();
+                        this._killEnemy();
                     }
                     break;
                 case 'marioTakeDamage':
-                    let marioCollisionState = this._mario.collision(colliderDir); 
+                    // eslint-disable-next-line no-case-declarations
+                    const marioCollisionState = this._mario.collision(colliderDir); 
                     if (marioCollisionState === 'isDead') {
                         this.death();
                     } else {
@@ -272,14 +282,14 @@ export abstract class Level {
      * @param characterDir Direction Mario is moving in
      * @param borderCheck The boolean appropriate for Mario's direction to check if he is moving off the map.
      */
-    private characterMovement(characterDir: string, borderCheck: boolean) {
-        const mario_x: GameUnit = this._mario.x;
-        const mario_y: GameUnit = this._mario.y;
+    private _characterMovement(characterDir: string, borderCheck: boolean) {
+        const mariox: GameUnit = this._mario.x;
+        const marioy: GameUnit = this._mario.y;
         if (borderCheck) {
-            this.handleEnemyandBlockCollisions(characterDir, mario_x, mario_y);
+            this._handleEnemyandBlockCollisions(characterDir, mariox, marioy);
         }
         else {
-            throw new Error('Mario Moved Out of Bounds - ' + characterDir);
+            throw new Error(`Mario Moved Out of Bounds - ${  characterDir}`);
         }
     }
 
@@ -291,8 +301,8 @@ export abstract class Level {
      * Moves the character up
      * updates the internal map representation to show mario's movement
      */
-    private characterUp() {
-        this.characterMovement('up', (this._mario.y - 1 >= 0));
+    private _characterUp() {
+        this._characterMovement('up', (this._mario.y - 1 >= 0));
     }
 
     /**
@@ -303,8 +313,8 @@ export abstract class Level {
      * Moves the character right
      * updates the internal map representation to show mario's movement
      */
-    private characterRight() {
-        this.characterMovement('right', (this._mario.x + 1 < this._map[0].length));
+    private _characterRight() {
+        this._characterMovement('right', (this._mario.x + 1 < this._map[0].length));
     }
 
     /**
@@ -315,8 +325,8 @@ export abstract class Level {
      * Moves the character down
      * updates the internal map representation to show mario's movement
      */
-    private characterDown() {
-        this.characterMovement('down', (this._mario.y + 1 < this._map.length));
+    private _characterDown() {
+        this._characterMovement('down', (this._mario.y + 1 < this._map.length));
     }
 
     /**
@@ -327,8 +337,8 @@ export abstract class Level {
      * Moves the character left
      * updates the internal map representation to show mario's movement
      */
-    private characterLeft() {
-        this.characterMovement('left', (this._mario.x - 1 >= 0));
+    private _characterLeft() {
+        this._characterMovement('left', (this._mario.x - 1 >= 0));
     }
 
     /**
@@ -337,20 +347,20 @@ export abstract class Level {
      * if gameState is isDead - user can press 'space' to restart level
      */
     public keyPressed(key: string) {
-        if (this._gameState == 'isPlaying') {
+        if (this._gameState === 'isPlaying') {
             switch(key) {
                 case 'up': {
-                    if (this._collidableObjects['down']?.collision('down') === 'revert' && !this._mario.rising) {
-                        this.characterUp();
+                    if (this._collidableObjects.down?.collision('down') === 'revert' && !this._mario.rising) {
+                        this._characterUp();
                     }
                     break;
                 }
                 case 'left': {
-                    this.characterLeft();
+                    this._characterLeft();
                     break;
                 }
                 case 'right': {
-                    this.characterRight();
+                    this._characterRight();
                     this.updateScore();
                     break;
                 }
@@ -359,7 +369,7 @@ export abstract class Level {
                 }
             }
         } else if (key === 'space') {
-            //const newLevel = this.restartLevel();
+            // const newLevel = this.restartLevel();
         }
     }
 
@@ -408,9 +418,9 @@ export class LevelOne extends Level {
         if (this._gameState !== 'isPlaying') {
             const newMario = new MainCharacter(this._startingMarioPos[0], this._startingMarioPos[1]);
             return new LevelOne(newMario);
-        } else {
+        } 
             this.resetMarioPosition();
             return new LevelOne(this._mario);
-        }
+        
     }
 }  

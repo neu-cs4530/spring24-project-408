@@ -5,8 +5,8 @@
   "editor.formatOnSave": false,
   // Runs Prettier, then ESLint
   "editor.codeActionsOnSave": [
+    "source.fixAll.eslint",
     "source.formatDocument",
-    "source.fixAll.eslint"
   ],
   "eslint.workingDirectories": [
     "./frontend",
