@@ -17,7 +17,7 @@ export type TownJoinResponse = {
   interactables: TypedInteractable[];
 }
 
-export type InteractableType = 'ConversationArea' | 'ViewingArea' | 'TicTacToeArea' | 'ConnectFourArea';
+export type InteractableType = 'ConversationArea' | 'ViewingArea' | 'TicTacToeArea' | 'ConnectFourArea' | 'MarioArea';
 export interface Interactable {
   type: InteractableType;
   id: InteractableID;
@@ -107,8 +107,9 @@ export type MarioMovement = 'up' | 'left' | 'right';
  * The state of the game is represented as a list of moves, and the playerID of the player
  */
 export interface MarioGameState extends WinnableGameState {
-  player: PlayerID;
+  player?: PlayerID;
   moves: ReadonlyArray<MarioMove>;
+  score: number;
 }
 
 /**
