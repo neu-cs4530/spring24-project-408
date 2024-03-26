@@ -38,9 +38,9 @@ export abstract class Level {
     _map: GameCell[][];
 
     constructor(mario: MainCharacter, map: GameCell[][]) {
+        this._map = map;
         this._enemies = this.fillEnemies();
         this._gameState = "isPlaying";
-        this._map = map;
         this._blocks = this.fillBlocks();
         this._mario = mario;
         this._startingMarioPos = [this._mario.x, this._mario.y];
