@@ -235,10 +235,12 @@ export abstract class Level {
         if (this._collidableObjects.down) {
             const enemyX = this._collidableObjects.down.x;
             const enemyY = this._collidableObjects.down.y;
+
             const deadEnemy = this._enemies.find((enemy) => enemy.x === enemyX && enemy.y === enemyY);
             if (deadEnemy) {
                 deadEnemy.isAlive = false;
             }
+
             this._map[enemyY][enemyX] = undefined;
         }
     }
@@ -401,7 +403,7 @@ export abstract class Level {
      * @throws Error - Cannot restart level unless done playing the game if game stat is not 'isPlaying'
      * maybe add a 'restarted' state? to keep track that this level is not playing but the one returned is
      */
-    public abstract restartLevel(): Level;
+    public abstract restartLevel(): void;
 }
 
 /**
@@ -423,24 +425,11 @@ export class LevelOne extends Level {
 
     /**
      * Resets the level from the beginning, resetting the score to 0, the main character to his original position
-     * 3 cases this method considers
-         * if isWin:
-         * - EVERYTHING is reset, health, startingPos, risingDuration, enemies and everything (create and pass in new mario object)
-         * if Die:
-         * -  EVERYTHING is reset, health, startingPos, risingDuration, enemies and everything (create and pass in new mario object)
-         * if Lose heart:
-         * - Everything resets, except for health
-     * 
-     * @throws Error - Cannot restart level unless done playing the game if game stat is not 'isPlaying'
      */
-    public restartLevel(): Level {
-
-        if (this._gameState !== 'isPlaying') {
-            const newMario = new MainCharacter(this._startingMarioPos[0], this._startingMarioPos[1]);
-            return new LevelOne(newMario);
-        } 
-            this.resetMarioPosition();
-            return new LevelOne(this._mario);
-        
+    public restartLevel(): void {
+        this._map[this._mario.y][this._mario.x] = undefined
+        this.resetMarioPosition();
+        this._map[this._mario.y][this._mario.x] = this._mario
+        // Reset enemies here if desired
     }
 }  

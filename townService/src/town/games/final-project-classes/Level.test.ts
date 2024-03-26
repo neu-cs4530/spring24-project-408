@@ -65,7 +65,37 @@ describe('Level Testing', () => {
       const expectEnemies: Enemy[] = [testingGoomba];
       expect(testingGame._enemies).toEqual(expectEnemies);
     });
+
+    test('does level one work?', () => {
+      const testingLevelOneMario = new MainCharacter(0, 3);
+      const levelOne = new LevelOne(testingLevelOneMario);
+      const expectGoombas = [new Goomba(7, 3)];
+
+      expect(levelOne._enemies).toEqual(expectGoombas);
+    });
+
+    test('level with map of all Goombas', () => {
+      const testingMap: GameCell[][] = [
+        [new Goomba(0, 0), new Goomba(1, 0), new Goomba(2, 0)],
+        [testingGoomba, new Goomba(1, 1), new Goomba(2, 1)],
+        [new Goomba(0, 2), new Goomba(1, 2), new Goomba(2, 2)],
+      ];
+      const testingGame = new TestingLevel(testingMario, testingMap);
+      const expectEnemies: Enemy[] = [
+        new Goomba(0, 0),
+        new Goomba(1, 0),
+        new Goomba(2, 0),
+        testingGoomba,
+        new Goomba(1, 1),
+        new Goomba(2, 1),
+        new Goomba(0, 2),
+        new Goomba(1, 2),
+        new Goomba(2, 2),
+      ];
+      expect(testingGame._enemies).toEqual(expectEnemies);
+    });
   });
+
   describe('fillBlocks testing', () => {
     const testingMario = new MainCharacter(0, 1);
 
@@ -162,6 +192,8 @@ describe('Level Testing', () => {
         new PlatformBlock(12, 6),
         new PlatformBlock(13, 6),
       ];
+
+      expect(levelOne._blocks).toEqual(expectBlocks);
     });
   });
 

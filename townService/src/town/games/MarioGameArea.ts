@@ -11,6 +11,7 @@ import {
   InteractableCommandReturnType,
   InteractableType,
   MarioGameState,
+  MarioMove,
 } from '../../types/CoveyTownSocket';
 import GameArea from './GameArea';
 import MarioGame from './MarioGame';
@@ -86,12 +87,18 @@ export default class MarioGameArea extends GameArea<MarioGame> {
       if (player.id !== game.state.player) {
         throw new InvalidParametersError(PLAYER_NOT_IN_GAME_MESSAGE); // Maybe make a new error message? perhaps?
       }
+      if ('movementDir' in command.move) {
+        command.move = command.move as MarioMove;
+      }
 
-      game.applyMove({
-        gameID: command.gameID,
-        playerID: player.id,
-        move: command.move,
-      });
+      if (command.move instanceof MarioMove) {
+        game.applyMove({
+          gameID: command.gameID,
+          playerID: player.id,
+          move: command.move,
+        });
+      }
+
       this._stateUpdated(game.toModel());
       return undefined as InteractableCommandReturnType<CommandType>;
     }
