@@ -34,7 +34,19 @@ export default class MarioGame extends Game<MarioGameState, MarioMove> {
     const newMove = {
       movementDir: move.move.movementDir,
     };
+    this.state = {
+      ...this.state,
+      moves: [...this.state.moves, newMove],
+    };
     this._level.keyPressed(newMove.movementDir);
+    this.state.score = this._level._score;
+    if (this._level._gameState === 'isWinner') {
+      this.state.status = 'OVER';
+      this.state.winner = this.state.player;
+    }
+    if (this._level._gameState === 'isDead') {
+      this.state.status = 'OVER';
+    }
   }
 
   /**

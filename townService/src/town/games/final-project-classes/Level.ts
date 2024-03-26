@@ -38,7 +38,7 @@ export abstract class Level {
     _map: GameCell[][];
 
     constructor(mario: MainCharacter, map: GameCell[][]) {
-        this._enemies = [];
+        this._enemies = this.fillEnemies();
         this._gameState = "isPlaying";
         this._map = map;
         this._blocks = this.fillBlocks();
@@ -95,6 +95,23 @@ export abstract class Level {
             const blockList: Block[] = gameCellList.map(cell => cell as Block);
 
             ret.push(...blockList);   
+        }
+
+        return ret;
+    }
+
+     /**
+     * fillEnemies is a method that gets all of the 'Enemies' in a level and returns it as a list
+     * 
+     * @returns the list of Enemy in this level
+     */
+    public fillEnemies(): Enemy[] {
+        const ret: Enemy[] = [];
+        for (const row of this._map) {
+            const gameCellList: GameCell[] = row.filter(cell => cell instanceof Enemy);
+            const enemyList: Enemy[] = gameCellList.map(cell => cell as Enemy);
+
+            ret.push(...enemyList);   
         }
 
         return ret;
@@ -218,7 +235,10 @@ export abstract class Level {
         if (this._collidableObjects.down) {
             const enemyX = this._collidableObjects.down.x;
             const enemyY = this._collidableObjects.down.y;
-            this._enemies = this._enemies.filter(enemy => enemy.x !== enemyX && enemy.y !== enemyY);
+            const deadEnemy = this._enemies.find((enemy) => enemy.x === enemyX && enemy.y === enemyY);
+            if (deadEnemy) {
+                deadEnemy.isAlive = false;
+            }
             this._map[enemyY][enemyX] = undefined;
         }
     }

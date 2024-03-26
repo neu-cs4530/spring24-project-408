@@ -1,7 +1,7 @@
 import { Console } from 'console';
 import { GameCell, Level, LevelOne } from './Level';
 import { Block, DeathBlock, PlatformBlock, CompletionBlock, PipeBlock } from './Block';
-import { Character, Goomba, MainCharacter } from './Character';
+import { Character, Enemy, Goomba, MainCharacter } from './Character';
 import { CollisionState } from './GameObject';
 
 const logger = new Console(process.stdout, process.stderr);
@@ -32,6 +32,40 @@ class TestingLevel extends Level {
 }
 
 describe('Level Testing', () => {
+  describe('fillEnemies testing', () => {
+    const testingGoomba = new Goomba(0, 1);
+    const testingMario = new MainCharacter(0, 2);
+    test('no enemies, just mario - mario should not be added to the list of enemies', () => {
+      const testingMap: GameCell[][] = [
+        [undefined, undefined, undefined],
+        [undefined, undefined, undefined],
+        [testingMario, undefined, undefined],
+      ];
+      const testingGame = new TestingLevel(testingMario, testingMap);
+      const expectEnemies: Enemy[] = [];
+      expect(testingGame._enemies).toEqual(expectEnemies);
+    });
+    test('empty map - nothing in it, the enemy list should be empty', () => {
+      const testingMap: GameCell[][] = [
+        [undefined, undefined, undefined],
+        [undefined, undefined, undefined],
+        [undefined, undefined, undefined],
+      ];
+      const testingGame = new TestingLevel(testingMario, testingMap);
+      const expectEnemies: Enemy[] = [];
+      expect(testingGame._enemies).toEqual(expectEnemies);
+    });
+    test('level with one Goomba', () => {
+      const testingMap: GameCell[][] = [
+        [undefined, undefined, undefined],
+        [testingGoomba, undefined, undefined],
+        [undefined, undefined, undefined],
+      ];
+      const testingGame = new TestingLevel(testingMario, testingMap);
+      const expectEnemies: Enemy[] = [testingGoomba];
+      expect(testingGame._enemies).toEqual(expectEnemies);
+    });
+  });
   describe('fillBlocks testing', () => {
     const testingMario = new MainCharacter(0, 1);
 
