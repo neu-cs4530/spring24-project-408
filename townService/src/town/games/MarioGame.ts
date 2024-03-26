@@ -78,7 +78,7 @@ export default class MarioGame extends Game<MarioGameState, MarioMove> {
    * if the game is over, the game status is not changed
    *
    * @throws InvalidParametersError if the player is not in the game
-   * @throws error if the game status is not 'WAITING_FOR_PLAYERS' or 'IN_PROGRESS' or 'OVER'
+   * @throws error if the game status is not 'IN_PROGRESS' or 'OVER'
    * @param player player id of the player to leave the game
    * @returns void
    */
