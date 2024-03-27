@@ -100,7 +100,7 @@ export interface GameMove<MoveType> {
 
 export type TicTacToeGridPosition = 0 | 1 | 2;
 
-export type MarioMovement = 'up' | 'left' | 'right';
+export type MarioDirection = -1 | 0 | 1;
 
 /**
  * Type for the state of a Mario game
@@ -117,7 +117,9 @@ export interface MarioGameState extends WinnableGameState {
  * Type for a move in Mario
  */
 export interface MarioMove {
-  movementDir: MarioMovement;
+  gamePiece: 'Mario';
+  row: MarioDirection;
+  col: MarioDirection;
 }
 
 /**

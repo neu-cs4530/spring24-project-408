@@ -91,7 +91,7 @@ export default class MarioGameArea extends GameArea<MarioGame> {
         command.move = command.move as MarioMove;
       }
 
-      if (command.move instanceof MarioMove) {
+      if (command.move.gamePiece === 'Mario') {
         game.applyMove({
           gameID: command.gameID,
           playerID: player.id,

@@ -31,14 +31,19 @@ export default class MarioGame extends Game<MarioGameState, MarioMove> {
     if (this.state.player !== move.playerID) {
       throw new InvalidParametersError(PLAYER_NOT_IN_GAME_MESSAGE);
     }
-    const newMove = {
-      movementDir: move.move.movementDir,
+    const newMove : MarioMove  = {
+      gamePiece: move.move.gamePiece,
+      row: move.move.row,
+      col: move.move.col,
     };
+
     this.state = {
       ...this.state,
       moves: [...this.state.moves, newMove],
     };
-    this._level.keyPressed(newMove.movementDir);
+
+    const direction: string = this._convertToDirection(newMove);
+    this._level.keyPressed(direction);
     this.state.score = this._level._score;
     if (this._level._gameState === 'isWinner') {
       this.state.status = 'OVER';
@@ -46,6 +51,18 @@ export default class MarioGame extends Game<MarioGameState, MarioMove> {
     }
     if (this._level._gameState === 'isDead') {
       this.state.status = 'OVER';
+    }
+  }
+
+  private _convertToDirection(move: MarioMove): string {
+    if (move.row === 1 && move.col === 0) {
+      return 'up';
+    } else if (move.row === 0 && move.col === 1) {
+      return 'right';
+    } else if (move.row === 0 && move.col === -1) {
+      return 'left';
+    } else {
+      throw new Error('INVALID MOVEMENT');
     }
   }
 
