@@ -93,7 +93,7 @@ export class MainCharacter extends Character {
 
   public constructor(newX: GameUnit, newY: GameUnit) {
     super(newX, newY, 'M');
-    this.jumpSize = 2;
+    this.jumpSize = 1;
     this.movementSpeed = 1;
     this._rising = false;
     this._currentRiseDuration = 0;

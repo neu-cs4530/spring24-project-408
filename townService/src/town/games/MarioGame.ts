@@ -31,7 +31,7 @@ export default class MarioGame extends Game<MarioGameState, MarioMove> {
     if (this.state.player !== move.playerID) {
       throw new InvalidParametersError(PLAYER_NOT_IN_GAME_MESSAGE);
     }
-    const newMove : MarioMove  = {
+    const newMove: MarioMove = {
       gamePiece: move.move.gamePiece,
       row: move.move.row,
       col: move.move.col,
@@ -57,13 +57,14 @@ export default class MarioGame extends Game<MarioGameState, MarioMove> {
   private _convertToDirection(move: MarioMove): string {
     if (move.row === 1 && move.col === 0) {
       return 'up';
-    } else if (move.row === 0 && move.col === 1) {
-      return 'right';
-    } else if (move.row === 0 && move.col === -1) {
-      return 'left';
-    } else {
-      throw new Error('INVALID MOVEMENT');
     }
+    if (move.row === 0 && move.col === 1) {
+      return 'right';
+    }
+    if (move.row === 0 && move.col === -1) {
+      return 'left';
+    }
+    throw new Error('INVALID MOVEMENT');
   }
 
   /**
