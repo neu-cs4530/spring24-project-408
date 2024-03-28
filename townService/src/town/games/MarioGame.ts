@@ -19,7 +19,6 @@ export default class MarioGame extends Game<MarioGameState, MarioMove> {
       status: 'WAITING_FOR_PLAYERS',
       player: priorGame?.state.player,
       score: 0,
-      health: priorGame?.state.health === 0 ? 3 : priorGame?.state.health,
     });
     this._level = new LevelOne(new MainCharacter(0, 3));
   }
@@ -48,9 +47,9 @@ export default class MarioGame extends Game<MarioGameState, MarioMove> {
     if (this._level._gameState === 'isWinner') {
       this.state.status = 'OVER';
       this.state.winner = this.state.player;
-    }
-    if (this._level._gameState === 'isDead') {
+    } else if (this._level._gameState === 'isDead') {
       this.state.status = 'OVER';
+      this.state.winner = undefined;
     }
   }
 
@@ -107,7 +106,6 @@ export default class MarioGame extends Game<MarioGameState, MarioMove> {
     this.state = {
       ...this.state,
       player: undefined,
-      health: 3,
     };
     switch (this.state.status) {
       case 'IN_PROGRESS':
