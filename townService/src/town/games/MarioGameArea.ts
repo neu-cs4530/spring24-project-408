@@ -33,10 +33,10 @@ export default class MarioGameArea extends GameArea<MarioGame> {
       // If we haven't yet recorded the outcome, do so now.
       const gameID = this._game?.id;
       if (gameID && !this._history.find(eachResult => eachResult.gameID === gameID)) {
-        const { player } = updatedState.state;
-        if (player) {
+        const { winner } = updatedState.state;
+        if (winner) {
           const playerName =
-            this._occupants.find(eachPlayer => eachPlayer.id === player)?.userName || player;
+            this._occupants.find(eachPlayer => eachPlayer.id === winner)?.userName || winner;
           this._history.push({
             gameID,
             scores: {
@@ -125,6 +125,7 @@ export default class MarioGameArea extends GameArea<MarioGame> {
       this._stateUpdated(game.toModel());
       return undefined as InteractableCommandReturnType<CommandType>;
     }
+
     throw new InvalidParametersError(INVALID_COMMAND_MESSAGE);
   }
 }
