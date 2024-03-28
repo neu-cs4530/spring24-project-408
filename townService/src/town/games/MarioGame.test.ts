@@ -261,6 +261,7 @@ describe('MarioGame', () => {
         game.applyMove({ gameID: game.id, playerID: game.state.player, move: rightMove });
         expect(game._level._mario._health).toBe(0);
         expect(game.state.status).toBe('OVER');
+        expect(game.state.score).toBe(0);
       }
     });
   });

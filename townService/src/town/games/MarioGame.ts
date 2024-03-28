@@ -50,6 +50,7 @@ export default class MarioGame extends Game<MarioGameState, MarioMove> {
     } else if (this._level._gameState === 'isDead') {
       this.state.status = 'OVER';
       this.state.winner = undefined;
+      this.state.score = 0;
     }
   }
 
