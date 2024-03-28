@@ -152,6 +152,7 @@ describe('MarioGame', () => {
         game.applyMove({ gameID: game.id, playerID: game.state.player, move: rightMove });
         expect(game.state.status).toBe('IN_PROGRESS');
         expect(game._level._mario._health).toBe(2);
+        expect(game.state.score).toBe(0);
         expect(game._level._mario._x).toBe(game._level._startingMarioPos[0]);
         expect(game._level._mario._y).toBe(game._level._startingMarioPos[1]);
       }
@@ -177,6 +178,7 @@ describe('MarioGame', () => {
         game._level.onTick();
         expect(game.state.status).toBe('IN_PROGRESS');
         expect(game._level._mario._health).toBe(2);
+        // expect(game.state.score).toBe(0); this wont work because the restart is handled by onTick which isn't called in MarioGame
         expect(game._level._mario._x).toBe(game._level._startingMarioPos[0]);
         expect(game._level._mario._y).toBe(game._level._startingMarioPos[1]);
       }

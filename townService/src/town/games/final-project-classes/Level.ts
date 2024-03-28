@@ -384,7 +384,7 @@ export abstract class Level {
                 }
                 case 'right': {
                     this._characterRight();
-                    //this.updateScore();
+                    // this.updateScore();
                     break;
                 }
                 default: {
@@ -430,7 +430,8 @@ export class LevelOne extends Level {
     public restartLevel(): void {
         this._map[this._mario.y][this._mario.x] = undefined
         this.resetMarioPosition();
-        this._map[this._mario.y][this._mario.x] = this._mario
+        this._map[this._mario.y][this._mario.x] = this._mario;
+        this._score = 0;
         // Reset enemies here if desired
     }
 }  
