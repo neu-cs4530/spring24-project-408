@@ -2,7 +2,7 @@ import { MainCharacter } from "../../../../townService/src/town/games/final-proj
 import { GameArea, GameStatus, MarioDirection, MarioGameState, MarioMove } from "../../types/CoveyTownSocket";
 import PlayerController from "../PlayerController";
 import GameAreaController, { GameEventTypes, NO_GAME_IN_PROGRESS_ERROR, PLAYER_NOT_IN_GAME_ERROR } from "./GameAreaController";
-import { Level, LevelOne } from "/Users/devanshishah/Downloads/cs4530/final project/spring24-project-408/townService/src/town/games/final-project-classes/Level";
+import { Level, LevelOne } from "/Users/kevinandrews/Desktop/Northeastern/Final Year/Software Engineering/FinalProject/spring24-project-408/townService/src/town/games/final-project-classes/Level";
 import _ from 'lodash';
 
 export type MarioEvents = GameEventTypes & {
