@@ -5,6 +5,7 @@ import { Block, DeathBlock, PlatformBlock, CompletionBlock, PipeBlock } from "./
 import { Enemy, Goomba, MainCharacter } from "./Character";
 
 export const SCORE_MULTIPLIER = 100;
+export const TIME_MULTIPLIER = 0.05;
 export type GameCell = GameObject | undefined;
 export type GameState = 'isPlaying' | 'isDead' | 'isWinner';
 
@@ -37,6 +38,10 @@ export abstract class Level {
 
     _map: GameCell[][];
 
+    _ticksCompleted: number;
+
+    _maxDistance: number;
+
     constructor(mario: MainCharacter, map: GameCell[][]) {
         this._map = map;
         this._enemies = this.fillEnemies();
@@ -45,6 +50,8 @@ export abstract class Level {
         this._mario = mario;
         this._startingMarioPos = [this._mario.x, this._mario.y];
         this._score = 0;
+        this._maxDistance = 0;
+        this._ticksCompleted = 0;
         this.updateScore();
         this.fillCollidableObjects();
         
@@ -59,6 +66,8 @@ export abstract class Level {
     public onTick(): void {
         // populate the 4 surrounding collidable objects of mario
         if (this._gameState === 'isPlaying') {
+            this._ticksCompleted = this._ticksCompleted + 1;
+            this.updateScore();
             this.fillCollidableObjects();
 
             // Jump logic
@@ -144,9 +153,17 @@ export abstract class Level {
             throw new Error('Cannot update score unless playing the game');
         }
 
-        if(this._mario.x * SCORE_MULTIPLIER > this._score) {
-            this._score = this._mario.x * SCORE_MULTIPLIER
+        if(this._mario.x > this._maxDistance) {
+            this._maxDistance = this._mario.x;
         }
+
+        //because we are now updating the score every tick, we remove the max score conditional
+        //updateScore is now called from handleEnemyandBlockCollisions and onTick
+        this._score = Math.round((this._maxDistance * SCORE_MULTIPLIER) / (1 + (this._ticksCompleted * TIME_MULTIPLIER)));
+        /*
+        if(this._mario.x * SCORE_MULTIPLIER > this._score) {
+            this._score = (this._mario.x * SCORE_MULTIPLIER) / 1 + (this._ticksCompleted * TIME_MULTIPLIER);
+        }*/
     }
 
     /**

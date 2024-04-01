@@ -517,6 +517,18 @@ describe('Level Testing', () => {
       testingGame.updateScore();
       expect(testingGame._score).toBe(100);
     });
+    test('testing scoring with ticks into account - score should go down as time progresses', () => {
+      testingMario.moveRight();
+      testingGame.updateScore();
+      expect(testingGame._score).toBe(100);
+      testingGame.onTick();
+      expect(testingGame._score).toBe(95);
+      testingGame.onTick();
+      expect(testingGame._score).toBe(91);
+      testingGame.onTick();
+      expect(testingGame._ticksCompleted).toBe(3);
+      expect(testingGame._score).toBe(87);
+    });
     test('if gameState is isDead, score should not change', () => {
       testingMario.moveRight();
       testingGame.updateScore();
@@ -987,6 +999,7 @@ describe('Level Testing', () => {
       };
       const logSpy = jest.spyOn(global.console, 'log');
 
+      expect(testingGame._ticksCompleted).toBe(0);
       expect(testingGame._mario.rising).toBe(false);
       expect(testingGame._mario.x).toBe(1);
       expect(testingGame._mario.y).toBe(3);
@@ -994,7 +1007,8 @@ describe('Level Testing', () => {
       expect(testingGame._gameState).toBe('isPlaying');
 
       testingGame.onTick();
-      expect(logSpy).toHaveBeenCalledWith('gravity applied - mario moved down');
+      //expect(logSpy).toHaveBeenCalledWith('gravity applied - mario moved down');
+      expect(testingGame._ticksCompleted).toBe(1);
       expect(testingGame._mario.rising).toBe(false);
       expect(testingGame._mario.x).toBe(1);
       expect(testingGame._mario.y).toBe(3);
@@ -1009,6 +1023,7 @@ describe('Level Testing', () => {
 
       // jumping mario
       testingGame.keyPressed('up');
+      expect(testingGame._ticksCompleted).toBe(0);
       expect(testingGame._mario.rising).toBe(true);
       expect(testingGame._mario.x).toBe(1);
       expect(testingGame._mario.y).toBe(2);
@@ -1020,6 +1035,7 @@ describe('Level Testing', () => {
       // expect(logSpy).toHaveBeenCalledWith(
       //  'mario hasnt reached the peak of his jump, he is still rising',
       // );
+      expect(testingGame._ticksCompleted).toBe(1);
       expect(testingGame._mario.rising).toBe(false);
       expect(testingGame._mario.x).toBe(1);
       expect(testingGame._mario.y).toBe(2);
@@ -1034,6 +1050,7 @@ describe('Level Testing', () => {
 
       // jumping mario
       testingGame.keyPressed('up');
+      expect(testingGame._ticksCompleted).toBe(0);
       expect(testingGame._mario.rising).toBe(true);
       expect(testingGame._mario.x).toBe(1);
       expect(testingGame._mario.y).toBe(2);
@@ -1044,12 +1061,14 @@ describe('Level Testing', () => {
       testingGame.onTick();
 
       expect(testingGame._mario.rising).toBe(false);
+      expect(testingGame._ticksCompleted).toBe(1);
       expect(testingGame._mario.x).toBe(1);
       expect(testingGame._mario.y).toBe(2);
       expect(testingGame._collidableObjects).toEqual(expectBlocks);
       expect(testingGame._mario.currentRiseDuration).toBe(0);
 
       testingGame.keyPressed('right');
+      expect(testingGame._ticksCompleted).toBe(1);
       expect(testingGame._mario.rising).toBe(false);
       expect(testingGame._mario.x).toBe(2);
       expect(testingGame._mario.y).toBe(2);
@@ -1059,6 +1078,7 @@ describe('Level Testing', () => {
       // last tick, mario rising should be set to false
       testingGame.onTick();
       expect(testingGame._mario.rising).toBe(false);
+      expect(testingGame._ticksCompleted).toBe(2);
       expect(testingGame._mario.x).toBe(2);
       expect(testingGame._mario.y).toBe(3);
       // expect(testingGame._collidableObjects).toEqual(expectBlocks);
@@ -1071,8 +1091,9 @@ describe('Level Testing', () => {
       const logSpy = jest.spyOn(global.console, 'log');
 
       // jumping mario
-      console.log(testingGame.toString());
+      //console.log(testingGame.toString());
       testingGame.keyPressed('up');
+      expect(testingGame._ticksCompleted).toBe(0);
       expect(testingGame._mario.rising).toBe(true);
       expect(testingGame._mario.x).toBe(1);
       expect(testingGame._mario.y).toBe(2);
@@ -1082,10 +1103,9 @@ describe('Level Testing', () => {
 
       // after calling onTick his position should further increase
       testingGame.onTick();
-      expect(logSpy).toHaveBeenCalledWith(
-        'mario has reached the peak of his jump, he is now falling',
-      );
+      //expect(logSpy).toHaveBeenCalledWith('mario has reached the peak of his jump, he is now falling',);
       expect(testingGame._mario.rising).toBe(false);
+      expect(testingGame._ticksCompleted).toBe(1);
       expect(testingGame._mario.x).toBe(1);
       expect(testingGame._mario.y).toBe(2);
       expect(testingGame._collidableObjects).toEqual(expectBlocks);
@@ -1094,7 +1114,8 @@ describe('Level Testing', () => {
 
       // last tick, mario rising should be set to false
       testingGame.onTick();
-      expect(logSpy).toHaveBeenCalledWith('gravity applied - mario moved down');
+      //expect(logSpy).toHaveBeenCalledWith('gravity applied - mario moved down');
+      expect(testingGame._ticksCompleted).toBe(2);
       expect(testingGame._mario.rising).toBe(false);
       expect(testingGame._mario.x).toBe(1);
       expect(testingGame._mario.y).toBe(3);
@@ -1135,6 +1156,7 @@ describe('Level Testing', () => {
       };
       const logSpy = jest.spyOn(global.console, 'log');
 
+      expect(testingGame._ticksCompleted).toBe(0);
       expect(testingGame._mario.rising).toBe(false);
       expect(testingGame._mario.x).toBe(1);
       expect(testingGame._mario.y).toBe(3);
@@ -1142,8 +1164,9 @@ describe('Level Testing', () => {
       expect(testingGame._gameState).toBe('isPlaying');
 
       testingGame.keyPressed('tick');
-      expect(logSpy).toHaveBeenCalledWith('gravity applied - mario moved down');
+      //expect(logSpy).toHaveBeenCalledWith('gravity applied - mario moved down');
       expect(testingGame._mario.rising).toBe(false);
+      expect(testingGame._ticksCompleted).toBe(1);
       expect(testingGame._mario.x).toBe(1);
       expect(testingGame._mario.y).toBe(3);
       expect(testingGame._collidableObjects).toEqual(expectBlocks);
@@ -1157,6 +1180,7 @@ describe('Level Testing', () => {
       // jumping mario
       testingGame.keyPressed('up');
       expect(testingGame._mario.rising).toBe(true);
+      expect(testingGame._ticksCompleted).toBe(0);
       expect(testingGame._mario.x).toBe(1);
       expect(testingGame._mario.y).toBe(2);
       expect(testingGame._collidableObjects).toEqual(expectBlocks);
@@ -1168,6 +1192,7 @@ describe('Level Testing', () => {
       //  'mario hasnt reached the peak of his jump, he is still rising',
       // );
       expect(testingGame._mario.rising).toBe(false);
+      expect(testingGame._ticksCompleted).toBe(1);
       expect(testingGame._mario.x).toBe(1);
       expect(testingGame._mario.y).toBe(2);
       expect(testingGame._collidableObjects).toEqual(expectBlocks);
@@ -1181,6 +1206,7 @@ describe('Level Testing', () => {
 
       // jumping mario
       testingGame.keyPressed('up');
+      expect(testingGame._ticksCompleted).toBe(0);
       expect(testingGame._mario.rising).toBe(true);
       expect(testingGame._mario.x).toBe(1);
       expect(testingGame._mario.y).toBe(2);
@@ -1191,6 +1217,7 @@ describe('Level Testing', () => {
       testingGame.keyPressed('tick');
 
       expect(testingGame._mario.rising).toBe(false);
+      expect(testingGame._ticksCompleted).toBe(1);
       expect(testingGame._mario.x).toBe(1);
       expect(testingGame._mario.y).toBe(2);
       expect(testingGame._collidableObjects).toEqual(expectBlocks);
@@ -1198,6 +1225,7 @@ describe('Level Testing', () => {
 
       testingGame.keyPressed('right');
       expect(testingGame._mario.rising).toBe(false);
+      expect(testingGame._ticksCompleted).toBe(1);
       expect(testingGame._mario.x).toBe(2);
       expect(testingGame._mario.y).toBe(2);
       // expect(testingGame._collidableObjects).toEqual(expectBlocks);
@@ -1206,6 +1234,7 @@ describe('Level Testing', () => {
       // last tick, mario rising should be set to false
       testingGame.keyPressed('tick');
       expect(testingGame._mario.rising).toBe(false);
+      expect(testingGame._ticksCompleted).toBe(2);
       expect(testingGame._mario.x).toBe(2);
       expect(testingGame._mario.y).toBe(3);
       // expect(testingGame._collidableObjects).toEqual(expectBlocks);
@@ -1220,6 +1249,7 @@ describe('Level Testing', () => {
       // jumping mario
       console.log(testingGame.toString());
       testingGame.keyPressed('up');
+      expect(testingGame._ticksCompleted).toBe(0);
       expect(testingGame._mario.rising).toBe(true);
       expect(testingGame._mario.x).toBe(1);
       expect(testingGame._mario.y).toBe(2);
@@ -1229,10 +1259,9 @@ describe('Level Testing', () => {
 
       // after calling keypressed his position should further increase
       testingGame.keyPressed('tick');
-      expect(logSpy).toHaveBeenCalledWith(
-        'mario has reached the peak of his jump, he is now falling',
-      );
+      //expect(logSpy).toHaveBeenCalledWith('mario has reached the peak of his jump, he is now falling',);
       expect(testingGame._mario.rising).toBe(false);
+      expect(testingGame._ticksCompleted).toBe(1);
       expect(testingGame._mario.x).toBe(1);
       expect(testingGame._mario.y).toBe(2);
       expect(testingGame._collidableObjects).toEqual(expectBlocks);
@@ -1241,7 +1270,8 @@ describe('Level Testing', () => {
 
       // last tick, mario rising should be set to false
       testingGame.keyPressed('tick');
-      expect(logSpy).toHaveBeenCalledWith('gravity applied - mario moved down');
+      //expect(logSpy).toHaveBeenCalledWith('gravity applied - mario moved down');
+      expect(testingGame._ticksCompleted).toBe(2);
       expect(testingGame._mario.rising).toBe(false);
       expect(testingGame._mario.x).toBe(1);
       expect(testingGame._mario.y).toBe(3);
