@@ -92,11 +92,27 @@ export default class SpriteLevel extends Phaser.Scene {
       this.groundLayer = map.createLayer('Ground', tiles);
       map.createLayer('Foreground', tiles);
 
-      this.player = this.model._mario;
+      this.player = new SpriteCharacter(this, this.model.mario._x, this.model.mario._y);
 
       if (this.groundLayer) {
-        this.groundLayer.setCollisionByProperty({ collides: true });
-        this.physics.world.addCollider(this.player.sprite, this.groundLayer);
+        this.groundLayer?.setCollisionByProperty({ collides: true });
+        this.physics.world.addCollider(this.player, this.groundLayer);
+
+        this.cameras.main.startFollow(this.player.sprite);
+        this.cameras.main.setBounds(0, 0, map.widthInPixels, map.heightInPixels); // Needs to be finished, need to make the bounds == the whole maps look at Camera.useBounds()
+
+        this.add.text(32, 32, 'Arrows to Move', {
+            font: '18px monospace',
+            color: '#ff0000',
+            padding: { x: 20, y: 10 },
+            backgroundColor: '#ffffff',
+        })
+        .setScrollFactor(0);
+        
+        for (const enemy of this.model.level._enemies) {
+            this.enemies.push(new SpriteEnemy(this, enemy.x, enemy.y))
+        }
+        
       } else {
         throw new Error('Ground Layer is Null');
       }
