@@ -1,9 +1,7 @@
 import { Console } from 'console';
 import { GameCell, Level, LevelOne } from './Level';
 import { Block, DeathBlock, PlatformBlock, CompletionBlock, PipeBlock } from './Block';
-import { Character, Enemy, Goomba, MainCharacter } from './Character';
-import { CollisionState } from './GameObject';
-import { privateEncrypt } from 'crypto';
+import { Enemy, Goomba, MainCharacter } from './Character';
 
 const logger = new Console(process.stdout, process.stderr);
 
@@ -591,89 +589,6 @@ describe('Level Testing', () => {
     });
   });
 
-  /*
-
-    describe("OnKey method Tests", () => {
-        let testingMario: MainCharacter;
-        let testingMapPreMove: GameCell[][];
-        let testLevel: TestingLevel;
-        beforeEach(() => {
-            testingMario = new MainCharacter(1, 2);
-            testingMapPreMove = [
-                [undefined, undefined, undefined],
-                [undefined, undefined, undefined],
-                [undefined, testingMario, undefined],
-            ];
-            testLevel = new TestingLevel(testingMario, testingMapPreMove)
-        });
-        test("while state is playing, if key is right, mario should move right", () => {
-            testLevel.keyPressed("right");
-            expect(testingMario.x).toBe(2);
-        })
-        test("while state is playing, if key is up, mario should move up", () => {
-            testLevel.keyPressed("up");
-            expect(testingMario.y).toBe(1);
-        })
-        test("while state is playing, if key is left, mario should move left", () => {
-            testLevel.keyPressed("up");
-            expect(testingMario.x).toBe(1);
-        })
-        test("while state is playing, if space is pressed, should do nothing", () => {
-            testLevel.keyPressed("space");
-            expect(testingMario.x).toBe(1);
-            expect(testingMario.y).toBe(2);
-        })
-        test("while state is playing, if down is pressed, should do nothing", () => {
-            testLevel.keyPressed("down");
-            expect(testingMario.x).toBe(1);
-            expect(testingMario.y).toBe(2);
-        })
-        test("while state is playing, if random key is pressed, should do nothing", () => {
-            testLevel.keyPressed("r");
-            expect(testingMario.x).toBe(1);
-            expect(testingMario.y).toBe(2);
-        })
-        test("while state is not playing, right should not work", () => {
-            testLevel._gameState = "isDead";
-            testLevel.keyPressed("right");
-            expect(testingMario.x).toBe(1);
-            expect(testingMario.y).toBe(2);
-        })
-        test("while state is not playing, left should not work", () => {
-            testLevel._gameState = "isDead";
-            testLevel.keyPressed("left");
-            expect(testingMario.x).toBe(1);
-            expect(testingMario.y).toBe(2);
-        })
-        test("while state is not playing, up should not work", () => {
-            testLevel._gameState = "isDead";
-            testLevel.keyPressed("up");
-            expect(testingMario.x).toBe(1);
-            expect(testingMario.y).toBe(2);
-        })
-        test("while state is not playing, space should call restart level", () => {
-            testingMario.moveRight();
-            testLevel.updateScore();
-            expect(testingMario.x).toBe(2);
-            expect(testingMario.y).toBe(2);
-            expect(testLevel._score).toBe(200);
-            expect(testLevel._gameState).toBe("isPlaying");
-            testLevel._gameState = "isDead";
-            expect(testLevel._gameState).toBe("isDead");
-            let testLevel2 = testLevel.restartLevel();
-            expect(testLevel2._mario.x).toBe(1) ;
-            expect(testLevel2._mario.y).toBe(2);
-            expect(testLevel2._score).toBe(0);
-            expect(testLevel2._gameState).toBe("isPlaying");
-        })
-        test("while state not is playing, if random key is pressed, should do nothing", () => {
-            testLevel._gameState = "isDead";
-            testLevel.keyPressed("r");
-            expect(testingMario.x).toBe(1);
-            expect(testingMario.y).toBe(2);
-        })
-    }) */
-
   describe('keyPressed testing', () => {
     let testMario = new MainCharacter(1, 1);
     let testingMap1: GameCell[][] = [
@@ -726,17 +641,6 @@ describe('Level Testing', () => {
       expect(testLevel._mario.y).toEqual(oldMarioY);
     });
 
-    /*
-    test('Game State isDead and keyPressed is space', () => {
-      testLevel._startingMarioPos = [0, 0];
-      testLevel._gameState = 'isDead';
-
-      testLevel.keyPressed('space');
-
-      expect(testMario.x).toEqual(0);
-      expect(testMario.y).toEqual(0);
-    }); */
-
     test('Game State isWinner and keyPressed is left', () => {
       testLevel._gameState = 'isWinner';
       const oldMarioX = testLevel._mario.x;
@@ -769,17 +673,6 @@ describe('Level Testing', () => {
       expect(testLevel._mario.x).toEqual(oldMarioX);
       expect(testLevel._mario.y).toEqual(oldMarioY);
     });
-
-    /*
-    test('Game State isWinner and keyPressed is space', () => {
-      testLevel._startingMarioPos = [0, 0];
-      testLevel._gameState = 'isWinner';
-
-      testLevel.keyPressed('space');
-
-      expect(testLevel._mario.x).toEqual(0);
-      expect(testLevel._mario.y).toEqual(0);
-    }); */
 
     test('Game State isPlaying and keyPressed is left', () => {
       expect(testLevel._gameState).toEqual('isPlaying');
@@ -831,6 +724,75 @@ describe('Level Testing', () => {
 
       expect(testLevel1._mario.x).toEqual(oldMarioX);
       expect(testLevel1._mario.y).toEqual(oldMarioY - 1);
+    });
+
+    test('Game State isPlaying and keyPressed is left at the edge of the map', () => {
+      const pBMap = [
+        [undefined, undefined, undefined],
+        [undefined, testMario, undefined],
+        [new PlatformBlock(0, 2), new PlatformBlock(1, 2), undefined],
+      ];
+      const testLevel1 = new TestingLevel(testMario, pBMap);
+      expect(testLevel1._gameState).toEqual('isPlaying');
+      const oldMarioX = testLevel1._mario.x;
+      const oldMarioY = testLevel1._mario.y;
+
+      testLevel1.keyPressed('left');
+
+      expect(testLevel1._mario.x).toEqual(oldMarioX - 1);
+      expect(testLevel1._mario.y).toEqual(oldMarioY);
+
+      testLevel1.keyPressed('left');
+
+      expect(testLevel1._mario.x).toEqual(oldMarioX - 1);
+      expect(testLevel1._mario.y).toEqual(oldMarioY);
+    });
+    test('Game State isPlaying and keyPressed is up at the top of the map', () => {
+      const testingMario = new MainCharacter(1, 0);
+      const pBMap = [
+        [undefined, testingMario, undefined],
+        [undefined, new PlatformBlock(1, 1), new PlatformBlock(2, 2)],
+        [new PlatformBlock(0, 2), new PlatformBlock(1, 2), undefined],
+      ];
+      const testLevel1 = new TestingLevel(testingMario, pBMap);
+      expect(testLevel1._gameState).toEqual('isPlaying');
+      const oldMarioX = testLevel1._mario.x;
+      const oldMarioY = testLevel1._mario.y;
+
+      testLevel1.keyPressed('up');
+
+      expect(testLevel1._mario.x).toEqual(oldMarioX);
+      expect(testLevel1._mario.y).toEqual(oldMarioY);
+    });
+    test('Game State isPlaying and keyPressed is up with a block above', () => {
+      const pBMap = [
+        [undefined, new PlatformBlock(1, 0), undefined],
+        [undefined, testMario, undefined],
+        [new PlatformBlock(0, 2), new PlatformBlock(1, 2), undefined],
+      ];
+      const testLevel1 = new TestingLevel(testMario, pBMap);
+      expect(testLevel1._gameState).toEqual('isPlaying');
+      const oldMarioX = testLevel1._mario.x;
+      const oldMarioY = testLevel1._mario.y;
+
+      testLevel1.keyPressed('up');
+
+      expect(testLevel1._mario.x).toEqual(oldMarioX);
+      expect(testLevel1._mario.y).toEqual(oldMarioY);
+    });
+    test('game state isPlaying and keyPressed is right into completion block', () => {
+      const pBMap = [
+        [undefined, undefined, undefined],
+        [undefined, testMario, new CompletionBlock(2, 1)],
+        [new PlatformBlock(0, 2), new PlatformBlock(1, 2), undefined],
+      ];
+      const testLevel1 = new TestingLevel(testMario, pBMap);
+      expect(testLevel1._gameState).toEqual('isPlaying');
+      testLevel1.keyPressed('right');
+      testLevel1.keyPressed('tick');
+
+      expect(testLevel1._gameState).toBe('isWinner');
+      expect(testLevel1._score).toBe(100);
     });
   });
 
@@ -1055,9 +1017,9 @@ describe('Level Testing', () => {
 
       // after calling onTick his position should further increase
       testingGame.onTick();
-      //expect(logSpy).toHaveBeenCalledWith(
+      // expect(logSpy).toHaveBeenCalledWith(
       //  'mario hasnt reached the peak of his jump, he is still rising',
-     // );
+      // );
       expect(testingGame._mario.rising).toBe(false);
       expect(testingGame._mario.x).toBe(1);
       expect(testingGame._mario.y).toBe(2);
@@ -1091,7 +1053,7 @@ describe('Level Testing', () => {
       expect(testingGame._mario.rising).toBe(false);
       expect(testingGame._mario.x).toBe(2);
       expect(testingGame._mario.y).toBe(2);
-      //expect(testingGame._collidableObjects).toEqual(expectBlocks);
+      // expect(testingGame._collidableObjects).toEqual(expectBlocks);
       expect(testingGame._mario.currentRiseDuration).toBe(0);
 
       // last tick, mario rising should be set to false
@@ -1099,12 +1061,10 @@ describe('Level Testing', () => {
       expect(testingGame._mario.rising).toBe(false);
       expect(testingGame._mario.x).toBe(2);
       expect(testingGame._mario.y).toBe(3);
-      //expect(testingGame._collidableObjects).toEqual(expectBlocks);
+      // expect(testingGame._collidableObjects).toEqual(expectBlocks);
       expect(testingGame._mario.currentRiseDuration).toBe(0);
     });
 
-
-    
     test('if state is playing and mario moves while rising', () => {
       testingGame._gameState = 'isPlaying';
       const expectBlocks = { left: undefined, right: undefined, up: undefined, down: undefined };
@@ -1123,7 +1083,7 @@ describe('Level Testing', () => {
       // after calling onTick his position should further increase
       testingGame.onTick();
       expect(logSpy).toHaveBeenCalledWith(
-        'mario hasnt reached the peak of his jump, he is still rising',
+        'mario has reached the peak of his jump, he is now falling',
       );
       expect(testingGame._mario.rising).toBe(false);
       expect(testingGame._mario.x).toBe(1);
@@ -1134,21 +1094,164 @@ describe('Level Testing', () => {
 
       // last tick, mario rising should be set to false
       testingGame.onTick();
+      expect(logSpy).toHaveBeenCalledWith('gravity applied - mario moved down');
+      expect(testingGame._mario.rising).toBe(false);
+      expect(testingGame._mario.x).toBe(1);
+      expect(testingGame._mario.y).toBe(3);
+      const expectBlocks1 = {
+        down: new PlatformBlock(1, 4),
+        left: undefined,
+        right: undefined,
+        up: undefined,
+      };
+      expect(testingGame._collidableObjects).toEqual(expectBlocks1);
+      expect(testingGame._mario.currentRiseDuration).toBe(0);
+      console.log(testingGame.toString());
+    });
+  });
+
+  describe('keypresed + ontick', () => {
+    let testingMario: MainCharacter;
+    let testingGame: TestingLevel;
+    let testingMap: GameCell[][];
+    beforeEach(() => {
+      testingMario = new MainCharacter(1, 3);
+      testingMap = [
+        [undefined, undefined, undefined],
+        [undefined, undefined, undefined],
+        [undefined, undefined, undefined],
+        [undefined, testingMario, undefined],
+        [undefined, new PlatformBlock(1, 4), undefined],
+      ];
+      testingGame = new TestingLevel(testingMario, testingMap);
+    });
+    test('if state is playing, and mario is not rising - gravity should be applied and mario rising should be false', () => {
+      testingGame._gameState = 'isPlaying';
+      const expectBlocks = {
+        left: undefined,
+        right: undefined,
+        up: undefined,
+        down: new PlatformBlock(1, 4),
+      };
+      const logSpy = jest.spyOn(global.console, 'log');
+
+      expect(testingGame._mario.rising).toBe(false);
+      expect(testingGame._mario.x).toBe(1);
+      expect(testingGame._mario.y).toBe(3);
+      expect(testingGame._collidableObjects).toEqual(expectBlocks);
+      expect(testingGame._gameState).toBe('isPlaying');
+
+      testingGame.keyPressed('tick');
+      expect(logSpy).toHaveBeenCalledWith('gravity applied - mario moved down');
+      expect(testingGame._mario.rising).toBe(false);
+      expect(testingGame._mario.x).toBe(1);
+      expect(testingGame._mario.y).toBe(3);
+      expect(testingGame._collidableObjects).toEqual(expectBlocks);
+      expect(testingGame._gameState).toBe('isPlaying');
+    });
+    test('if state is playing and mario is rising - mario has not reached his jump duration so his position will increase', () => {
+      testingGame._gameState = 'isPlaying';
+      const expectBlocks = { left: undefined, right: undefined, up: undefined, down: undefined };
+      const logSpy = jest.spyOn(global.console, 'log');
+
+      // jumping mario
+      testingGame.keyPressed('up');
+      expect(testingGame._mario.rising).toBe(true);
+      expect(testingGame._mario.x).toBe(1);
+      expect(testingGame._mario.y).toBe(2);
+      expect(testingGame._collidableObjects).toEqual(expectBlocks);
+      expect(testingGame._mario.currentRiseDuration).toBe(1);
+
+      // after calling onTick his position should further increase
+      testingGame.onTick();
+      // expect(logSpy).toHaveBeenCalledWith(
+      //  'mario hasnt reached the peak of his jump, he is still rising',
+      // );
+      expect(testingGame._mario.rising).toBe(false);
+      expect(testingGame._mario.x).toBe(1);
+      expect(testingGame._mario.y).toBe(2);
+      expect(testingGame._collidableObjects).toEqual(expectBlocks);
+      expect(testingGame._mario.currentRiseDuration).toBe(0);
+    });
+
+    test('if state is playing and mario is rising - mario HAS reached his jump duration so he will stop rising', () => {
+      testingGame._gameState = 'isPlaying';
+      const expectBlocks = { left: undefined, right: undefined, up: undefined, down: undefined };
+      const logSpy = jest.spyOn(global.console, 'log');
+
+      // jumping mario
+      testingGame.keyPressed('up');
+      expect(testingGame._mario.rising).toBe(true);
+      expect(testingGame._mario.x).toBe(1);
+      expect(testingGame._mario.y).toBe(2);
+      expect(testingGame._collidableObjects).toEqual(expectBlocks);
+      expect(testingGame._mario.currentRiseDuration).toBe(1);
+
+      // after calling keyPressed his position should further increase
+      testingGame.keyPressed('tick');
+
+      expect(testingGame._mario.rising).toBe(false);
+      expect(testingGame._mario.x).toBe(1);
+      expect(testingGame._mario.y).toBe(2);
+      expect(testingGame._collidableObjects).toEqual(expectBlocks);
+      expect(testingGame._mario.currentRiseDuration).toBe(0);
+
+      testingGame.keyPressed('right');
+      expect(testingGame._mario.rising).toBe(false);
+      expect(testingGame._mario.x).toBe(2);
+      expect(testingGame._mario.y).toBe(2);
+      // expect(testingGame._collidableObjects).toEqual(expectBlocks);
+      expect(testingGame._mario.currentRiseDuration).toBe(0);
+
+      // last tick, mario rising should be set to false
+      testingGame.keyPressed('tick');
+      expect(testingGame._mario.rising).toBe(false);
+      expect(testingGame._mario.x).toBe(2);
+      expect(testingGame._mario.y).toBe(3);
+      // expect(testingGame._collidableObjects).toEqual(expectBlocks);
+      expect(testingGame._mario.currentRiseDuration).toBe(0);
+    });
+
+    test('if state is playing and mario moves while rising', () => {
+      testingGame._gameState = 'isPlaying';
+      const expectBlocks = { left: undefined, right: undefined, up: undefined, down: undefined };
+      const logSpy = jest.spyOn(global.console, 'log');
+
+      // jumping mario
+      console.log(testingGame.toString());
+      testingGame.keyPressed('up');
+      expect(testingGame._mario.rising).toBe(true);
+      expect(testingGame._mario.x).toBe(1);
+      expect(testingGame._mario.y).toBe(2);
+      expect(testingGame._collidableObjects).toEqual(expectBlocks);
+      expect(testingGame._mario.currentRiseDuration).toBe(1);
+      console.log(testingGame.toString());
+
+      // after calling keypressed his position should further increase
+      testingGame.keyPressed('tick');
       expect(logSpy).toHaveBeenCalledWith(
         'mario has reached the peak of his jump, he is now falling',
       );
       expect(testingGame._mario.rising).toBe(false);
       expect(testingGame._mario.x).toBe(1);
-      expect(testingGame._mario.y).toBe(3);
+      expect(testingGame._mario.y).toBe(2);
       expect(testingGame._collidableObjects).toEqual(expectBlocks);
       expect(testingGame._mario.currentRiseDuration).toBe(0);
       console.log(testingGame.toString());
 
-      testingGame.onTick();
+      // last tick, mario rising should be set to false
+      testingGame.keyPressed('tick');
+      expect(logSpy).toHaveBeenCalledWith('gravity applied - mario moved down');
       expect(testingGame._mario.rising).toBe(false);
       expect(testingGame._mario.x).toBe(1);
       expect(testingGame._mario.y).toBe(3);
-      expect(testingGame._collidableObjects).toEqual(expectBlocks);
+      const expectBlocks1 = {
+        down: new PlatformBlock(1, 4),
+        left: undefined,
+        right: undefined,
+        up: undefined,
+      };
+      expect(testingGame._collidableObjects).toEqual(expectBlocks1);
       expect(testingGame._mario.currentRiseDuration).toBe(0);
       console.log(testingGame.toString());
     });

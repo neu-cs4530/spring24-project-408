@@ -11,6 +11,9 @@ import PlayerController from '../PlayerController';
 import TownController from '../TownController';
 import MarioAreaController from './MarioAreaController';
 import GameAreaController, { NO_GAME_IN_PROGRESS_ERROR } from './GameAreaController';
+import { update } from 'lodash';
+import exp from 'constants';
+import { log } from 'console';
 
 
 
@@ -33,8 +36,8 @@ describe('MarioAreaController', () => {
       Object.defineProperty(mockTownController, 'players', {
         get: () => [ourPlayer, ...otherPlayers],
       });
-      mockTownController.getPlayer.mockImplementation(playerID => {
-        const p = mockTownController.players.find(player => player.id === playerID);
+      mockTownController.getPlayer.mockImplementation((playerID: any) => {
+        const p = mockTownController.players.find((player: { id: any; }) => player.id === playerID);
         assert(p);
         return p;
       });
@@ -105,7 +108,7 @@ describe('MarioAreaController', () => {
         );
         if (players) {
           ret.occupants = players
-            .map(eachID => mockTownController.players.find(eachPlayer => eachPlayer.id === eachID))
+            .map(eachID => mockTownController.players.find((eachPlayer: { id: string; }) => eachPlayer.id === eachID))
             .filter(eachPlayer => eachPlayer) as PlayerController[];
         }
         return ret;
@@ -233,15 +236,15 @@ describe('MarioAreaController', () => {
             expect(controller.level._map[3][1]).toBe(controller.level._mario);
             expect(controller.level._map[3][0]).toBeUndefined();
         });
-        it('emits a boardChange event if the board has changed', () => {
+        it('emits a levelChanged event if the board has changed', () => {
             const spy = jest.fn();
-            controller.addListener('boardChanged', spy);
+            controller.addListener('levelChanged', spy);
             updateGameWithMove(controller, { col: 1, gamePiece: 'Mario', row: 0 });
             expect(spy).toHaveBeenCalledWith(controller.level);
         });
-        it('does not emit a boardChange event if the board has not changed', () => {
+        it('does not emit a levelChanged event if the board has not changed', () => {
             const spy = jest.fn();
-            controller.addListener('boardChanged', spy);
+            controller.addListener('levelChanged', spy);
             controller.updateFrom(
               { ...controller.toInteractableAreaModel() },
               otherPlayers.concat(ourPlayer),
@@ -292,6 +295,199 @@ describe('MarioAreaController', () => {
                 });
                 await controller.joinGame();
             });
-        });
+            describe('column move commands with town controller', () => {
+              async function makeMoveandExpectMarioPos (
+                dir: string,
+                expectedCol: MarioDirection,
+                expectedRow: MarioDirection,
+                ) {
+                  mockTownController.sendInteractableCommand.mockClear();
+                  await controller.makeMove(dir);
+                  expect(mockTownController.sendInteractableCommand).toHaveBeenCalledWith(controller.id, {
+                    type: 'GameMove',
+                    gameID: instanceID,
+                    move: {
+                        gamePiece: 'Mario',
+                        col: expectedCol,
+                        row: expectedRow,
+                    },
+                });
+                updateGameWithMove(controller, { 
+                  col: expectedCol, 
+                  gamePiece: 'Mario', 
+                  row: expectedRow 
+                });
+              }
+              it('moves mario to the right when there is no collidable object to the right', async () => {
+                await makeMoveandExpectMarioPos('right', 1, 0);
+                expect(controller.level._mario.x).toBe(1);
+                expect(controller.level._mario.y).toBe(3);
+              });
+              it('moves mario to the left when there is no collidable object to the left', async () => {
+                await makeMoveandExpectMarioPos('right', 1, 0);
+                await makeMoveandExpectMarioPos('left', -1, 0);
+                expect(controller.level._mario.x).toBe(0);
+                expect(controller.level._mario.y).toBe(3);
+              });
+              it('moves mario up when there is no collidable object above', async () => {
+                await makeMoveandExpectMarioPos('up', 0, 1);
+                expect(controller.level._mario.x).toBe(0);
+                expect(controller.level._mario.y).toBe(2);
+              });
+              it('does not move mario when there is a collidable object to the right', async () => {
+                await makeMoveandExpectMarioPos('right', 1, 0);
+                expect(controller.level._mario.x).toBe(1);
+                expect(controller.level._mario.y).toBe(3);
+                await makeMoveandExpectMarioPos('right', 1, 0);
+                expect(controller.level._mario.x).toBe(1);
+                expect(controller.level._mario.y).toBe(3);
+              });
+              it('does not move mario when there is a collidable object to the left', async () => {
+                await makeMoveandExpectMarioPos('left', -1, 0);
+                expect(controller.level._mario.x).toBe(0);
+                expect(controller.level._mario.y).toBe(3);
+              });
+              it('mario loses health when falling into a pit', async () => {
+                await makeMoveandExpectMarioPos('right', 1, 0);
+                await makeMoveandExpectMarioPos('tick', 0, 0);
+                await makeMoveandExpectMarioPos('up', 0, 1);
+                await makeMoveandExpectMarioPos('tick', 0, 0);
+                await makeMoveandExpectMarioPos('right', 1, 0);
+                await makeMoveandExpectMarioPos('tick', 0, 0);
+                await makeMoveandExpectMarioPos('up', 0, 1);
+                await makeMoveandExpectMarioPos('tick', 0, 0);
+                await makeMoveandExpectMarioPos('right', 1, 0);
+                await makeMoveandExpectMarioPos('tick', 0, 0);
+                await makeMoveandExpectMarioPos('right', 1, 0);
+                await makeMoveandExpectMarioPos('tick', 0, 0);
+                await makeMoveandExpectMarioPos('right', 1, 0);
+                await makeMoveandExpectMarioPos('tick', 0, 0);
+                await makeMoveandExpectMarioPos('tick', 0, 0);
+                await makeMoveandExpectMarioPos('tick', 0, 0);
+                await makeMoveandExpectMarioPos('tick', 0, 0);
+                await makeMoveandExpectMarioPos('tick', 0, 0);
+                expect(controller.level._mario.x).toBe(0);
+                expect(controller.level._mario.y).toBe(3);
+                expect(controller.level._mario.health).toBe(2);
+              });
+              it('mario dies when falling into a pit', async () => {
+                await makeMoveandExpectMarioPos('right', 1, 0);
+                await makeMoveandExpectMarioPos('tick', 0, 0);
+                await makeMoveandExpectMarioPos('up', 0, 1);
+                await makeMoveandExpectMarioPos('tick', 0, 0);
+                await makeMoveandExpectMarioPos('right', 1, 0);
+                await makeMoveandExpectMarioPos('tick', 0, 0);
+                await makeMoveandExpectMarioPos('up', 0, 1);
+                await makeMoveandExpectMarioPos('tick', 0, 0);
+                await makeMoveandExpectMarioPos('right', 1, 0);
+                await makeMoveandExpectMarioPos('tick', 0, 0);
+                await makeMoveandExpectMarioPos('right', 1, 0);
+                await makeMoveandExpectMarioPos('tick', 0, 0);
+                await makeMoveandExpectMarioPos('right', 1, 0);
+                await makeMoveandExpectMarioPos('tick', 0, 0);
+                await makeMoveandExpectMarioPos('tick', 0, 0);
+                await makeMoveandExpectMarioPos('tick', 0, 0);
+                await makeMoveandExpectMarioPos('tick', 0, 0);
+                //await makeMoveandExpectMarioPos('tick', 0, 0);
+                expect(controller.level._mario.x).toBe(0);
+                expect(controller.level._mario.y).toBe(3);
+                expect(controller.level._mario.health).toBe(2);
+                await makeMoveandExpectMarioPos('tick', 0, 0);
+                // LOSES HEART
+
+                await makeMoveandExpectMarioPos('right', 1, 0);
+                await makeMoveandExpectMarioPos('tick', 0, 0);
+                await makeMoveandExpectMarioPos('up', 0, 1);
+                await makeMoveandExpectMarioPos('tick', 0, 0);
+                await makeMoveandExpectMarioPos('right', 1, 0);
+                await makeMoveandExpectMarioPos('tick', 0, 0);
+                await makeMoveandExpectMarioPos('up', 0, 1);
+                await makeMoveandExpectMarioPos('tick', 0, 0);
+                await makeMoveandExpectMarioPos('right', 1, 0);
+                await makeMoveandExpectMarioPos('tick', 0, 0);
+                await makeMoveandExpectMarioPos('right', 1, 0);
+                await makeMoveandExpectMarioPos('tick', 0, 0);
+                await makeMoveandExpectMarioPos('right', 1, 0);
+                await makeMoveandExpectMarioPos('tick', 0, 0);
+                await makeMoveandExpectMarioPos('tick', 0, 0);
+                await makeMoveandExpectMarioPos('tick', 0, 0);
+                await makeMoveandExpectMarioPos('tick', 0, 0);
+                //await makeMoveandExpectMarioPos('tick', 0, 0);
+                expect(controller.level._mario.x).toBe(0);
+                expect(controller.level._mario.y).toBe(3);
+                expect(controller.level._mario.health).toBe(1);
+                await makeMoveandExpectMarioPos('tick', 0, 0);
+                // LOSES HEART
+
+                await makeMoveandExpectMarioPos('right', 1, 0);
+                await makeMoveandExpectMarioPos('tick', 0, 0);
+                await makeMoveandExpectMarioPos('up', 0, 1);
+                await makeMoveandExpectMarioPos('tick', 0, 0);
+                await makeMoveandExpectMarioPos('right', 1, 0);
+                await makeMoveandExpectMarioPos('tick', 0, 0);
+                await makeMoveandExpectMarioPos('up', 0, 1);
+                await makeMoveandExpectMarioPos('tick', 0, 0);
+                await makeMoveandExpectMarioPos('right', 1, 0);
+                await makeMoveandExpectMarioPos('tick', 0, 0);
+                await makeMoveandExpectMarioPos('right', 1, 0);
+                await makeMoveandExpectMarioPos('tick', 0, 0);
+                await makeMoveandExpectMarioPos('right', 1, 0);
+                await makeMoveandExpectMarioPos('tick', 0, 0);
+                await makeMoveandExpectMarioPos('tick', 0, 0);
+                await makeMoveandExpectMarioPos('tick', 0, 0);
+                await makeMoveandExpectMarioPos('tick', 0, 0);
+                await makeMoveandExpectMarioPos('tick', 0, 0);
+                //expect(controller.level._gameState).toBe('isDead');
+                expect(controller.level._mario.health).toBe(0);
+                expect(controller.status).toBe('OVER');
+                expect(controller.winner).toBeUndefined();
+                expect(controller.level._mario.isAlive).toBe(false);
+              });
+              it('mario wins', async () => {
+                await makeMoveandExpectMarioPos('right', 1, 0);
+                await makeMoveandExpectMarioPos('tick', 0, 0);
+                await makeMoveandExpectMarioPos('up', 0, 1);
+                await makeMoveandExpectMarioPos('tick', 0, 0);
+                await makeMoveandExpectMarioPos('right', 1, 0);
+                await makeMoveandExpectMarioPos('tick', 0, 0);
+                await makeMoveandExpectMarioPos('up', 0, 1);
+                await makeMoveandExpectMarioPos('tick', 0, 0);
+                await makeMoveandExpectMarioPos('right', 1, 0);
+                await makeMoveandExpectMarioPos('tick', 0, 0);
+                await makeMoveandExpectMarioPos('right', 1, 0);
+                await makeMoveandExpectMarioPos('tick', 0, 0);
+                await makeMoveandExpectMarioPos('tick', 0, 0);
+                await makeMoveandExpectMarioPos('up', 0, 1);
+                await makeMoveandExpectMarioPos('tick', 0, 0);
+                await makeMoveandExpectMarioPos('right', 1, 0);
+                await makeMoveandExpectMarioPos('tick', 0, 0);
+                await makeMoveandExpectMarioPos('right', 1, 0);
+                await makeMoveandExpectMarioPos('tick', 0, 0);
+                await makeMoveandExpectMarioPos('up', 0, 1);
+                await makeMoveandExpectMarioPos('tick', 0, 0);
+                await makeMoveandExpectMarioPos('right', 1, 0);
+                await makeMoveandExpectMarioPos('tick', 0, 0);
+                await makeMoveandExpectMarioPos('right', 1, 0);
+                await makeMoveandExpectMarioPos('tick', 0, 0);
+                await makeMoveandExpectMarioPos('right', 1, 0);
+                await makeMoveandExpectMarioPos('tick', 0, 0);
+                await makeMoveandExpectMarioPos('right', 1, 0);
+                await makeMoveandExpectMarioPos('tick', 0, 0);
+                await makeMoveandExpectMarioPos('right', 1, 0);
+                await makeMoveandExpectMarioPos('tick', 0, 0);
+                await makeMoveandExpectMarioPos('right', 1, 0);
+                await makeMoveandExpectMarioPos('tick', 0, 0);
+                await makeMoveandExpectMarioPos('right', 1, 0);
+                await makeMoveandExpectMarioPos('tick', 0, 0);
+                await makeMoveandExpectMarioPos('right', 1, 0);
+                await makeMoveandExpectMarioPos('tick', 0, 0);
+                console.log(controller.level.toString());
+                expect(controller.level._gameState).toBe('isWinner');
+                expect(controller.status).toBe('OVER');
+                expect(controller.winner).toBe(ourPlayer);
+                expect(controller.level._score).toBe(1200);
+              });
+          });
+      });
     });
 });

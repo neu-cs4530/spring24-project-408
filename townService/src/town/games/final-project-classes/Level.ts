@@ -65,21 +65,21 @@ export abstract class Level {
             if(this._mario.rising) {
                 // If Mario has reached the peak of his jump, stop rising
                 if (this._mario.currentRiseDuration === this._mario.jumpSize) {
-                    console.log('mario has reached the peak of his jump, he is now falling');
+                    // console.log('mario has reached the peak of his jump, he is now falling');
                     this._mario.stopRising();
                 } else if (this._mario.currentRiseDuration < this._mario.jumpSize) {
                     // Otherwise, continue moving up
-                    console.log('mario hasnt reached the peak of his jump, he is still rising');
+                    // console.log('mario hasnt reached the peak of his jump, he is still rising');
                     this._characterUp();
                 }
             } else {
                 // Constant gravity
                 this._characterDown(); 
-                console.log('gravity applied - mario moved down');
+                // console.log('gravity applied - mario moved down');
             }
         }
         else {
-            console.log("game is not currently playing");
+            // console.log("game is not currently playing");
         }
     }
 
@@ -202,8 +202,9 @@ export abstract class Level {
             default:
                 this._gameState = 'isWinner';
                 console.log('WINNER WOOOO LEVEL COMPLETE!! its a me mario');
+                console.log('bruh the state should be winner');
+                console.log(`Gamestate is: ${  this._gameState}`);
                 console.log(`Final score is: ${  this._score.toString()}`);
-                console.log("Press space to play again!");
         }
         
     }
@@ -222,7 +223,6 @@ export abstract class Level {
                 this._gameState = 'isDead';
                 console.log('YOU DIED');
                 console.log(`Final score is: ${  this._score.toString()}`);
-                console.log("Press space to try again!");
         }
     }
 
@@ -311,9 +311,9 @@ export abstract class Level {
         if (borderCheck) {
             this._handleEnemyandBlockCollisions(characterDir, mariox, marioy);
         }
-        else {
-            throw new Error(`Mario Moved Out of Bounds - ${  characterDir}`);
-        }
+        /** else {
+        //    throw new Error(`Mario Moved Out of Bounds - ${  characterDir}`);
+        //} */ 
     }
 
     /**
@@ -384,15 +384,16 @@ export abstract class Level {
                 }
                 case 'right': {
                     this._characterRight();
-                    // this.updateScore();
+                    break;
+                }
+                case 'tick': {
+                    this.onTick();
                     break;
                 }
                 default: {
                     break;
                 }
             }
-        } else if (key === 'space') {
-            // const newLevel = this.restartLevel();
         }
     }
 
@@ -432,6 +433,5 @@ export class LevelOne extends Level {
         this.resetMarioPosition();
         this._map[this._mario.y][this._mario.x] = this._mario;
         this._score = 0;
-        // Reset enemies here if desired
     }
 }  

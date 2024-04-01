@@ -56,11 +56,13 @@ describe('MarioGame', () => {
   describe('applyMove', () => {
     let rightMove: MarioMove;
     let upMove: MarioMove;
+    let tickMove: MarioMove;
     const player1 = createPlayerForTesting();
     beforeEach(() => {
       game.join(player1);
       rightMove = { gamePiece: 'Mario', row: 0, col: 1 };
       upMove = { gamePiece: 'Mario', row: 1, col: 0 };
+      tickMove = { gamePiece: 'Mario', row: 0, col: 0 };
     });
     it('should throw an error if the game is not in progress', () => {
       game.leave(player1);
@@ -176,14 +178,15 @@ describe('MarioGame', () => {
         game._level.onTick();
         game._level.onTick();
         game._level.onTick();
+        game.applyMove({ gameID: game.id, playerID: game.state.player, move: tickMove });
         expect(game.state.status).toBe('IN_PROGRESS');
         expect(game._level._mario._health).toBe(2);
-        // expect(game.state.score).toBe(0); this wont work because the restart is handled by onTick which isn't called in MarioGame
+        expect(game.state.score).toBe(0);
         expect(game._level._mario._x).toBe(game._level._startingMarioPos[0]);
         expect(game._level._mario._y).toBe(game._level._startingMarioPos[1]);
       }
     });
-    it('should change game state to OVER if the player loses health 3 times', () => {
+    it('should change game state to OVER if the player loses health 3 times from a Goomba', () => {
       if (game.state.player) {
         game.applyMove({ gameID: game.id, playerID: game.state.player, move: rightMove });
         game._level.onTick();
@@ -264,6 +267,81 @@ describe('MarioGame', () => {
         expect(game._level._mario._health).toBe(0);
         expect(game.state.status).toBe('OVER');
         expect(game.state.score).toBe(0);
+      }
+    });
+    it('should change game state to OVER if the player loses health 3 times from a Death Block', () => {
+      if (game.state.player) {
+        game.applyMove({ gameID: game.id, playerID: game.state.player, move: rightMove });
+        game.applyMove({ gameID: game.id, playerID: game.state.player, move: tickMove });
+        game.applyMove({ gameID: game.id, playerID: game.state.player, move: upMove });
+        game.applyMove({ gameID: game.id, playerID: game.state.player, move: tickMove });
+        game.applyMove({ gameID: game.id, playerID: game.state.player, move: rightMove });
+        game.applyMove({ gameID: game.id, playerID: game.state.player, move: tickMove });
+        game.applyMove({ gameID: game.id, playerID: game.state.player, move: upMove });
+        game.applyMove({ gameID: game.id, playerID: game.state.player, move: tickMove });
+        game.applyMove({ gameID: game.id, playerID: game.state.player, move: rightMove });
+        game.applyMove({ gameID: game.id, playerID: game.state.player, move: tickMove });
+        game.applyMove({ gameID: game.id, playerID: game.state.player, move: rightMove });
+        game.applyMove({ gameID: game.id, playerID: game.state.player, move: tickMove });
+        game.applyMove({ gameID: game.id, playerID: game.state.player, move: rightMove });
+        game.applyMove({ gameID: game.id, playerID: game.state.player, move: tickMove });
+        game.applyMove({ gameID: game.id, playerID: game.state.player, move: tickMove });
+        game.applyMove({ gameID: game.id, playerID: game.state.player, move: tickMove });
+        game.applyMove({ gameID: game.id, playerID: game.state.player, move: tickMove });
+        expect(game.state.status).toBe('IN_PROGRESS');
+        expect(game._level._mario._health).toBe(2);
+        expect(game.state.score).toBe(0);
+        expect(game._level._mario._x).toBe(game._level._startingMarioPos[0]);
+        expect(game._level._mario._y).toBe(game._level._startingMarioPos[1]);
+        game.applyMove({ gameID: game.id, playerID: game.state.player, move: tickMove });
+        // LOSE HEART
+
+        game.applyMove({ gameID: game.id, playerID: game.state.player, move: rightMove });
+        game.applyMove({ gameID: game.id, playerID: game.state.player, move: tickMove });
+        game.applyMove({ gameID: game.id, playerID: game.state.player, move: upMove });
+        game.applyMove({ gameID: game.id, playerID: game.state.player, move: tickMove });
+        game.applyMove({ gameID: game.id, playerID: game.state.player, move: rightMove });
+        game.applyMove({ gameID: game.id, playerID: game.state.player, move: tickMove });
+        game.applyMove({ gameID: game.id, playerID: game.state.player, move: upMove });
+        game.applyMove({ gameID: game.id, playerID: game.state.player, move: tickMove });
+        game.applyMove({ gameID: game.id, playerID: game.state.player, move: rightMove });
+        game.applyMove({ gameID: game.id, playerID: game.state.player, move: tickMove });
+        game.applyMove({ gameID: game.id, playerID: game.state.player, move: rightMove });
+        game.applyMove({ gameID: game.id, playerID: game.state.player, move: tickMove });
+        game.applyMove({ gameID: game.id, playerID: game.state.player, move: rightMove });
+        game.applyMove({ gameID: game.id, playerID: game.state.player, move: tickMove });
+        game.applyMove({ gameID: game.id, playerID: game.state.player, move: tickMove });
+        game.applyMove({ gameID: game.id, playerID: game.state.player, move: tickMove });
+        game.applyMove({ gameID: game.id, playerID: game.state.player, move: tickMove });
+        expect(game.state.status).toBe('IN_PROGRESS');
+        expect(game._level._mario._health).toBe(1);
+        expect(game.state.score).toBe(0);
+        expect(game._level._mario._x).toBe(game._level._startingMarioPos[0]);
+        expect(game._level._mario._y).toBe(game._level._startingMarioPos[1]);
+        game.applyMove({ gameID: game.id, playerID: game.state.player, move: tickMove });
+        // LOSE HEART
+
+        game.applyMove({ gameID: game.id, playerID: game.state.player, move: rightMove });
+        game.applyMove({ gameID: game.id, playerID: game.state.player, move: tickMove });
+        game.applyMove({ gameID: game.id, playerID: game.state.player, move: upMove });
+        game.applyMove({ gameID: game.id, playerID: game.state.player, move: tickMove });
+        game.applyMove({ gameID: game.id, playerID: game.state.player, move: rightMove });
+        game.applyMove({ gameID: game.id, playerID: game.state.player, move: tickMove });
+        game.applyMove({ gameID: game.id, playerID: game.state.player, move: upMove });
+        game.applyMove({ gameID: game.id, playerID: game.state.player, move: tickMove });
+        game.applyMove({ gameID: game.id, playerID: game.state.player, move: rightMove });
+        game.applyMove({ gameID: game.id, playerID: game.state.player, move: tickMove });
+        game.applyMove({ gameID: game.id, playerID: game.state.player, move: rightMove });
+        game.applyMove({ gameID: game.id, playerID: game.state.player, move: tickMove });
+        game.applyMove({ gameID: game.id, playerID: game.state.player, move: rightMove });
+        game.applyMove({ gameID: game.id, playerID: game.state.player, move: tickMove });
+        game.applyMove({ gameID: game.id, playerID: game.state.player, move: tickMove });
+        game.applyMove({ gameID: game.id, playerID: game.state.player, move: tickMove });
+        game.applyMove({ gameID: game.id, playerID: game.state.player, move: tickMove });
+        expect(game._level._mario._health).toBe(0);
+        expect(game.state.status).toBe('OVER');
+        expect(game.state.score).toBe(0);
+        // DEAD
       }
     });
   });

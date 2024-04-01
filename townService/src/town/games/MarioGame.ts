@@ -35,15 +35,17 @@ export default class MarioGame extends Game<MarioGameState, MarioMove> {
       row: move.move.row,
       col: move.move.col,
     };
-
+    console.log(newMove);
     this.state = {
       ...this.state,
       moves: [...this.state.moves, newMove],
     };
 
     const direction: string = this._convertToDirection(newMove);
+    console.log(direction);
     this._level.keyPressed(direction);
     this.state.score = this._level._score;
+    console.log(this._level._gameState);
     if (this._level._gameState === 'isWinner') {
       this.state.status = 'OVER';
       this.state.winner = this.state.player;
@@ -63,6 +65,9 @@ export default class MarioGame extends Game<MarioGameState, MarioMove> {
     }
     if (move.row === 0 && move.col === -1) {
       return 'left';
+    }
+    if (move.row === 0 && move.col === 0) {
+      return 'tick';
     }
     throw new Error('INVALID MOVEMENT');
   }

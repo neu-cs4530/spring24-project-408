@@ -1,9 +1,11 @@
 import { MainCharacter } from "../../../../townService/src/town/games/final-project-classes/Character";
-import { GameArea, GameStatus, MarioDirection, MarioGameState, MarioMove } from "../../types/CoveyTownSocket";
+import { GameArea, GameInstance, GameStatus, MarioDirection, MarioGameState, MarioMove } from "../../types/CoveyTownSocket";
 import PlayerController from "../PlayerController";
 import GameAreaController, { GameEventTypes, NO_GAME_IN_PROGRESS_ERROR, PLAYER_NOT_IN_GAME_ERROR } from "./GameAreaController";
-import { Level, LevelOne } from "/Users/kevinandrews/Desktop/Northeastern/Final Year/Software Engineering/FinalProject/spring24-project-408/townService/src/town/games/final-project-classes/Level";
+import { Level, LevelOne } from "/Users/devanshishah/Downloads/cs4530/final project/spring24-project-408/townService/src/town/games/final-project-classes/Level";
 import _ from 'lodash';
+import MarioGameArea from "/Users/devanshishah/Downloads/cs4530/final project/spring24-project-408/townService/src/town/games/MarioGameArea";
+import MarioGame from "../../../../townService/src/town/games/MarioGame";
 
 export type MarioEvents = GameEventTypes & {
   levelChanged: (level: Level) => void;
@@ -54,7 +56,7 @@ export default class MarioAreaController extends GameAreaController<
     get winner(): PlayerController | undefined {
         const winner = this._model.game?.state.winner;
         if (winner) {
-        return this.occupants.find(eachOccupant => eachOccupant.id === winner);
+          return this.occupants.find(eachOccupant => eachOccupant.id === winner);
         }
         return undefined;
     }
@@ -86,6 +88,10 @@ export default class MarioAreaController extends GameAreaController<
       }
       return status;
     }
+
+    get game(): GameInstance<MarioGameState> | undefined{
+      return this._model?.game;
+    }
     
     /**
      * Returns true if the game is empty - no players AND no occupants in the area
@@ -112,6 +118,9 @@ export default class MarioAreaController extends GameAreaController<
         if (move.row === 0 && move.col === -1) {
           return 'left';
         }
+        if (move.row === 0 && move.col === 0) {
+          return 'tick';
+        }
         throw new Error('INVALID MOVEMENT');
       }
     
@@ -132,8 +141,9 @@ export default class MarioAreaController extends GameAreaController<
             newGame.state.moves.forEach(move => {
                 newLevel.keyPressed(this._convertToDirection(move));
             });
-            if(!_.isEqual(newLevel._map, this._level._map)) {
+            if(!_.isEqual(newLevel, this._level)) {
                 this._level = newLevel;
+                console.log(this._level._gameState);
                 this.emit('levelChanged', this._level);
             }
         }
@@ -148,10 +158,18 @@ export default class MarioAreaController extends GameAreaController<
      *
      * @param dir direction to move the gamepiece in
      */
-    public async makeMove(dir: String): Promise<void> {
+    public async makeMove(dir: string): Promise<void> {
         const instanceID = this._instanceID;
         if (!instanceID || this._model.game?.state.status !== 'IN_PROGRESS') {
           throw new Error(NO_GAME_IN_PROGRESS_ERROR);
+        }
+        if (this._level._gameState === 'isWinner') {
+          this._model.game.state.status = 'OVER';
+          this._model.game.state.winner = this._model.game.state.player;
+        }
+        else if (this._level._gameState === 'isDead') {
+          this._model.game.state.status = 'OVER';
+          this._model.game.state.winner = undefined;
         }
 
         let col : MarioDirection;
@@ -167,6 +185,10 @@ export default class MarioAreaController extends GameAreaController<
                 break;
             case 'left':
                 col = -1;
+                row = 0;
+                break;
+            case 'tick':
+                col = 0;
                 row = 0;
                 break;
             default:
