@@ -1,102 +1,174 @@
-import Phaser from 'phaser'
-import { Level } from '../../../../../../townService/src/town/games/final-project-classes/Level'
+import Phaser from 'phaser';
+import { Level } from '../../../../../../townService/src/town/games/final-project-classes/Level';
 import { MainCharacter } from '../../../../../../townService/src/town/games/final-project-classes/Character';
 import MarioAreaController from '../../../../classes/interactable/MarioAreaController';
 
+export default class SpriteLevel extends Phaser.Scene {
+  public model: MarioAreaController;
 
+  public playerSpriteSheet: string;
 
-  export default class SpriteLevel extends Phaser.Scene {
+  public spikeSpriteSheet: string;
 
-    public model: MarioAreaController;
+  public blockSpriteSheet: string;
 
-    public playerSpriteSheet: string;
+  public mapJSON: string;
 
-    public spikeSpriteSheet: string;
+  public groundLayer: Phaser.Tilemaps.TilemapLayer | null;
 
-    public blockSpriteSheet: string;
+  public player: SpriteCharacter;
 
-    public mapJSON: string;
+  public enemies: SpriteCharacter[];
 
-    public groundLayer: Phaser.Tilemaps.TilemapLayer | null;
-    
-    public player: MainCharacter;
-
-
-    constructor(newModel: MarioAreaController, newPlayerSpriteSheet: string, newSpikeSpriteSheet: string, newBlockSpriteSheet: string, newMapJSON: string) {
-        super();
-
-        this.model = newModel;
-        this.playerSpriteSheet = newPlayerSpriteSheet;
-        this.spikeSpriteSheet = newSpikeSpriteSheet;
-        this.blockSpriteSheet = newBlockSpriteSheet;
-        this.mapJSON = newMapJSON;
-        this.groundLayer = null;
-        this.player = newModel._model.game.;
-    }
-
-    preload() {
-        this.load.spritesheet(
-          "player",
-          this.playerSpriteSheet, // Gonna need to change this file "../assets/spritesheets/0x72-industrial-player-32px-extruded.png"
-          {
-            frameWidth: 32,
-            frameHeight: 32,
-            margin: 1,
-            spacing: 2
-          }
-        );
-        this.load.image("spike", this.spikeSpriteSheet); // And this "../assets/images/0x72-industrial-spike.png"
-        this.load.image(
-          "tiles",
-           this.blockSpriteSheet // And this "../assets/tilesets/0x72-industrial-tileset-32px-extruded.png"
-        );
-        this.load.tilemapTiledJSON("map", this.mapJSON); // And this "../assets/tilemaps/platformer.json"
+  public keys:
+    | {
+        up: Phaser.Input.Keyboard.Key;
+        left: Phaser.Input.Keyboard.Key;
+        right: Phaser.Input.Keyboard.Key;
       }
+    | undefined;
 
-    create() {
-        const map = this.make.tilemap({ key: "map" });
-        const tiles = map.addTilesetImage(
-        this.blockSpriteSheet, // Again wrong file "0x72-industrial-tileset-32px-extruded"
-        "tiles"
-        );
+  public disableKeys: boolean;
 
-        if (tiles) {
-            map.createLayer("Background", tiles);
-            this.groundLayer = map.createLayer("Ground", tiles);
-            map.createLayer("Foreground", tiles);
+  constructor(
+    newModel: MarioAreaController,
+    newPlayerSpriteSheet: string,
+    newSpikeSpriteSheet: string,
+    newBlockSpriteSheet: string,
+    newMapJSON: string,
+  ) {
+    super();
 
-            this.player = this.model._mario;
+    this.model = newModel;
+    this.playerSpriteSheet = newPlayerSpriteSheet;
+    this.spikeSpriteSheet = newSpikeSpriteSheet;
+    this.blockSpriteSheet = newBlockSpriteSheet;
+    this.mapJSON = newMapJSON;
+    this.groundLayer = null;
+    this.disableKeys = false;
+    //this.player = newModel._model.game.;
 
-            if (this.groundLayer) {
-                this.groundLayer.setCollisionByProperty({ collides: true });
-                this.physics.world.addCollider(this.player.sprite, this.groundLayer);
-            }
-            else {
-                throw new Error('Ground Layer is Null');
-            }
-        } else {
-            throw new Error('Invalid tileset')
-        } 
-    }
+    // eslint-disable-next-line @typescript-eslint/naming-convention
+    const { LEFT, RIGHT, UP } = Phaser.Input.Keyboard.KeyCodes;
+    this.keys = this.input.keyboard?.addKeys({
+      left: LEFT,
+      right: RIGHT,
+      up: UP,
+    }) as {
+      up: Phaser.Input.Keyboard.Key;
+      left: Phaser.Input.Keyboard.Key;
+      right: Phaser.Input.Keyboard.Key;
+    };
+  }
 
-    update() {
-        if (!this.player._isAlive) return;
+  preload() {
+    this.load.spritesheet(
+      'player',
+      this.playerSpriteSheet, // Gonna need to change this file "../assets/spritesheets/0x72-industrial-player-32px-extruded.png"
+      {
+        frameWidth: 32,
+        frameHeight: 32,
+        margin: 1,
+        spacing: 2,
+      },
+    );
+    this.load.image('spike', this.spikeSpriteSheet); // And this "../assets/images/0x72-industrial-spike.png"
+    this.load.image(
+      'tiles',
+      this.blockSpriteSheet, // And this "../assets/tilesets/0x72-industrial-tileset-32px-extruded.png"
+    );
+    this.load.tilemapTiledJSON('map', this.mapJSON); // And this "../assets/tilemaps/platformer.json"
+  }
 
-        this.model.update(); // This will be this.model.makeMove()
+  create() {
+    const map = this.make.tilemap({ key: 'map' });
+    const tiles = map.addTilesetImage(
+      this.blockSpriteSheet, // Again wrong file "0x72-industrial-tileset-32px-extruded"
+      'tiles',
+    );
 
-        
+    if (tiles) {
+      map.createLayer('Background', tiles);
+      this.groundLayer = map.createLayer('Ground', tiles);
+      map.createLayer('Foreground', tiles);
 
-        this.player.update();
+      this.player = this.model._mario;
 
-
-
-
-
+      if (this.groundLayer) {
+        this.groundLayer.setCollisionByProperty({ collides: true });
+        this.physics.world.addCollider(this.player.sprite, this.groundLayer);
+      } else {
+        throw new Error('Ground Layer is Null');
+      }
+    } else {
+      throw new Error('Invalid tileset');
     }
   }
-  
 
-  /**
+  update() {
+    const curHealth = this.model.mario.health;
+    this.model.level.keyPressed('tick');
+    if (!this.disableKeys) {
+      if (this.keys?.right.isDown) {
+        this.model.makeMove('right');
+      } else if (this.keys?.left.isDown) {
+        this.model.makeMove('left');
+      } else if (this.keys?.up.isDown) {
+        this.model.makeMove('up');
+      }
+    }
+    this.player.update();
+    for (const enemy in this.enemies) {
+      enemy.update();
+    }
+    if (this.model.status === 'OVER') {
+      if (this.model.level._gameState === 'isWinner') {
+        this.add.text(400, 300, `You Win! Score: ${this.model.level._score}`, {
+          fontSize: '32px monospace',
+          color: '#000000',
+          padding: { x: 20, y: 10 },
+          backgroundColor: '#ffffff',
+        });
+      } else if (this.model.level._gameState === 'isDead') {
+        this.add
+          .text(400, 300, 'You Lose :(', {
+            fontSize: '32px monospace',
+            color: '#000000',
+            padding: { x: 20, y: 10 },
+            backgroundColor: '#ffffff',
+          })
+          .setScrollFactor(0);
+      }
+    } else if (this.model.status === 'IN_PROGRESS' && curHealth !== this.model.mario.health) {
+      this.scene.restart();
+    }
+    let healthString: string;
+    switch (this.model.mario._health) {
+      case 3:
+        healthString = '♡ ♡ ♡';
+        break;
+      case 2:
+        healthString = '♡ ♡';
+        break;
+      case 1:
+        healthString = '♡';
+        break;
+      default:
+        healthString = '';
+    }
+
+    this.add
+      .text(16, 16, healthString, {
+        font: '18px monospace',
+        color: '#ff0000',
+        padding: { x: 20, y: 10 },
+        backgroundColor: '#ffffff',
+      })
+      .setScrollFactor(0);
+  }
+}
+
+/**
    *            Sprite.ts <-- onTick() [update()]
    *                ^
 *                   |
@@ -113,7 +185,7 @@ import MarioAreaController from '../../../../classes/interactable/MarioAreaContr
         SPRITE_MC.onTick()
    */
 
-  /**
+/**
    * import Phaser from "phaser";
 
  * A class that wraps up our 2D platforming player logic. It creates, animates and moves a sprite in
