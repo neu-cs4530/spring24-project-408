@@ -1,11 +1,13 @@
 import Phaser from 'phaser'
 import { Level } from '../../../../../../townService/src/town/games/final-project-classes/Level'
+import { MainCharacter } from '../../../../../../townService/src/town/games/final-project-classes/Character';
+import MarioAreaController from '../../../../classes/interactable/MarioAreaController';
 
 
 
   export default class SpriteLevel extends Phaser.Scene {
 
-    public model: Level;
+    public model: MarioAreaController;
 
     public playerSpriteSheet: string;
 
@@ -15,12 +17,12 @@ import { Level } from '../../../../../../townService/src/town/games/final-projec
 
     public mapJSON: string;
 
-    public groundLayer: Phaser.Tilemaps.TilemapLayer | null | undefined;
+    public groundLayer: Phaser.Tilemaps.TilemapLayer | null;
     
-    public player: PlayerSprite | undefined;
+    public player: MainCharacter;
 
 
-    constructor(newModel: Level, newPlayerSpriteSheet: string, newSpikeSpriteSheet: string, newBlockSpriteSheet: string, newMapJSON: string) {
+    constructor(newModel: MarioAreaController, newPlayerSpriteSheet: string, newSpikeSpriteSheet: string, newBlockSpriteSheet: string, newMapJSON: string) {
         super();
 
         this.model = newModel;
@@ -28,7 +30,8 @@ import { Level } from '../../../../../../townService/src/town/games/final-projec
         this.spikeSpriteSheet = newSpikeSpriteSheet;
         this.blockSpriteSheet = newBlockSpriteSheet;
         this.mapJSON = newMapJSON;
-
+        this.groundLayer = null;
+        this.player = newModel._model.game.;
     }
 
     preload() {
@@ -61,17 +64,54 @@ import { Level } from '../../../../../../townService/src/town/games/final-projec
             map.createLayer("Background", tiles);
             this.groundLayer = map.createLayer("Ground", tiles);
             map.createLayer("Foreground", tiles);
+
+            this.player = this.model._mario;
+
+            if (this.groundLayer) {
+                this.groundLayer.setCollisionByProperty({ collides: true });
+                this.physics.world.addCollider(this.player.sprite, this.groundLayer);
+            }
+            else {
+                throw new Error('Ground Layer is Null');
+            }
         } else {
             throw new Error('Invalid tileset')
         } 
-        
-        this.player = this.model._mario.sprite;
+    }
 
-        this.groundLayer?.setCollisionByProperty({ collides: true });
-        this.physics.world.addCollider(this.player.sprite, this.groundLayer);
+    update() {
+        if (!this.player._isAlive) return;
+
+        this.model.update(); // This will be this.model.makeMove()
+
+        
+
+        this.player.update();
+
+
+
+
+
     }
   }
   
+
+  /**
+   *            Sprite.ts <-- onTick() [update()]
+   *                ^
+*                   |
+*                MarioAreaController <-- onTick() [update()]
+*                   ^ 
+                    |
+                   Level <-- onTick()
+                    ^
+                    |
+
+        MC          Block       Enemy
+        ^
+        |
+        SPRITE_MC.onTick()
+   */
 
   /**
    * import Phaser from "phaser";
