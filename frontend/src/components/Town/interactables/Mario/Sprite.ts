@@ -2,6 +2,8 @@ import Phaser from 'phaser';
 import { Level } from '../../../../../../townService/src/town/games/final-project-classes/Level';
 import { MainCharacter } from '../../../../../../townService/src/town/games/final-project-classes/Character';
 import MarioAreaController from '../../../../classes/interactable/MarioAreaController';
+import SpriteEnemy from './SpriteEnemy'
+import SpritePlayer from './SpritePlayer'
 
 export default class SpriteLevel extends Phaser.Scene {
   public model: MarioAreaController;
@@ -16,9 +18,9 @@ export default class SpriteLevel extends Phaser.Scene {
 
   public groundLayer: Phaser.Tilemaps.TilemapLayer | null;
 
-  public player: SpriteCharacter;
+  public player: SpritePlayer;
 
-  public enemies: SpriteCharacter[];
+  public enemies: SpriteEnemy[];
 
   public keys:
     | {
@@ -92,13 +94,13 @@ export default class SpriteLevel extends Phaser.Scene {
       this.groundLayer = map.createLayer('Ground', tiles);
       map.createLayer('Foreground', tiles);
 
-      this.player = new SpriteCharacter(this, this.model.mario._x, this.model.mario._y);
+      this.player = new SpritePlayer(this, this.model.mario._x, this.model.mario._y);
 
       if (this.groundLayer) {
         this.groundLayer?.setCollisionByProperty({ collides: true });
-        this.physics.world.addCollider(this.player, this.groundLayer);
+        this.physics.world.addCollider(this.player._sprite, this.groundLayer);
 
-        this.cameras.main.startFollow(this.player.sprite);
+        this.cameras.main.startFollow(this.player._sprite);
         this.cameras.main.setBounds(0, 0, map.widthInPixels, map.heightInPixels); // Needs to be finished, need to make the bounds == the whole maps look at Camera.useBounds()
 
         this.add.text(32, 32, 'Arrows to Move', {
@@ -108,7 +110,7 @@ export default class SpriteLevel extends Phaser.Scene {
             backgroundColor: '#ffffff',
         })
         .setScrollFactor(0);
-        
+
         for (const enemy of this.model.level._enemies) {
             this.enemies.push(new SpriteEnemy(this, enemy.x, enemy.y))
         }
@@ -134,7 +136,7 @@ export default class SpriteLevel extends Phaser.Scene {
       }
     }
     this.player.update();
-    for (const enemy in this.enemies) {
+    for (const enemy of this.enemies) {
       enemy.update();
     }
     if (this.model.status === 'OVER') {
