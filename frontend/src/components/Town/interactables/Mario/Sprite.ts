@@ -1,10 +1,7 @@
 import Phaser from 'phaser';
-import { Level } from '../../../../../../townService/src/town/games/final-project-classes/Level';
-import { MainCharacter } from '../../../../../../townService/src/town/games/final-project-classes/Character';
 import MarioAreaController from '../../../../classes/interactable/MarioAreaController';
-import SpriteEnemy from './SpriteEnemy'
-import SpritePlayer from './SpritePlayer'
-
+import SpritePlayer from './SpritePlayer';
+import SpriteEnemy from './SpriteEnemy';
 export default class SpriteLevel extends Phaser.Scene {
   public model: MarioAreaController;
 
@@ -48,7 +45,8 @@ export default class SpriteLevel extends Phaser.Scene {
     this.mapJSON = newMapJSON;
     this.groundLayer = null;
     this.disableKeys = false;
-    //this.player = newModel._model.game.;
+    this.enemies = [];
+    this.player = new SpritePlayer(this, this.model.mario._x, this.model.mario._y);
 
     // eslint-disable-next-line @typescript-eslint/naming-convention
     const { LEFT, RIGHT, UP } = Phaser.Input.Keyboard.KeyCodes;
@@ -83,6 +81,8 @@ export default class SpriteLevel extends Phaser.Scene {
   }
 
   create() {
+    this.enemies = this.model.level._enemies.map(enemy => new SpriteEnemy(this, enemy.x, enemy.y));
+    this.player = new SpritePlayer(this, this.model.mario._x, this.model.mario._y);
     const map = this.make.tilemap({ key: 'map' });
     const tiles = map.addTilesetImage(
       this.blockSpriteSheet, // Again wrong file "0x72-industrial-tileset-32px-extruded"
@@ -94,27 +94,22 @@ export default class SpriteLevel extends Phaser.Scene {
       this.groundLayer = map.createLayer('Ground', tiles);
       map.createLayer('Foreground', tiles);
 
-      this.player = new SpritePlayer(this, this.model.mario._x, this.model.mario._y);
-
       if (this.groundLayer) {
         this.groundLayer?.setCollisionByProperty({ collides: true });
-        this.physics.world.addCollider(this.player._sprite, this.groundLayer);
+        this.physics.world.addCollider(this.player.sprite, this.groundLayer);
 
-        this.cameras.main.startFollow(this.player._sprite);
+        this.cameras.main.startFollow(this.player.sprite);
         this.cameras.main.setBounds(0, 0, map.widthInPixels, map.heightInPixels); // Needs to be finished, need to make the bounds == the whole maps look at Camera.useBounds()
 
-        this.add.text(32, 32, 'Arrows to Move', {
+        // change based on render
+        this.add
+          .text(32, 32, 'Arrows to Move', {
             font: '18px monospace',
             color: '#ff0000',
             padding: { x: 20, y: 10 },
             backgroundColor: '#ffffff',
-        })
-        .setScrollFactor(0);
-
-        for (const enemy of this.model.level._enemies) {
-            this.enemies.push(new SpriteEnemy(this, enemy.x, enemy.y))
-        }
-        
+          })
+          .setScrollFactor(0);
       } else {
         throw new Error('Ground Layer is Null');
       }

@@ -1,60 +1,58 @@
-import Phaser from 'phaser';
-import { Level } from '../../../../../../townService/src/town/games/final-project-classes/Level';
-import { MainCharacter } from '../../../../../../townService/src/town/games/final-project-classes/Character';
-import MarioAreaController from '../../../../classes/interactable/MarioAreaController';
 import SpriteLevel from './Sprite';
 import { GameUnit } from '../../../../../../townService/src/town/games/final-project-classes/GameObject';
-import { throws } from 'assert';
 
 export default class SpritePlayer {
-    _scene: SpriteLevel;
+  _scene: SpriteLevel;
 
-    _x: GameUnit;
+  _x: GameUnit;
 
-    _y: GameUnit;
+  _y: GameUnit;
 
-    _sprite;
+  _sprite;
 
-    constructor(scene: SpriteLevel, x: GameUnit, y: GameUnit) {
-        this._scene = scene;
-        this._x = x;
-        this._y = y;
-        this._sprite = this._scene.physics.add
-        .sprite(x, y, "player", 0)
-        .setDrag(1000,0)
-        .setMaxVelocity(300,400)
-        .setSize(18, 24)
-        .setOffset(7, 9);
+  constructor(scene: SpriteLevel, x: GameUnit, y: GameUnit) {
+    this._scene = scene;
+    this._x = x;
+    this._y = y;
+    this._sprite = this._scene.physics.add
+      .sprite(x, y, 'player', 0)
+      .setDrag(1000, 0)
+      .setMaxVelocity(300, 400)
+      .setSize(18, 24)
+      .setOffset(7, 9);
+  }
+
+  get sprite() {
+    return this._sprite;
+  }
+
+  update() {
+    if (!this._scene.model.mario.isAlive) {
+      this._scene.player.freeze();
+      this.delete();
+    } else {
+      if (this._scene.keys?.right.isDown) {
+        this.sprite.setVelocityX(160);
+        this.sprite.setFlipX(false);
+        //change velocity
+      } else if (this._scene.keys?.left.isDown) {
+        this.sprite.setVelocityX(-160);
+        this.sprite.setFlipX(true);
+        //change velocity
+      } else if (this._scene.keys?.up.isDown) {
+        this.sprite.setVelocityY(-160);
+        //change velocity
+      } else {
+        this.sprite.setAccelerationX(0);
+      }
     }
+  }
 
-    create() {
-        
-    }
+  freeze() {
+    this._sprite.body.moves = false;
+  }
 
-    update() {
-        if(!this._scene.model.mario.isAlive) {
-            this._scene.player.freeze();
-            this.delete();
-        } else {
-            if(this._scene.keys?.right.isDown) {
-                //change velocity
-            } else if (this._scene.keys?.left.isDown) {
-                //change velocity
-            } else if (this._scene.keys?.up.isDown) {
-                //change velocity
-            }
-        }
-    }
-
-    freeze() {
-        this._sprite.body.moves = false;
-    }
-
-    delete() {
-        this._sprite.destroy();
-    }
-
-
-
-
+  delete() {
+    this._sprite.destroy();
+  }
 }

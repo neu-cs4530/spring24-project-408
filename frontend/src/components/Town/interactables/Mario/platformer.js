@@ -1,0 +1,16 @@
+/* eslint-disable prettier/prettier */
+let levelArray = [
+    [undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, { "type": "CompletionBlock", "x": 13, "y": 0 }],
+    [undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, { "type": "CompletionBlock", "x": 13, "y": 1 }],
+    [undefined, undefined, undefined, { "type": "PipeBlock", "x": 3, "y": 2 }, undefined, undefined, undefined, undefined, { "type": "PlatformBlock", "x": 8, "y": 2 }, { "type": "PlatformBlock", "x": 9, "y": 2 }, undefined, undefined, undefined, { "type": "CompletionBlock", "x": 13, "y": 2 }],
+    [{ "type": "Mario", "x": 0, "y": 3 }, undefined, { "type": "PlatformBlock", "x": 2, "y": 3 }, { "type": "PlatformBlock", "x": 3, "y": 3 }, undefined, undefined, undefined, { "type": "Goomba", "x": 7, "y": 3 }, undefined, undefined, undefined, undefined, undefined, { "type": "CompletionBlock", "x": 13, "y": 3 }],
+    [{ "type": "PlatformBlock", "x": 0, "y": 4 }, { "type": "PlatformBlock", "x": 1, "y": 4 }, { "type": "PlatformBlock", "x": 2, "y": 4 }, { "type": "PlatformBlock", "x": 3, "y": 4 }, { "type": "PlatformBlock", "x": 4, "y": 4 }, undefined, { "type": "PlatformBlock", "x": 6, "y": 4 }, { "type": "PlatformBlock", "x": 7, "y": 4 }, { "type": "PlatformBlock", "x": 8, "y": 4 }, { "type": "PlatformBlock", "x": 9, "y": 4 }, { "type": "PlatformBlock", "x": 10, "y": 4 }, { "type": "PlatformBlock", "x": 11, "y": 4 }, { "type": "PlatformBlock", "x": 12, "y": 4 }, { "type": "CompletionBlock", "x": 13, "y": 4 }],
+    [{ "type": "PlatformBlock", "x": 0, "y": 5 }, { "type": "PlatformBlock", "x": 1, "y": 5 }, { "type": "PlatformBlock", "x": 2, "y": 5 }, { "type": "PlatformBlock", "x": 3, "y": 5 }, { "type": "PlatformBlock", "x": 4, "y": 5 }, undefined, { "type": "PlatformBlock", "x": 6, "y": 5 }, { "type": "PlatformBlock", "x": 7, "y": 5 }, { "type": "PlatformBlock", "x": 8, "y": 5 }, { "type": "PlatformBlock", "x": 9, "y": 5 }, { "type": "PlatformBlock", "x": 10, "y": 5 }, { "type": "PlatformBlock", "x": 11, "y": 5 }, { "type": "PlatformBlock", "x": 12, "y": 5 }, { "type": "PlatformBlock", "x": 13, "y": 5 }],
+    [{ "type": "PlatformBlock", "x": 0, "y": 6 }, { "type": "PlatformBlock", "x": 1, "y": 6 }, { "type": "PlatformBlock", "x": 2, "y": 6 }, { "type": "PlatformBlock", "x": 3, "y": 6 }, { "type": "PlatformBlock", "x": 4, "y": 6 }, { "type": "DeathBlock", "x": 5, "y": 6 }, { "type": "PlatformBlock", "x": 6, "y": 6 }, { "type": "PlatformBlock", "x": 7, "y": 6 }, { "type": "PlatformBlock", "x": 8, "y": 6 }, { "type": "PlatformBlock", "x": 9, "y": 6 }, { "type": "PlatformBlock", "x": 10, "y": 6 }, { "type": "PlatformBlock", "x": 11, "y": 6 }, { "type": "PlatformBlock", "x": 12, "y": 6 }, { "type": "PlatformBlock", "x": 13, "y": 6 }]
+];
+
+// Convert the 2D array to JSON string
+let jsonString = JSON.stringify(levelArray);
+
+// Log the JSON string
+console.log(jsonString);
