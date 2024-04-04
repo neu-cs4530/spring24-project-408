@@ -1,0 +1,112 @@
+{ "compressionlevel":-1,
+ "height":7,
+ "infinite":false,
+ "layers":[
+        {
+         "data":[371, 372, 373, 235, 235, 235, 235, 235, 214, 214, 214, 214, 214,
+            393, 394, 395, 235, 235, 235, 235, 235, 214, 214, 214, 214, 214,
+            415, 416, 417, 479, 235, 235, 235, 235, 214, 214, 214, 214, 214,
+            235, 235, 235, 235, 235, 235, 235, 235, 235, 235, 235, 214, 214,
+            235, 235, 235, 235, 235, 235, 235, 235, 235, 235, 235, 214, 214,
+            235, 235, 235, 235, 235, 235, 235, 235, 235, 235, 235, 214, 214,
+            235, 235, 235, 235, 235, 479, 235, 235, 235, 235, 235, 214, 214],
+         "height":7,
+         "id":2,
+         "locked":true,
+         "name":"background",
+         "opacity":1,
+         "type":"tilelayer",
+         "visible":true,
+         "width":13,
+         "x":0,
+         "y":0
+        }, 
+        {
+         "data":[0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 152,
+            0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 152,
+            0, 0, 0, 8, 0, 0, 0, 0, 4, 4, 0, 0, 152,
+            0, 0, 4, 4, 0, 0, 0, 0, 0, 0, 0, 0, 152,
+            4, 4, 4, 4, 4, 0, 4, 4, 4, 4, 4, 4, 152,
+            4, 4, 4, 4, 4, 0, 4, 4, 4, 4, 4, 4, 152,
+            4, 4, 4, 4, 4, 654, 4, 4, 4, 4, 4, 4, 152],
+         "height":7,
+         "id":1,
+         "locked":true,
+         "name":"ground",
+         "opacity":1,
+         "type":"tilelayer",
+         "visible":true,
+         "width":13,
+         "x":0,
+         "y":0
+        }, 
+        {
+         "data":[0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+            0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+            0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+            0, 0, 0, 0, 0, 0, 0, 65, 0, 0, 0, 0, 0,
+            0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+            0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+            0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+         "height":7,
+         "id":4,
+         "locked":true,
+         "name":"characters",
+         "opacity":1,
+         "type":"tilelayer",
+         "visible":true,
+         "width":13,
+         "x":0,
+         "y":0
+        },
+        {
+        "draworder":"topdown",
+        "id":3,
+        "name":"Objects",
+        "objects":[
+            {
+                "height":0,
+                "id":1,
+                "name":"Spawn Point",
+                "point":true,
+                "rotation":0,
+                "type":"",
+                "visible":true,
+                "width":0,
+                "x":0,
+                "y":48
+            }
+        ]
+        }],
+        "nextlayerid":6,
+        "nextobjectid":1,
+        "orientation":"orthogonal",
+        "renderorder":"right-down",
+        "tiledversion":"1.10.2",
+        "tileheight":16,
+        "tilesets":[
+        {
+         "firstgid":1,
+         "source":"..\/..\/..\/mario_back.tsx"
+        }, 
+        {
+         "firstgid":65,
+         "source":"..\/..\/..\/enemies.tsx"
+        }, 
+        {
+         "firstgid":149,
+         "source":"..\/..\/..\/completion.tsx"
+        }, 
+        {
+         "firstgid":164,
+         "source":"..\/..\/..\/mario.tsx"
+        }, 
+        {
+         "firstgid":190,
+         "source":"..\/..\/..\/background.tsx"
+        }],
+ "tilewidth":16,
+ "type":"map",
+ "version":"1.10",
+ "width":13
+}

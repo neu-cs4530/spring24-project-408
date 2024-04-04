@@ -66,8 +66,8 @@ export default class SpriteLevel extends Phaser.Scene {
       'player',
       this.playerSpriteSheet, // Gonna need to change this file "../assets/spritesheets/0x72-industrial-player-32px-extruded.png"
       {
-        frameWidth: 32,
-        frameHeight: 32,
+        frameWidth: 16,
+        frameHeight: 16,
         margin: 1,
         spacing: 2,
       },
@@ -103,10 +103,10 @@ export default class SpriteLevel extends Phaser.Scene {
 
         // change based on render
         this.add
-          .text(32, 32, 'Arrows to Move', {
+          .text(8, 8, 'Arrows to Move', {
             font: '18px monospace',
             color: '#ff0000',
-            padding: { x: 20, y: 10 },
+            padding: { x: 4, y: 4 },
             backgroundColor: '#ffffff',
           })
           .setScrollFactor(0);
@@ -139,7 +139,7 @@ export default class SpriteLevel extends Phaser.Scene {
         this.add.text(400, 300, `You Win! Score: ${this.model.level._score}`, {
           fontSize: '32px monospace',
           color: '#000000',
-          padding: { x: 20, y: 10 },
+          padding: { x: 8, y: 8 },
           backgroundColor: '#ffffff',
         });
       } else if (this.model.level._gameState === 'isDead') {
@@ -147,7 +147,7 @@ export default class SpriteLevel extends Phaser.Scene {
           .text(400, 300, 'You Lose :(', {
             fontSize: '32px monospace',
             color: '#000000',
-            padding: { x: 20, y: 10 },
+            padding: { x: 8, y: 8 },
             backgroundColor: '#ffffff',
           })
           .setScrollFactor(0);
@@ -171,10 +171,10 @@ export default class SpriteLevel extends Phaser.Scene {
     }
 
     this.add
-      .text(16, 16, healthString, {
+      .text(160, 160, healthString, {
         font: '18px monospace',
         color: '#ff0000',
-        padding: { x: 20, y: 10 },
+        padding: { x: 8, y: 8 },
         backgroundColor: '#ffffff',
       })
       .setScrollFactor(0);
