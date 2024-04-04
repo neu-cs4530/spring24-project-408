@@ -27,6 +27,7 @@ import ConnectFourArea from './ConnectFour/ConnectFourArea';
 import GameAreaInteractable from './GameArea';
 import Leaderboard from './Leaderboard';
 import TicTacToeArea from './TicTacToe/TicTacToeArea';
+import MarioArea from './Mario/MarioArea';
 
 export const INVALID_GAME_AREA_TYPE_MESSAGE = 'Invalid game area type';
 
@@ -96,7 +97,9 @@ function GameArea({ interactableID }: { interactableID: InteractableID }): JSX.E
       </Accordion>
       <Flex>
         <Box>
-          {gameAreaController.toInteractableAreaModel().type === 'ConnectFourArea' ? (
+          {gameAreaController.toInteractableAreaModel().type === 'MarioArea' ? (
+            <MarioArea interactableID={interactableID} />
+          ) : gameAreaController.toInteractableAreaModel().type === 'ConnectFourArea' ? (
             <ConnectFourArea interactableID={interactableID} />
           ) : gameAreaController.toInteractableAreaModel().type === 'TicTacToeArea' ? (
             <TicTacToeArea interactableID={interactableID} />
