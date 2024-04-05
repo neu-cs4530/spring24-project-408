@@ -69,7 +69,7 @@
         {
          "columns":15,
          "firstgid":1,
-         "image": "/Users/devanshishah/Downloads/cs4530/final project/spring24-project-408/frontend/src/components/Town/interactables/Mario/MarioAssets/Level.png",
+         "image": "/assets/tilesets/Level.png",
          "imageheight":240,
          "imagewidth":240,
          "margin":0,
