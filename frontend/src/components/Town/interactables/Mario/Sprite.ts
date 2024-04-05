@@ -59,7 +59,10 @@ export default class SpriteLevel extends Phaser.Scene {
       'tiles',
       '/Users/devanshishah/Downloads/cs4530/final project/spring24-project-408/frontend/src/components/Town/interactables/Mario/MarioAssets/Level.png', // And this "../assets/tilesets/0x72-industrial-tileset-32px-extruded.png"
     );
-    this.load.tilemapTiledJSON('map', './MarioAssets/platformer.json'); // And this "../assets/tilemaps/platformer.json"
+    this.load.tilemapTiledJSON(
+      'map',
+      '/Users/devanshishah/Downloads/cs4530/final project/spring24-project-408/frontend/src/components/Town/interactables/Mario/MarioAssets/platformer.json',
+    ); // And this "../assets/tilemaps/platformer.json"
   }
 
   create() {
@@ -81,9 +84,10 @@ export default class SpriteLevel extends Phaser.Scene {
     }
 
     const tiles = map.addTilesetImage(
-      'Level', // Again wrong file "0x72-industrial-tileset-32px-extruded"
+      '/Users/devanshishah/Downloads/cs4530/final project/spring24-project-408/frontend/src/components/Town/interactables/Mario/MarioAssets/Level.png', // Again wrong file "0x72-industrial-tileset-32px-extruded"
       'tiles',
     );
+    console.log(tiles);
 
     if (tiles) {
       map.createLayer('background', tiles);
