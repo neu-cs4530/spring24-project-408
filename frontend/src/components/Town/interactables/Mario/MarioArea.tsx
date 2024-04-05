@@ -5,9 +5,7 @@ import PlayerController from '../../../../classes/PlayerController';
 import { useInteractableAreaController } from '../../../../classes/TownController';
 import useTownController from '../../../../hooks/useTownController';
 import { GameStatus, InteractableID } from '../../../../types/CoveyTownSocket';
-import SpriteLevel from './Sprite';
-import SpritePlayer from './SpritePlayer';
-import SpriteEnemy from './SpriteEnemy';
+import App from './MarioDisplay';
 
 export default function MarioArea({
   interactableID,
@@ -99,11 +97,12 @@ export default function MarioArea({
       <List aria-label='list of players in the game'>
         <ListItem>Mario: {player?.userName || '(No player yet!)'}</ListItem>
       </List>
-      <div id='game-container' />
-      <script src='https://cdn.jsdelivr.net/npm/phaser@3.55.2/dist/phaser.min.js'></script>
-      <script src='./index.ts' type='module'></script>
+      <App gameAreaController={gameAreaController} />
     </>
   );
 }
 
 //<ConnectFourBoard gameAreaController={gameAreaController} />
+//<div id='game-container' />
+//<script src='https://cdn.jsdelivr.net/npm/phaser@3.55.2/dist/phaser.min.js'></script>
+//<script src='./index.ts' type='module'></script>

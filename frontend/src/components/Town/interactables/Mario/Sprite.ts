@@ -5,17 +5,9 @@ import SpriteEnemy from './SpriteEnemy';
 export default class SpriteLevel extends Phaser.Scene {
   public model: MarioAreaController;
 
-  public playerSpriteSheet: string;
-
-  public spikeSpriteSheet: string;
-
-  public blockSpriteSheet: string;
-
-  public mapJSON: string;
-
   public groundLayer: Phaser.Tilemaps.TilemapLayer | null;
 
-  public player: SpritePlayer;
+  public player: SpritePlayer | undefined;
 
   public enemies: SpriteEnemy[];
 
@@ -29,25 +21,48 @@ export default class SpriteLevel extends Phaser.Scene {
 
   public disableKeys: boolean;
 
-  constructor(
-    newModel: MarioAreaController,
-    newPlayerSpriteSheet: string,
-    newSpikeSpriteSheet: string,
-    newBlockSpriteSheet: string,
-    newMapJSON: string,
-  ) {
+  constructor(newModel: MarioAreaController) {
     super();
 
     this.model = newModel;
-    this.playerSpriteSheet = newPlayerSpriteSheet;
-    this.spikeSpriteSheet = newSpikeSpriteSheet;
-    this.blockSpriteSheet = newBlockSpriteSheet;
-    this.mapJSON = newMapJSON;
     this.groundLayer = null;
     this.disableKeys = false;
     this.enemies = [];
-    this.player = new SpritePlayer(this, this.model.mario._x, this.model.mario._y);
 
+    // eslint-disable-next-line @typescript-eslint/naming-convention
+    /** 
+    const { LEFT, RIGHT, UP } = Phaser.Input.Keyboard.KeyCodes;
+    this.keys = this.input.keyboard?.addKeys({
+      left: LEFT,
+      right: RIGHT,
+      up: UP,
+    }) as {
+      up: Phaser.Input.Keyboard.Key;
+      left: Phaser.Input.Keyboard.Key;
+      right: Phaser.Input.Keyboard.Key;
+    };
+    */
+  }
+
+  preload() {
+    this.load.spritesheet(
+      'player',
+      './MarioAssets/Mario.png', // Gonna need to change this file "../assets/spritesheets/0x72-industrial-player-32px-extruded.png"
+      {
+        frameWidth: 16,
+        frameHeight: 16,
+        margin: 1,
+        spacing: 2,
+      },
+    );
+    this.load.image(
+      'tiles',
+      '/Users/devanshishah/Downloads/cs4530/final project/spring24-project-408/frontend/src/components/Town/interactables/Mario/MarioAssets/Level.png', // And this "../assets/tilesets/0x72-industrial-tileset-32px-extruded.png"
+    );
+    this.load.tilemapTiledJSON('map', './MarioAssets/platformer.json'); // And this "../assets/tilemaps/platformer.json"
+  }
+
+  create() {
     // eslint-disable-next-line @typescript-eslint/naming-convention
     const { LEFT, RIGHT, UP } = Phaser.Input.Keyboard.KeyCodes;
     this.keys = this.input.keyboard?.addKeys({
@@ -59,40 +74,25 @@ export default class SpriteLevel extends Phaser.Scene {
       left: Phaser.Input.Keyboard.Key;
       right: Phaser.Input.Keyboard.Key;
     };
-  }
 
-  preload() {
-    this.load.spritesheet(
-      'player',
-      this.playerSpriteSheet, // Gonna need to change this file "../assets/spritesheets/0x72-industrial-player-32px-extruded.png"
-      {
-        frameWidth: 16,
-        frameHeight: 16,
-        margin: 1,
-        spacing: 2,
-      },
-    );
-    this.load.image('spike', this.spikeSpriteSheet); // And this "../assets/images/0x72-industrial-spike.png"
-    this.load.image(
-      'tiles',
-      this.blockSpriteSheet, // And this "../assets/tilesets/0x72-industrial-tileset-32px-extruded.png"
-    );
-    this.load.tilemapTiledJSON('map', this.mapJSON); // And this "../assets/tilemaps/platformer.json"
-  }
-
-  create() {
-    this.enemies = this.model.level._enemies.map(enemy => new SpriteEnemy(this, enemy.x, enemy.y));
-    this.player = new SpritePlayer(this, this.model.mario._x, this.model.mario._y);
     const map = this.make.tilemap({ key: 'map' });
+    if (!map) {
+      throw new Error('Invaild map');
+    }
+
     const tiles = map.addTilesetImage(
-      this.blockSpriteSheet, // Again wrong file "0x72-industrial-tileset-32px-extruded"
+      'Level', // Again wrong file "0x72-industrial-tileset-32px-extruded"
       'tiles',
     );
 
     if (tiles) {
-      map.createLayer('Background', tiles);
-      this.groundLayer = map.createLayer('Ground', tiles);
-      map.createLayer('Foreground', tiles);
+      map.createLayer('background', tiles);
+      this.groundLayer = map.createLayer('ground', tiles);
+
+      this.enemies = this.model.level._enemies.map(
+        enemy => new SpriteEnemy(this, enemy.x, enemy.y),
+      );
+      this.player = new SpritePlayer(this, this.model.mario._x, this.model.mario._y);
 
       if (this.groundLayer) {
         this.groundLayer?.setCollisionByProperty({ collides: true });
@@ -130,7 +130,7 @@ export default class SpriteLevel extends Phaser.Scene {
         this.model.makeMove('up');
       }
     }
-    this.player.update();
+    this.player?.update();
     for (const enemy of this.enemies) {
       enemy.update();
     }
