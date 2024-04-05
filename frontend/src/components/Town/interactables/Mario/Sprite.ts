@@ -171,7 +171,7 @@ export default class SpriteLevel extends Phaser.Scene {
     }
 
     this.add
-      .text(160, 160, healthString, {
+      .text(160, 16, healthString, {
         font: '18px monospace',
         color: '#ff0000',
         padding: { x: 8, y: 8 },
