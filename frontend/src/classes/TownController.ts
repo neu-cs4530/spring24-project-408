@@ -30,6 +30,7 @@ import {
 import {
   isConnectFourArea,
   isConversationArea,
+  isMarioArea,
   isTicTacToeArea,
   isViewingArea,
 } from '../types/TypeUtils';
@@ -40,6 +41,7 @@ import InteractableAreaController, {
   BaseInteractableEventMap,
   GenericInteractableAreaController,
 } from './interactable/InteractableAreaController';
+import MarioAreaController from './interactable/MarioAreaController';
 import TicTacToeAreaController from './interactable/TicTacToeAreaController';
 import ViewingAreaController from './interactable/ViewingAreaController';
 import PlayerController from './PlayerController';
@@ -630,6 +632,10 @@ export default class TownController extends (EventEmitter as new () => TypedEmit
           } else if (isConnectFourArea(eachInteractable)) {
             this._interactableControllers.push(
               new ConnectFourAreaController(eachInteractable.id, eachInteractable, this),
+            );
+          } else if (isMarioArea(eachInteractable)) {
+            this._interactableControllers.push(
+              new MarioAreaController(eachInteractable.id, eachInteractable, this),
             );
           }
         });

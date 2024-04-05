@@ -1,4 +1,4 @@
-import { MainCharacter } from '../../../../townService/src/town/games/final-project-classes/Character';
+import { Enemy, MainCharacter } from '../../components/Town/interactables/Mario/final-project-classes/Character';
 import {
   GameArea,
   GameInstance,
@@ -16,10 +16,8 @@ import GameAreaController, {
 import {
   Level,
   LevelOne,
-} from '/Users/devanshishah/Downloads/cs4530/final project/spring24-project-408/townService/src/town/games/final-project-classes/Level';
+} from '../../components/Town/interactables/Mario/final-project-classes/Level';
 import _ from 'lodash';
-import MarioGameArea from '/Users/devanshishah/Downloads/cs4530/final project/spring24-project-408/townService/src/town/games/MarioGameArea';
-import MarioGame from '../../../../townService/src/town/games/MarioGame';
 
 export type MarioEvents = GameEventTypes & {
   levelChanged: (level: Level) => void;
@@ -45,6 +43,10 @@ export default class MarioAreaController extends GameAreaController<MarioGameSta
    */
   get mario(): MainCharacter {
     return this._level._mario;
+  }
+
+  get enemies(): Enemy[] {
+    return this._level._enemies;
   }
 
   /**

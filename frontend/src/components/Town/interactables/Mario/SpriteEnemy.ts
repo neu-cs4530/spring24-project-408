@@ -1,5 +1,5 @@
 import SpriteLevel from './Sprite';
-import { GameUnit } from '../../../../../../townService/src/town/games/final-project-classes/GameObject';
+import { GameUnit } from './final-project-classes/GameObject';
 
 export default class SpriteEnemy {
   _scene: SpriteLevel;
