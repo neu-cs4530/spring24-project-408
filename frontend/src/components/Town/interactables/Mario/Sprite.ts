@@ -186,5 +186,16 @@ export default class SpriteLevel extends Phaser.Scene {
         backgroundColor: '#ffffff',
       })
       .setScrollFactor(0);
+
+
+    const scoreString: string = "Score: ";
+    this.add
+    .text(300, 216, scoreString + this.model.level._score.toString(), {
+      font: '16px monospace',
+      color: '#ff0000',
+      padding: { x: 2, y: 2 },
+      backgroundColor: '#ffffff',
+    })
+    .setScrollFactor(0);
   }
 }
