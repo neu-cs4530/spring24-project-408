@@ -10,13 +10,13 @@ export type MarioGameProps = {
   gameAreaController: MarioAreaController;
 };
 
-//let game: { type: number; width: number; height: number; parent: string; pixelArt: boolean; backgroundColor: string; scene: SpriteLevel; physics: { default: string; arcade: { gravity: { y: number; }; }; }; } | undefined = undefined
+let game: { type: number; width: number; height: number; parent: string; pixelArt: boolean; backgroundColor: string; scene: SpriteLevel; physics: { default: string; arcade: { gravity: { y: number; }; }; }; } | undefined = undefined
 
 export default function App({ gameAreaController }: MarioGameProps): JSX.Element {
   const [level, setLevel] = useState(gameAreaController.level);
-
- // if (!game || gameAreaController.status !== 'IN_PROGRESS') {
-    const game = {
+  
+  if(!game || gameAreaController.status !== 'IN_PROGRESS') {
+    game = {
       type: Phaser.AUTO,
       width: 416,
       height: 248,
@@ -28,19 +28,18 @@ export default function App({ gameAreaController }: MarioGameProps): JSX.Element
         default: 'arcade',
         arcade: {
           gravity: { y: 1000 },
-        },
-      },
-    };
- // }
+        }
+      }
+    }
+  }
   
-
   useEffect(() => {
-    const levelUpdated = () => {
+    const levelChanged = () => {
       setLevel(gameAreaController.level);
     };
-    gameAreaController.addListener('levelUpdated', levelUpdated);
+    gameAreaController.addListener('levelChanged', levelChanged);
     return () => {
-      gameAreaController.removeListener('levelUpdated', levelUpdated);
+      gameAreaController.removeListener('levelChanged', levelChanged);
     };
   }, [gameAreaController]);
 

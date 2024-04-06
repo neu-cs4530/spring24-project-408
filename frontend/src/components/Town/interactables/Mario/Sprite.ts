@@ -28,7 +28,7 @@ export default class SpriteLevel extends Phaser.Scene {
 
     this.model = newModel;
     this.groundLayer = null;
-    this.disableKeys = false;
+    this.disableKeys = true;
     this.enemies = [];
   }
 
@@ -123,7 +123,11 @@ export default class SpriteLevel extends Phaser.Scene {
 
   update() {
     const curHealth = this.model.mario.health;
-    if (this.model.status !== 'IN_PROGRESS') {
+    
+    if (this.model.status === 'IN_PROGRESS') {
+      this.disableKeys = false;
+    }
+    else {
       this.disableKeys = true;
     }
 
@@ -189,6 +193,7 @@ export default class SpriteLevel extends Phaser.Scene {
 
 
     const scoreString: string = "Score: ";
+
     this.add
     .text(300, 216, scoreString + this.model.level._score.toString(), {
       font: '16px monospace',

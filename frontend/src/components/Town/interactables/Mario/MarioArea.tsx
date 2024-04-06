@@ -24,7 +24,7 @@ export default function MarioArea({
     const gameUpdated = () => {
       setGameStatus(gameAreaController.status);
       setPlayer(gameAreaController.player);
-      setMoveCount(gameAreaController.moveCount || 0);
+      setMoveCount(gameAreaController.moveCount);
     };
     const gameEnd = () => {
       const winner = gameAreaController.winner;
@@ -58,7 +58,7 @@ export default function MarioArea({
 
   let gameStatusText = <></>;
   if (gameStatus === 'IN_PROGRESS') {
-    gameStatusText = <>Game in progress, {moveCount} moves in, go save Peach! </>;
+    gameStatusText = <>Game in progress, {gameAreaController.level.toString()} moves in, go save Peach! </>;
   } else {
     const joinGameButton = (
       <Button
