@@ -1,6 +1,6 @@
 import SpriteLevel from './Sprite';
 import { GameUnit } from './final-project-classes/GameObject';
-
+import { TILE_MULT } from './Sprite';
 export default class SpriteEnemy {
   _scene: SpriteLevel;
 
@@ -19,11 +19,14 @@ export default class SpriteEnemy {
 
   update() {
     const enemy = this._scene.model.level._enemies.filter(
-      currentEnemy => currentEnemy.x === this._x && currentEnemy.y === this._y,
+      currentEnemy => currentEnemy.x === (this._x  / TILE_MULT)  && currentEnemy.y === (this._y / TILE_MULT),
     );
+
     if (!enemy[0].isAlive) {
       this.delete();
     }
+    
+    
   }
 
   delete() {

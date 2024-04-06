@@ -14,11 +14,11 @@ export default function App({ gameAreaController }: MarioGameProps): JSX.Element
   const [level, setLevel] = useState(gameAreaController.level);
   const game = {
     type: Phaser.AUTO,
-    width: 500,
-    height: 400,
+    width: 416,
+    height: 248,
     parent: 'game-container',
     pixelArt: false,
-    backgroundColor: '#079BB0',
+    backgroundColor: '#ffffff',
     scene: new SpriteLevel(gameAreaController),
     physics: {
       default: 'arcade',

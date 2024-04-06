@@ -28,7 +28,7 @@ export default class SpritePlayer {
 
   update() {
     if (!this._scene.model.mario.isAlive) {
-      this._scene.player.freeze();
+      this._scene.player?.freeze();
       this.delete();
     } else {
       if (this._scene.keys?.right.isDown) {
