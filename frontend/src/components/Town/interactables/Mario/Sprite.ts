@@ -39,8 +39,8 @@ export default class SpriteLevel extends Phaser.Scene {
       {
         frameWidth: 32,
         frameHeight: 32,
-        margin: 1,
-        spacing: 2,
+        margin: 0,
+        spacing: 0,
       },
     );
     this.load.image('tiles', '/assets/tilesets/Level.png');
@@ -79,22 +79,31 @@ export default class SpriteLevel extends Phaser.Scene {
       this.enemies = this.model.level._enemies.map(
         enemy => new SpriteEnemy(this, enemy.x * TILE_MULT, enemy.y * TILE_MULT),
       );
-      this.player = new SpritePlayer(this, this.model.mario._x * TILE_MULT, this.model.mario._y * TILE_MULT);
+      this.player = new SpritePlayer(
+        this,
+        this.model.mario._x * TILE_MULT,
+        this.model.mario._y * TILE_MULT,
+      );
 
       if (this.groundLayer) {
         this.groundLayer.setCollisionByProperty({ collides: true });
 
         this.groundLayer.forEachTile(tile => {
-          if (tile.index === 190 || tile.index === 171 || tile.index === 192 || tile.index === 132) {
+          if (
+            tile.index === 190 ||
+            tile.index === 171 ||
+            tile.index === 192 ||
+            tile.index === 132
+          ) {
             // A sprite has its origin at the center, so place the sprite at the center of the tile
             tile.setCollision(true, true, true, true);
 
             // The map has spike tiles that have been rotated in Tiled ("z" key), so parse out that angle
             // to the correct body placement
-          }}
-        );
+          }
+        });
 
-        this.player.sprite.setCollideWorldBounds(true);
+        //this.player.sprite.setCollideWorldBounds(true);
         this.physics.add.collider(this.player.sprite, this.groundLayer);
 
         for (const enemy of this.enemies) {
@@ -106,7 +115,7 @@ export default class SpriteLevel extends Phaser.Scene {
 
         // change based on render
         this.add
-          .text(4, 216, this.groundLayer.getTileAt(0,5).canCollide.toString(), {
+          .text(4, 216, this.groundLayer.getTileAt(0, 5).canCollide.toString(), {
             font: '16px monospace',
             color: '#ff0000',
             padding: { x: 2, y: 2 },
@@ -123,12 +132,17 @@ export default class SpriteLevel extends Phaser.Scene {
 
   update() {
     const curHealth = this.model.mario.health;
-    
+
     if (this.model.status === 'IN_PROGRESS') {
       this.disableKeys = false;
-    }
-    else {
+      if (this.input.keyboard) {
+        this.input.keyboard.enabled = true;
+      }
+    } else {
       this.disableKeys = true;
+      if (this.input.keyboard) {
+        this.input.keyboard.enabled = false;
+      }
     }
 
     this.model.level.keyPressed('tick');
@@ -191,16 +205,15 @@ export default class SpriteLevel extends Phaser.Scene {
       })
       .setScrollFactor(0);
 
-
-    const scoreString: string = "Score: ";
+    const scoreString = 'Score: ';
 
     this.add
-    .text(300, 216, scoreString + this.model.level._score.toString(), {
-      font: '16px monospace',
-      color: '#ff0000',
-      padding: { x: 2, y: 2 },
-      backgroundColor: '#ffffff',
-    })
-    .setScrollFactor(0);
+      .text(300, 216, scoreString + this.model.level._score.toString(), {
+        font: '16px monospace',
+        color: '#ff0000',
+        padding: { x: 2, y: 2 },
+        backgroundColor: '#ffffff',
+      })
+      .setScrollFactor(0);
   }
 }

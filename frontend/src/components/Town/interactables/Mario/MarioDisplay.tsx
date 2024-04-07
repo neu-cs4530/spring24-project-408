@@ -10,12 +10,23 @@ export type MarioGameProps = {
   gameAreaController: MarioAreaController;
 };
 
-let game: { type: number; width: number; height: number; parent: string; pixelArt: boolean; backgroundColor: string; scene: SpriteLevel; physics: { default: string; arcade: { gravity: { y: number; }; }; }; } | undefined = undefined
+let game:
+  | {
+      type: number;
+      width: number;
+      height: number;
+      parent: string;
+      pixelArt: boolean;
+      backgroundColor: string;
+      scene: SpriteLevel;
+      physics: { default: string; arcade: { gravity: { y: number } } };
+    }
+  | undefined = undefined;
 
 export default function App({ gameAreaController }: MarioGameProps): JSX.Element {
   const [level, setLevel] = useState(gameAreaController.level);
-  
-  if(!game || gameAreaController.status !== 'IN_PROGRESS') {
+
+  if (!game || gameAreaController.status !== 'IN_PROGRESS') {
     game = {
       type: Phaser.AUTO,
       width: 416,
@@ -27,12 +38,12 @@ export default function App({ gameAreaController }: MarioGameProps): JSX.Element
       physics: {
         default: 'arcade',
         arcade: {
-          gravity: { y: 1000 },
-        }
-      }
-    }
+          gravity: { y: 0 },
+        },
+      },
+    };
   }
-  
+
   useEffect(() => {
     const levelChanged = () => {
       setLevel(gameAreaController.level);

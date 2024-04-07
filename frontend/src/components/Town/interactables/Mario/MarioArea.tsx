@@ -58,7 +58,12 @@ export default function MarioArea({
 
   let gameStatusText = <></>;
   if (gameStatus === 'IN_PROGRESS') {
-    gameStatusText = <>Game in progress, {gameAreaController.level.toString()} moves in, go save Peach! </>;
+    gameStatusText = (
+      <>
+        Game in progress, {gameAreaController.level._mario._x}, {gameAreaController.level._mario._y}{' '}
+        moves in, go save Peach!{' '}
+      </>
+    );
   } else {
     const joinGameButton = (
       <Button
