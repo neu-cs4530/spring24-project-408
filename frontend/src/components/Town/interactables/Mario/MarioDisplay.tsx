@@ -26,7 +26,7 @@ let game:
 export default function App({ gameAreaController }: MarioGameProps): JSX.Element {
   const [level, setLevel] = useState(gameAreaController.level);
 
-  if (!game || gameAreaController.status !== 'IN_PROGRESS') {
+  if (!game) {
     game = {
       type: Phaser.AUTO,
       width: 416,

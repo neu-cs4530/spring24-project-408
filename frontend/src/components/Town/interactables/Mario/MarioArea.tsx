@@ -60,7 +60,7 @@ export default function MarioArea({
   if (gameStatus === 'IN_PROGRESS') {
     gameStatusText = (
       <>
-        Game in progress, {gameAreaController.level._mario._x}, {gameAreaController.level._mario._y}{' '}
+        Game in progress, {gameAreaController.level._mario.x}, {gameAreaController.level._mario._y}{' '}
         moves in, go save Peach!{' '}
       </>
     );

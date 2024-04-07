@@ -13,6 +13,8 @@ export default class SpriteLevel extends Phaser.Scene {
 
   public enemies: SpriteEnemy[];
 
+  public hasMarioSpawned: boolean;
+
   public keys:
     | {
         up: Phaser.Input.Keyboard.Key;
@@ -23,13 +25,17 @@ export default class SpriteLevel extends Phaser.Scene {
 
   public disableKeys: boolean;
 
+  public time_passed: number;
+
   constructor(newModel: MarioAreaController) {
     super();
 
     this.model = newModel;
     this.groundLayer = null;
     this.disableKeys = true;
+    this.hasMarioSpawned = false;
     this.enemies = [];
+    this.time_passed = 0;
   }
 
   preload() {
@@ -88,13 +94,9 @@ export default class SpriteLevel extends Phaser.Scene {
       if (this.groundLayer) {
         this.groundLayer.setCollisionByProperty({ collides: true });
 
+        /** 
         this.groundLayer.forEachTile(tile => {
-          if (
-            tile.index === 190 ||
-            tile.index === 171 ||
-            tile.index === 192 ||
-            tile.index === 132
-          ) {
+          if (tile.index === 190 || tile.index === 192 || tile.index === 132) {
             // A sprite has its origin at the center, so place the sprite at the center of the tile
             tile.setCollision(true, true, true, true);
 
@@ -110,6 +112,7 @@ export default class SpriteLevel extends Phaser.Scene {
           this.physics.add.collider(enemy._sprite, this.groundLayer);
         }
 
+        */
         this.cameras.main.startFollow(this.player.sprite);
         this.cameras.main.setBounds(0, 0, map.widthInPixels, map.heightInPixels); // Needs to be finished, need to make the bounds == the whole maps look at Camera.useBounds()
 
@@ -131,89 +134,92 @@ export default class SpriteLevel extends Phaser.Scene {
   }
 
   update() {
-    const curHealth = this.model.mario.health;
+    this.time_passed += 1;
+    if (this.time_passed % 20 === 0) {
+      const curHealth = this.model.mario.health;
 
-    if (this.model.status === 'IN_PROGRESS') {
-      this.disableKeys = false;
-      if (this.input.keyboard) {
-        this.input.keyboard.enabled = true;
+      if (this.model.status === 'IN_PROGRESS') {
+        this.disableKeys = false;
+        if (this.input.keyboard) {
+          this.input.keyboard.enabled = true;
+        }
+      } else {
+        this.disableKeys = true;
+        if (this.input.keyboard) {
+          this.input.keyboard.enabled = false;
+        }
       }
-    } else {
-      this.disableKeys = true;
-      if (this.input.keyboard) {
-        this.input.keyboard.enabled = false;
-      }
-    }
 
-    this.model.level.keyPressed('tick');
+      this.model.level.keyPressed('tick');
 
-    if (!this.disableKeys) {
-      if (this.keys?.right.isDown) {
-        this.model.makeMove('right');
-      } else if (this.keys?.left.isDown) {
-        this.model.makeMove('left');
-      } else if (this.keys?.up.isDown) {
-        this.model.makeMove('up');
+      if (!this.disableKeys) {
+        if (this.keys?.right.isDown) {
+          this.model.makeMove('right');
+        } else if (this.keys?.left.isDown) {
+          this.model.makeMove('left');
+        } else if (this.keys?.up.isDown) {
+          this.model.makeMove('up');
+        }
       }
-    }
-    this.player?.update();
-    for (const enemy of this.enemies) {
-      enemy.update();
-    }
-    if (this.model.status === 'OVER') {
-      if (this.model.level._gameState === 'isWinner') {
-        this.add.text(400, 300, `You Win! Score: ${this.model.level._score}`, {
-          fontSize: '32px monospace',
-          color: '#000000',
-          padding: { x: 8, y: 8 },
-          backgroundColor: '#ffffff',
-        });
-      } else if (this.model.level._gameState === 'isDead') {
-        this.add
-          .text(400, 300, 'You Lose :(', {
+      this.player?.update();
+      for (const enemy of this.enemies) {
+        enemy.update();
+      }
+      if (this.model.status === 'OVER') {
+        if (this.model.level._gameState === 'isWinner') {
+          this.add.text(400, 300, `You Win! Score: ${this.model.level._score}`, {
             fontSize: '32px monospace',
             color: '#000000',
             padding: { x: 8, y: 8 },
             backgroundColor: '#ffffff',
-          })
-          .setScrollFactor(0);
+          });
+        } else if (this.model.level._gameState === 'isDead') {
+          this.add
+            .text(400, 300, 'You Lose :(', {
+              fontSize: '32px monospace',
+              color: '#000000',
+              padding: { x: 8, y: 8 },
+              backgroundColor: '#ffffff',
+            })
+            .setScrollFactor(0);
+        }
+      } else if (this.model.status === 'IN_PROGRESS' && curHealth !== this.model.mario.health) {
+        this.scene.restart();
       }
-    } else if (this.model.status === 'IN_PROGRESS' && curHealth !== this.model.mario.health) {
-      this.scene.restart();
+      let healthString: string;
+      switch (this.model.mario._health) {
+        case 3:
+          healthString = '♡ ♡ ♡';
+          break;
+        case 2:
+          healthString = '♡ ♡';
+          break;
+        case 1:
+          healthString = '♡';
+          break;
+        default:
+          healthString = '';
+      }
+
+      this.add
+        .text(216, 216, healthString, {
+          font: '18px monospace',
+          color: '#ff0000',
+          padding: { x: 2, y: 2 },
+          backgroundColor: '#ffffff',
+        })
+        .setScrollFactor(0);
+
+      const scoreString = 'Score: ';
+
+      this.add
+        .text(300, 216, scoreString + this.model.level._score.toString(), {
+          font: '16px monospace',
+          color: '#ff0000',
+          padding: { x: 2, y: 2 },
+          backgroundColor: '#ffffff',
+        })
+        .setScrollFactor(0);
     }
-    let healthString: string;
-    switch (this.model.mario._health) {
-      case 3:
-        healthString = '♡ ♡ ♡';
-        break;
-      case 2:
-        healthString = '♡ ♡';
-        break;
-      case 1:
-        healthString = '♡';
-        break;
-      default:
-        healthString = '';
-    }
-
-    this.add
-      .text(216, 216, healthString, {
-        font: '18px monospace',
-        color: '#ff0000',
-        padding: { x: 2, y: 2 },
-        backgroundColor: '#ffffff',
-      })
-      .setScrollFactor(0);
-
-    const scoreString = 'Score: ';
-
-    this.add
-      .text(300, 216, scoreString + this.model.level._score.toString(), {
-        font: '16px monospace',
-        color: '#ff0000',
-        padding: { x: 2, y: 2 },
-        backgroundColor: '#ffffff',
-      })
-      .setScrollFactor(0);
   }
 }
