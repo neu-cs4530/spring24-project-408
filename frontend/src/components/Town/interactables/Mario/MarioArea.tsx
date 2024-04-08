@@ -16,7 +16,7 @@ export default function MarioArea({
   const townController = useTownController();
   const [player, setPlayer] = useState<PlayerController | undefined>(gameAreaController.player);
   const [joiningGame, setJoiningGame] = useState(false);
-  const [gameStatus, setGameStatus] = useState<GameStatus>(gameAreaController.status);
+  const [gameStatus, setGameStatus] = useState<GameStatus>('WAITING_FOR_PLAYERS');
   const [moveCount, setMoveCount] = useState<number>(gameAreaController.moveCount);
   const toast = useToast();
 
@@ -28,13 +28,7 @@ export default function MarioArea({
     };
     const gameEnd = () => {
       const winner = gameAreaController.winner;
-      if (!winner && !player) {
-        toast({
-          title: 'Game over',
-          description: 'Player left game',
-          status: 'info',
-        });
-      } else if (winner === townController.ourPlayer) {
+      if (winner === townController.ourPlayer) {
         toast({
           title: 'Game over',
           description: 'You won!',
@@ -61,7 +55,7 @@ export default function MarioArea({
     gameStatusText = (
       <>
         Game in progress, {gameAreaController.level._mario.x}, {gameAreaController.level._mario._y}{' '}
-        moves in, go save Peach!{' '}
+        moves in!{' '}
       </>
     );
   } else {
@@ -86,14 +80,11 @@ export default function MarioArea({
       </Button>
     );
 
-    let gameStatusStr;
-    if (gameStatus === 'OVER') gameStatusStr = 'over';
-    else if (gameStatus === 'WAITING_FOR_PLAYERS') gameStatusStr = 'waiting for players to join';
-    gameStatusText = (
-      <b>
-        Game {gameStatusStr}. {joinGameButton}
-      </b>
-    );
+    if (gameStatus === 'OVER') {
+      gameStatusText = <b>Game over! Come back if youd like! Bye bye! {joinGameButton}</b>;
+    } else {
+      gameStatusText = <b>Its a me Mario! Reach the end if you can! {joinGameButton}</b>;
+    }
   }
 
   return (

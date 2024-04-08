@@ -108,8 +108,10 @@ export default class MarioGameArea extends GameArea<MarioGame> {
     if (command.type === 'JoinGame') {
       let game = this._game;
       if (!game || game.state.status === 'OVER') {
+        console.log(game?.state.status);
         // No game in progress, make a new one
         game = new MarioGame(this._game);
+        console.log(game.state.status);
         this._game = game;
       }
       game.join(player);

@@ -106,6 +106,7 @@ export default class MarioAreaController extends GameAreaController<MarioGameSta
    */
   get status(): GameStatus {
     const status = this._model.game?.state.status;
+    console.log('STATUS', status);
     if (!status) {
       return 'WAITING_FOR_PLAYERS';
     }
@@ -166,7 +167,6 @@ export default class MarioAreaController extends GameAreaController<MarioGameSta
       });
       if (!_.isEqual(newLevel, this._level)) {
         this._level = newLevel;
-        console.log(this._level._gameState);
         this.emit('levelChanged', this._level);
       }
     }

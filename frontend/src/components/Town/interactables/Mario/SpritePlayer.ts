@@ -23,7 +23,7 @@ export default class SpritePlayer {
 
   update() {
     if (!this._scene.model.mario.isAlive) {
-      this._scene.player?.freeze();
+      //this._scene.player?.freeze();
       this.delete();
     } else {
       /**
@@ -45,9 +45,10 @@ export default class SpritePlayer {
     }
   }
 
+  /** 
   freeze() {
     this._sprite.body.moves = false;
-  }
+  }*/
 
   delete() {
     this._sprite.destroy();

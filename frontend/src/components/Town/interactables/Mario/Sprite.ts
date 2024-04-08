@@ -79,10 +79,10 @@ export default class SpriteLevel extends Phaser.Scene {
       map.createLayer('background', tiles);
       this.groundLayer = map.createLayer('ground', tiles);
 
-      //const spawnPointEnemy = map.findObject('Objects', obj => obj.name === 'Spawn Point Enemy');
-      //const spawnPointXEnemy: number = spawnPointEnemy?.x || 7 * TILE_MULT;
-      //const spawnPointYEnemy: number = spawnPointEnemy?.y || 3 * TILE_MULT;
-      //this.enemy = new SpriteEnemy(this, spawnPointXEnemy, spawnPointYEnemy);
+      const spawnPointEnemy = map.findObject('Objects', obj => obj.name === 'Spawn Point Enemy');
+      const spawnPointXEnemy: number = spawnPointEnemy?.x || 7 * TILE_MULT;
+      const spawnPointYEnemy: number = spawnPointEnemy?.y || 3 * TILE_MULT;
+      this.enemy = new SpriteEnemy(this, spawnPointXEnemy, spawnPointYEnemy);
 
       const spawnPoint = map.findObject('Objects', obj => obj.name === 'Spawn Point Player');
       const spawnPointX: number =
@@ -98,7 +98,7 @@ export default class SpriteLevel extends Phaser.Scene {
 
         // change based on render
         this.add
-          .text(4, 218, 'T F G to move', {
+          .text(4, 218, 'T(^) F(<) G(>)', {
             font: '16px monospace',
             color: '#ff0000',
             padding: { x: 2, y: 2 },
@@ -119,82 +119,82 @@ export default class SpriteLevel extends Phaser.Scene {
     if (this.time_passed % 20 === 0) {
       const curHealth = this.model.mario.health;
 
-      switch (this.model.status) {
-        case 'IN_PROGRESS':
-          this.disableKeys = false;
-          if (this.input.keyboard) {
-            this.input.keyboard.enabled = true;
-          }
-          this.model.makeMove('tick');
-          if (!this.disableKeys) {
-            if (this.keys?.right.isDown) {
-              this.model.makeMove('right');
-            } else if (this.keys?.left.isDown) {
-              this.model.makeMove('left');
-            } else if (this.keys?.up.isDown) {
-              this.model.makeMove('up');
-            }
-          }
-          this.player?.update();
-          this.enemy?.update();
-          if (curHealth !== this.model.mario.health) {
-            this.scene.restart();
-          }
-          break;
-        case 'OVER':
-          this.disableKeys = true;
-          if (this.input.keyboard) {
-            this.input.keyboard.enabled = false;
-          }
-          if (this.model.level._gameState === 'isWinner') {
-            this.add.text(400, 300, `You Win! Score: ${this.model.level._score}`, {
+      if (this.model.status === 'IN_PROGRESS') {
+        this.disableKeys = false;
+        this.model.makeMove('tick');
+        if (this.input.keyboard) {
+          this.input.keyboard.enabled = true;
+        }
+      } else {
+        this.disableKeys = true;
+        if (this.input.keyboard) {
+          this.input.keyboard.enabled = false;
+        }
+      }
+
+      if (!this.disableKeys) {
+        if (this.keys?.right.isDown) {
+          this.model.makeMove('right');
+        } else if (this.keys?.left.isDown) {
+          this.model.makeMove('left');
+        } else if (this.keys?.up.isDown) {
+          this.model.makeMove('up');
+        }
+      }
+      this.player?.update();
+      this.enemy?.update();
+      if (this.model.status === 'OVER') {
+        if (this.model.level._gameState === 'isWinner') {
+          this.add.text(400, 300, `You Win! Score: ${this.model.level._score}`, {
+            fontSize: '32px monospace',
+            color: '#000000',
+            padding: { x: 8, y: 8 },
+            backgroundColor: '#ffffff',
+          });
+        } else if (this.model.level._gameState === 'isDead') {
+          this.add
+            .text(400, 300, 'You Lose :(', {
               fontSize: '32px monospace',
               color: '#000000',
               padding: { x: 8, y: 8 },
               backgroundColor: '#ffffff',
-            });
-          } else if (this.model.level._gameState === 'isDead') {
-            this.add
-              .text(400, 300, 'You Lose :(', {
-                fontSize: '32px monospace',
-                color: '#000000',
-                padding: { x: 8, y: 8 },
-                backgroundColor: '#ffffff',
-              })
-              .setScrollFactor(0);
-          }
-          break;
-        default:
-          break;
-      }
+            })
+            .setScrollFactor(0);
+        }
+      } //else if (this.model.status === 'IN_PROGRESS' && curHealth !== this.model.mario.health) {
+      // this.scene.restart();
+      //}
+      /** 
       let healthString: string;
-      switch (this.model.mario._health) {
-        case 3:
-          healthString = '♡ ♡ ♡';
-          break;
-        case 2:
-          healthString = '♡ ♡';
-          break;
-        case 1:
-          healthString = '♡';
-          break;
-        default:
-          healthString = '';
-      }
-
+      const health = Math.round(this.model.mario.health);
+      if (health === 3) {
+        healthString = '♡ ♡ ♡';
+      } else if (health === 2) {
+        healthString = '♡ ♡';
+      } else if (health === 1) {
+        healthString = '♡';
+      } else {
+        healthString = '';
+      }*/
+      const healthString = 'Health: ';
       this.add
-        .text(216, 218, healthString, {
-          font: '18px monospace',
+        .text(180, 216, healthString + this.model.mario.health.toString(), {
+          font: '16px monospace',
           color: '#ff0000',
           padding: { x: 2, y: 2 },
           backgroundColor: '#ffffff',
         })
         .setScrollFactor(0);
 
-      const scoreString = 'Score: ';
+      let scoreString = '';
+      if (this.model.level._score < 100) {
+        scoreString = 'Score: 0';
+      } else {
+        scoreString = 'Score: ';
+      }
 
       this.add
-        .text(300, 218, scoreString + this.model.level._score.toString(), {
+        .text(300, 216, scoreString + this.model.level._score.toString(), {
           font: '16px monospace',
           color: '#ff0000',
           padding: { x: 2, y: 2 },
