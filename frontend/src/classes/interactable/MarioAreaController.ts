@@ -1,4 +1,7 @@
-import { Enemy, MainCharacter } from '../../components/Town/interactables/Mario/final-project-classes/Character';
+import {
+  Enemy,
+  MainCharacter,
+} from '../../components/Town/interactables/Mario/final-project-classes/Character';
 import {
   GameArea,
   GameInstance,
@@ -179,6 +182,9 @@ export default class MarioAreaController extends GameAreaController<MarioGameSta
    * @param dir direction to move the gamepiece in
    */
   public async makeMove(dir: string): Promise<void> {
+    if (dir === 'tick') {
+      console.log('AAAHHH TICK WAS CALLED');
+    }
     const instanceID = this._instanceID;
     if (!instanceID || this._model.game?.state.status !== 'IN_PROGRESS') {
       throw new Error(NO_GAME_IN_PROGRESS_ERROR);

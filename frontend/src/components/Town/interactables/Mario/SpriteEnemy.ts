@@ -12,21 +12,23 @@ export default class SpriteEnemy {
 
   constructor(scene: SpriteLevel, x: GameUnit, y: GameUnit) {
     this._scene = scene;
-    this._x = x;
-    this._y = y;
-    this._sprite = this._scene.physics.add.sprite(x, y, 'enemy', 0).setSize(18, 24).setOffset(7, 9);
+    this._x = x + 16;
+    this._y = y + 16;
+    this._sprite = this._scene.physics.add.sprite(this._x, this._y, 'enemy').setSize(16, 16);
   }
 
   update() {
     const enemy = this._scene.model.level._enemies.filter(
-      currentEnemy => currentEnemy.x === (this._x  / TILE_MULT)  && currentEnemy.y === (this._y / TILE_MULT),
+      currentEnemy =>
+        currentEnemy.x === (this._x - 16) / TILE_MULT &&
+        currentEnemy.y === (this._y - 16) / TILE_MULT,
     );
 
-    if (!enemy[0].isAlive) {
-      this.delete();
+    if (enemy[0]) {
+      if (!enemy[0].isAlive) {
+        this.delete();
+      }
     }
-    
-    
   }
 
   delete() {

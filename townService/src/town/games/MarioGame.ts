@@ -35,17 +35,19 @@ export default class MarioGame extends Game<MarioGameState, MarioMove> {
       row: move.move.row,
       col: move.move.col,
     };
-    console.log(newMove);
+    // console.log(newMove);
     this.state = {
       ...this.state,
       moves: [...this.state.moves, newMove],
     };
 
     const direction: string = this._convertToDirection(newMove);
-    console.log(direction);
+    // console.log(direction);
     this._level.keyPressed(direction);
     this.state.score = this._level._score;
-    console.log(this._level._gameState);
+    // console.log(this._level._gameState);
+    // console.log(this._level._mario.x);
+    // console.log(this._level._mario.y);
     if (this._level._gameState === 'isWinner') {
       this.state.status = 'OVER';
       this.state.winner = this.state.player;

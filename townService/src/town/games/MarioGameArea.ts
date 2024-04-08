@@ -77,6 +77,9 @@ export default class MarioGameArea extends GameArea<MarioGame> {
     player: Player,
   ): InteractableCommandReturnType<CommandType> {
     if (command.type === 'GameMove') {
+      console.log(command.move.row.toString());
+      console.log(command.move.col.toString());
+
       const game = this._game;
       if (!game) {
         throw new InvalidParametersError(GAME_NOT_IN_PROGRESS_MESSAGE);

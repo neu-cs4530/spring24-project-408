@@ -69,7 +69,8 @@ export abstract class Level {
             this._ticksCompleted = this._ticksCompleted + 1;
             this.updateScore();
             this.fillCollidableObjects();
-
+            console.log('FROM LEVEL: MARIO RISING');
+            console.log(this._mario.rising);
             // Jump logic
             if(this._mario.rising) {
                 // If Mario has reached the peak of his jump, stop rising
@@ -157,13 +158,11 @@ export abstract class Level {
             this._maxDistance = this._mario.x;
         }
 
-        //because we are now updating the score every tick, we remove the max score conditional
-        //updateScore is now called from handleEnemyandBlockCollisions and onTick
-        this._score = Math.round((this._maxDistance * SCORE_MULTIPLIER) / (1 + (this._ticksCompleted * TIME_MULTIPLIER)));
-        /*
-        if(this._mario.x * SCORE_MULTIPLIER > this._score) {
-            this._score = (this._mario.x * SCORE_MULTIPLIER) / 1 + (this._ticksCompleted * TIME_MULTIPLIER);
-        }*/
+        // because we are now updating the score every tick, we remove the max score conditional
+        // updateScore is now called from handleEnemyandBlockCollisions and onTick
+        const distScore = this._maxDistance * SCORE_MULTIPLIER;
+        const timeScore = Math.round(this._ticksCompleted/5) * SCORE_MULTIPLIER/10;
+        this._score = Math.max(distScore - timeScore, 0);
     }
 
     /**
@@ -433,9 +432,9 @@ export class LevelOne extends Level {
     constructor(mario: MainCharacter) {
         super(mario, [
             [undefined,                 undefined,                  undefined,                  undefined,                  undefined,              undefined,               undefined,                 undefined,                  undefined,                  undefined,                  undefined,                  undefined,                  undefined,                  new CompletionBlock(13, 0)],
-            [undefined,                 undefined,                  undefined,                  undefined,                  undefined,              undefined,               undefined,                 undefined,                  undefined,                  undefined,                  undefined,                  undefined,                  undefined,                  new CompletionBlock(13, 1)],
-            [undefined,                 undefined,                  undefined,                  undefined,        undefined,              undefined,               undefined,                 undefined,                  new PlatformBlock(8, 2),    new PlatformBlock(9, 2),    undefined,                  undefined,                  undefined,                  new CompletionBlock(13, 2)],
-            [mario,                     undefined,                  new PlatformBlock(2, 3),    new PlatformBlock(3, 3),    undefined,              undefined,               undefined,                 new Goomba(7,3),            undefined,                  undefined,                  undefined,                  undefined,                  undefined,                  new CompletionBlock(13, 3)],
+            [undefined,                 undefined,                  undefined,                  undefined,                  undefined,              undefined,               undefined,                 undefined,                  new PlatformBlock(8, 1),    new PlatformBlock(9, 1),                  undefined,                  undefined,                  undefined,                  new CompletionBlock(13, 1)],
+            [undefined,                 undefined,                  undefined,                  undefined,                  undefined,              undefined,               undefined,                 undefined,                  undefined,                  undefined,    undefined,                  undefined,                  undefined,                  new CompletionBlock(13, 2)],
+            [mario,                     undefined,                  new PipeBlock(2, 3),    new PlatformBlock(3, 3),        undefined,              undefined,               undefined,                 undefined,            undefined,                  undefined,                  undefined,                  undefined,                  undefined,                  new CompletionBlock(13, 3)],
             [new PlatformBlock(0, 4),   new PlatformBlock(1, 4),    new PlatformBlock(2, 4),    new PlatformBlock(3, 4),    new PlatformBlock(4,4), undefined,               new PlatformBlock(6, 4),   new PlatformBlock(7, 4),    new PlatformBlock(8, 4),    new PlatformBlock(9, 4),    new PlatformBlock(10, 4),   new PlatformBlock(11, 4),   new PlatformBlock(12, 4),   new CompletionBlock(13, 4)],
             [new PlatformBlock(0, 5),   new PlatformBlock(1, 5),    new PlatformBlock(2, 5),    new PlatformBlock(3, 5),    new PlatformBlock(4,5), undefined,               new PlatformBlock(6, 5),   new PlatformBlock(7, 5),    new PlatformBlock(8, 5),    new PlatformBlock(9, 5),    new PlatformBlock(10, 5),   new PlatformBlock(11, 5),   new PlatformBlock(12, 5),   new PlatformBlock(13, 5)],
             [new PlatformBlock(0, 6),   new PlatformBlock(1, 6),    new PlatformBlock(2, 6),    new PlatformBlock(3, 6),    new PlatformBlock(4,6), new DeathBlock(5,6),     new PlatformBlock(6, 6),   new PlatformBlock(7, 6),    new PlatformBlock(8, 6),    new PlatformBlock(9, 6),    new PlatformBlock(10, 6),   new PlatformBlock(11, 6),   new PlatformBlock(12, 6),   new PlatformBlock(13, 6)],
