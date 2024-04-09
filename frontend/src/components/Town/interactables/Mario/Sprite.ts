@@ -31,7 +31,7 @@ export default class SpriteLevel extends Phaser.Scene {
 
   public disableKeys: boolean;
 
-  public time_passed: number;
+  public timePassed: number;
 
   constructor(newModel: MarioAreaController) {
     super();
@@ -40,7 +40,7 @@ export default class SpriteLevel extends Phaser.Scene {
     this.groundLayer = null;
     this.disableKeys = true;
     this.hasMarioSpawned = false;
-    this.time_passed = 0;
+    this.timePassed = 0;
   }
 
   /**
@@ -144,9 +144,9 @@ export default class SpriteLevel extends Phaser.Scene {
    * Displays the health and score of the player on the screen
    */
   update() {
-    this.time_passed += 1;
+    this.timePassed += 1;
 
-    if (this.time_passed % 20 === 0) {
+    if (this.timePassed % 20 === 0) {
       if (this.model.status === 'IN_PROGRESS') {
         this.disableKeys = false;
         this.model.makeMove('tick');
