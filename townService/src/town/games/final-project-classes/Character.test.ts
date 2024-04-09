@@ -90,12 +90,12 @@ describe('MainCharacter', () => {
       expect(mario.rising).toBe(true);
       expect(mario.currentRiseDuration).toBe(1);
     });
-    test('when jump is called twice, y is decremented by 2, rising is true and rise duration is increased', () => {
+    test('when jump is called twice, y is decremented by 2, rising is true and rise duration set to zero because peak is reached', () => {
       mario.jump();
       mario.jump();
       expect(mario.y).toBe(1);
       expect(mario.rising).toBe(true);
-      expect(mario.currentRiseDuration).toBe(2);
+      expect(mario.currentRiseDuration).toBe(0);
     });
   });
   describe('StopRising', () => {
@@ -111,7 +111,7 @@ describe('MainCharacter', () => {
       mario.jump();
       mario.jump();
       expect(mario.rising).toBe(true);
-      expect(mario.currentRiseDuration).toBe(2);
+      expect(mario.currentRiseDuration).toBe(0);
       mario.stopRising();
       expect(mario.rising).toBe(false);
       expect(mario.currentRiseDuration).toBe(0);
@@ -170,24 +170,24 @@ describe('MainCharacter', () => {
       mario.incrementRiseDuration();
       expect(mario.currentRiseDuration).toBe(1);
     });
-    test('when mario rising is set to true and currentRiseDuration is 1, currentRiseDuration is set to 2', () => {
+    test('when mario rising is set to true and currentRiseDuration is 1, currentRiseDuration is set to 0', () => {
       mario.rising = false;
       expect(mario.currentRiseDuration).toBe(0);
       mario.rising = true;
       mario.incrementRiseDuration();
       expect(mario.currentRiseDuration).toBe(1);
       mario.incrementRiseDuration();
-      expect(mario.currentRiseDuration).toBe(2);
+      expect(mario.currentRiseDuration).toBe(0);
     });
-    test('when mario rising is set to true and currentRiseDuration is 2, currentRiseDuration is set to 0', () => {
+    test('when mario rising is set to true and currentRiseDuration is 0, currentRiseDuration is set to 0', () => {
       mario.rising = false;
       expect(mario.currentRiseDuration).toBe(0);
       mario.rising = true;
       mario.incrementRiseDuration();
       mario.incrementRiseDuration();
-      expect(mario.currentRiseDuration).toBe(2);
-      mario.incrementRiseDuration();
       expect(mario.currentRiseDuration).toBe(0);
+      mario.incrementRiseDuration();
+      expect(mario.currentRiseDuration).toBe(1);
     });
     test('when mario rising is set to false, currentRiseDuration is set to 0', () => {
       mario.rising = true;

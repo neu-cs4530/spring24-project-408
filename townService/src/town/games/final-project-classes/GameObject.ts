@@ -1,10 +1,4 @@
 /**
- * BLOCK_WIDTH is the size of a 'Block' in the game.
- * Space in the game is broken up into blocks.
- */
-const BLOCK_WIDTH = 255; // This value can be changed depending on what's easier for future use
-
-/**
  * A CollisionState is a type that represents a state of a Super Mario game.
  *
  * @value enemyDead indicates that an enemy has been killed.

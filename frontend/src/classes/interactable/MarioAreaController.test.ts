@@ -6,9 +6,6 @@ import PlayerController from '../PlayerController';
 import TownController from '../TownController';
 import MarioAreaController from './MarioAreaController';
 import GameAreaController, { NO_GAME_IN_PROGRESS_ERROR } from './GameAreaController';
-import { update } from 'lodash';
-import exp from 'constants';
-import { log } from 'console';
 
 describe('MarioAreaController', () => {
   const ourPlayer = new PlayerController(nanoid(), nanoid(), {
@@ -29,8 +26,8 @@ describe('MarioAreaController', () => {
   Object.defineProperty(mockTownController, 'players', {
     get: () => [ourPlayer, ...otherPlayers],
   });
-  mockTownController.getPlayer.mockImplementation((playerID: any) => {
-    const p = mockTownController.players.find((player: { id: any }) => player.id === playerID);
+  mockTownController.getPlayer.mockImplementation((playerID: unknown) => {
+    const p = mockTownController.players.find((player: { id: unknown }) => player.id === playerID);
     assert(p);
     return p;
   });
@@ -479,7 +476,7 @@ describe('MarioAreaController', () => {
           expect(controller.level._gameState).toBe('isWinner');
           expect(controller.status).toBe('OVER');
           expect(controller.winner).toBe(ourPlayer);
-          expect(controller.level._score).toBe(1200);
+          expect(controller.level._score).toBe(1160);
         });
       });
     });

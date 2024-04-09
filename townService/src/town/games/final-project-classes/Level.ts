@@ -69,9 +69,6 @@ export abstract class Level {
             this._ticksCompleted += 1;
             this.updateScore();
             this.fillCollidableObjects();
-
-            console.log('FROM LEVEL: MARIO RISING');
-            console.log(this._mario.rising);
             // Jump logic
             if(this._mario.rising) {
                 // If Mario has reached the peak of his jump, stop rising
@@ -88,9 +85,6 @@ export abstract class Level {
                 this._characterDown(); 
                 // console.log('gravity applied - mario moved down');
             }
-        }
-        else {
-            // console.log("game is not currently playing");
         }
     }
 
@@ -218,9 +212,6 @@ export abstract class Level {
                 return;
             default:
                 this._gameState = 'isWinner';
-                console.log('WINNER WOOOO LEVEL COMPLETE!! its a me mario');
-                console.log(`Gamestate is: ${  this._gameState}`);
-                console.log(`Final score is: ${  this._score.toString()}`);
         }
         
     }
@@ -237,8 +228,6 @@ export abstract class Level {
                 return;
             default:
                 this._gameState = 'isDead';
-                console.log('YOU DIED');
-                console.log(`Final score is: ${  this._score.toString()}`);
         }
     }
 
@@ -327,9 +316,6 @@ export abstract class Level {
         if (borderCheck) {
             this._handleEnemyandBlockCollisions(characterDir, mariox, marioy);
         }
-        /** else {
-        //    throw new Error(`Mario Moved Out of Bounds - ${  characterDir}`);
-        //} */ 
     }
 
     /**

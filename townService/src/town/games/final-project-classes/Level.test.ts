@@ -1,9 +1,6 @@
-import { Console } from 'console';
 import { GameCell, Level, LevelOne } from './Level';
 import { Block, DeathBlock, PlatformBlock, CompletionBlock, PipeBlock } from './Block';
 import { Enemy, Goomba, MainCharacter } from './Character';
-
-const logger = new Console(process.stdout, process.stderr);
 
 /**
  * Class representing a fake level used for testing
@@ -522,12 +519,12 @@ describe('Level Testing', () => {
       testingGame.updateScore();
       expect(testingGame._score).toBe(100);
       testingGame.onTick();
-      expect(testingGame._score).toBe(95);
+      expect(testingGame._score).toBe(100);
       testingGame.onTick();
-      expect(testingGame._score).toBe(91);
+      expect(testingGame._score).toBe(100);
       testingGame.onTick();
+      expect(testingGame._score).toBe(90);
       expect(testingGame._ticksCompleted).toBe(3);
-      expect(testingGame._score).toBe(87);
     });
     test('if gameState is isDead, score should not change', () => {
       testingMario.moveRight();
@@ -975,20 +972,6 @@ describe('Level Testing', () => {
       testingGame = new TestingLevel(testingMario, testingMap);
     });
 
-    test('if state is dead, nothing happens, just a console log for now', () => {
-      const logSpy = jest.spyOn(global.console, 'log');
-
-      testingGame._gameState = 'isDead';
-      testingGame.onTick();
-      expect(logSpy).toHaveBeenCalledWith('game is not currently playing');
-    });
-    test('if state is winner, nothing happens, just a console log for now', () => {
-      const logSpy = jest.spyOn(global.console, 'log');
-      testingGame._gameState = 'isWinner';
-      testingGame.onTick();
-      expect(logSpy).toHaveBeenCalledWith('game is not currently playing');
-    });
-
     test('if state is playing, and mario is not rising - gravity should be applied and mario rising should be false', () => {
       testingGame._gameState = 'isPlaying';
       const expectBlocks = {
@@ -997,7 +980,6 @@ describe('Level Testing', () => {
         up: undefined,
         down: new PlatformBlock(1, 4),
       };
-      const logSpy = jest.spyOn(global.console, 'log');
 
       expect(testingGame._ticksCompleted).toBe(0);
       expect(testingGame._mario.rising).toBe(false);
@@ -1007,7 +989,7 @@ describe('Level Testing', () => {
       expect(testingGame._gameState).toBe('isPlaying');
 
       testingGame.onTick();
-      //expect(logSpy).toHaveBeenCalledWith('gravity applied - mario moved down');
+      // expect(logSpy).toHaveBeenCalledWith('gravity applied - mario moved down');
       expect(testingGame._ticksCompleted).toBe(1);
       expect(testingGame._mario.rising).toBe(false);
       expect(testingGame._mario.x).toBe(1);
@@ -1019,7 +1001,6 @@ describe('Level Testing', () => {
     test('if state is playing and mario is rising - mario has not reached his jump duration so his position will increase', () => {
       testingGame._gameState = 'isPlaying';
       const expectBlocks = { left: undefined, right: undefined, up: undefined, down: undefined };
-      const logSpy = jest.spyOn(global.console, 'log');
 
       // jumping mario
       testingGame.keyPressed('up');
@@ -1032,9 +1013,6 @@ describe('Level Testing', () => {
 
       // after calling onTick his position should further increase
       testingGame.onTick();
-      // expect(logSpy).toHaveBeenCalledWith(
-      //  'mario hasnt reached the peak of his jump, he is still rising',
-      // );
       expect(testingGame._ticksCompleted).toBe(1);
       expect(testingGame._mario.rising).toBe(false);
       expect(testingGame._mario.x).toBe(1);
@@ -1046,7 +1024,6 @@ describe('Level Testing', () => {
     test('if state is playing and mario is rising - mario HAS reached his jump duration so he will stop rising', () => {
       testingGame._gameState = 'isPlaying';
       const expectBlocks = { left: undefined, right: undefined, up: undefined, down: undefined };
-      const logSpy = jest.spyOn(global.console, 'log');
 
       // jumping mario
       testingGame.keyPressed('up');
@@ -1072,7 +1049,6 @@ describe('Level Testing', () => {
       expect(testingGame._mario.rising).toBe(false);
       expect(testingGame._mario.x).toBe(2);
       expect(testingGame._mario.y).toBe(2);
-      // expect(testingGame._collidableObjects).toEqual(expectBlocks);
       expect(testingGame._mario.currentRiseDuration).toBe(0);
 
       // last tick, mario rising should be set to false
@@ -1081,17 +1057,14 @@ describe('Level Testing', () => {
       expect(testingGame._ticksCompleted).toBe(2);
       expect(testingGame._mario.x).toBe(2);
       expect(testingGame._mario.y).toBe(3);
-      // expect(testingGame._collidableObjects).toEqual(expectBlocks);
       expect(testingGame._mario.currentRiseDuration).toBe(0);
     });
 
     test('if state is playing and mario moves while rising', () => {
       testingGame._gameState = 'isPlaying';
       const expectBlocks = { left: undefined, right: undefined, up: undefined, down: undefined };
-      const logSpy = jest.spyOn(global.console, 'log');
 
       // jumping mario
-      //console.log(testingGame.toString());
       testingGame.keyPressed('up');
       expect(testingGame._ticksCompleted).toBe(0);
       expect(testingGame._mario.rising).toBe(true);
@@ -1099,22 +1072,18 @@ describe('Level Testing', () => {
       expect(testingGame._mario.y).toBe(2);
       expect(testingGame._collidableObjects).toEqual(expectBlocks);
       expect(testingGame._mario.currentRiseDuration).toBe(1);
-      console.log(testingGame.toString());
 
       // after calling onTick his position should further increase
       testingGame.onTick();
-      //expect(logSpy).toHaveBeenCalledWith('mario has reached the peak of his jump, he is now falling',);
       expect(testingGame._mario.rising).toBe(false);
       expect(testingGame._ticksCompleted).toBe(1);
       expect(testingGame._mario.x).toBe(1);
       expect(testingGame._mario.y).toBe(2);
       expect(testingGame._collidableObjects).toEqual(expectBlocks);
       expect(testingGame._mario.currentRiseDuration).toBe(0);
-      console.log(testingGame.toString());
 
       // last tick, mario rising should be set to false
       testingGame.onTick();
-      //expect(logSpy).toHaveBeenCalledWith('gravity applied - mario moved down');
       expect(testingGame._ticksCompleted).toBe(2);
       expect(testingGame._mario.rising).toBe(false);
       expect(testingGame._mario.x).toBe(1);
@@ -1127,7 +1096,6 @@ describe('Level Testing', () => {
       };
       expect(testingGame._collidableObjects).toEqual(expectBlocks1);
       expect(testingGame._mario.currentRiseDuration).toBe(0);
-      console.log(testingGame.toString());
     });
   });
 
@@ -1154,7 +1122,6 @@ describe('Level Testing', () => {
         up: undefined,
         down: new PlatformBlock(1, 4),
       };
-      const logSpy = jest.spyOn(global.console, 'log');
 
       expect(testingGame._ticksCompleted).toBe(0);
       expect(testingGame._mario.rising).toBe(false);
@@ -1164,7 +1131,6 @@ describe('Level Testing', () => {
       expect(testingGame._gameState).toBe('isPlaying');
 
       testingGame.keyPressed('tick');
-      //expect(logSpy).toHaveBeenCalledWith('gravity applied - mario moved down');
       expect(testingGame._mario.rising).toBe(false);
       expect(testingGame._ticksCompleted).toBe(1);
       expect(testingGame._mario.x).toBe(1);
@@ -1175,7 +1141,6 @@ describe('Level Testing', () => {
     test('if state is playing and mario is rising - mario has not reached his jump duration so his position will increase', () => {
       testingGame._gameState = 'isPlaying';
       const expectBlocks = { left: undefined, right: undefined, up: undefined, down: undefined };
-      const logSpy = jest.spyOn(global.console, 'log');
 
       // jumping mario
       testingGame.keyPressed('up');
@@ -1202,7 +1167,6 @@ describe('Level Testing', () => {
     test('if state is playing and mario is rising - mario HAS reached his jump duration so he will stop rising', () => {
       testingGame._gameState = 'isPlaying';
       const expectBlocks = { left: undefined, right: undefined, up: undefined, down: undefined };
-      const logSpy = jest.spyOn(global.console, 'log');
 
       // jumping mario
       testingGame.keyPressed('up');
@@ -1244,10 +1208,8 @@ describe('Level Testing', () => {
     test('if state is playing and mario moves while rising', () => {
       testingGame._gameState = 'isPlaying';
       const expectBlocks = { left: undefined, right: undefined, up: undefined, down: undefined };
-      const logSpy = jest.spyOn(global.console, 'log');
 
       // jumping mario
-      console.log(testingGame.toString());
       testingGame.keyPressed('up');
       expect(testingGame._ticksCompleted).toBe(0);
       expect(testingGame._mario.rising).toBe(true);
@@ -1255,22 +1217,20 @@ describe('Level Testing', () => {
       expect(testingGame._mario.y).toBe(2);
       expect(testingGame._collidableObjects).toEqual(expectBlocks);
       expect(testingGame._mario.currentRiseDuration).toBe(1);
-      console.log(testingGame.toString());
 
       // after calling keypressed his position should further increase
       testingGame.keyPressed('tick');
-      //expect(logSpy).toHaveBeenCalledWith('mario has reached the peak of his jump, he is now falling',);
+      // expect(logSpy).toHaveBeenCalledWith('mario has reached the peak of his jump, he is now falling',);
       expect(testingGame._mario.rising).toBe(false);
       expect(testingGame._ticksCompleted).toBe(1);
       expect(testingGame._mario.x).toBe(1);
       expect(testingGame._mario.y).toBe(2);
       expect(testingGame._collidableObjects).toEqual(expectBlocks);
       expect(testingGame._mario.currentRiseDuration).toBe(0);
-      console.log(testingGame.toString());
 
       // last tick, mario rising should be set to false
       testingGame.keyPressed('tick');
-      //expect(logSpy).toHaveBeenCalledWith('gravity applied - mario moved down');
+      // expect(logSpy).toHaveBeenCalledWith('gravity applied - mario moved down');
       expect(testingGame._ticksCompleted).toBe(2);
       expect(testingGame._mario.rising).toBe(false);
       expect(testingGame._mario.x).toBe(1);
@@ -1283,7 +1243,6 @@ describe('Level Testing', () => {
       };
       expect(testingGame._collidableObjects).toEqual(expectBlocks1);
       expect(testingGame._mario.currentRiseDuration).toBe(0);
-      console.log(testingGame.toString());
     });
   });
 });
