@@ -82,11 +82,7 @@ export default function MarioArea({
 
   let gameStatusText = <></>;
   if (gameStatus === 'IN_PROGRESS') {
-    gameStatusText = (
-      <>
-        Game in progress - you can do it!! {' '}
-      </>
-    );
+    gameStatusText = <>Game in progress - you can do it!! </>;
   } else {
     const joinGameButton = (
       <Button
