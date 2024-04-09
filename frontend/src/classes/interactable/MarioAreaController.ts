@@ -31,6 +31,9 @@ function createNewLevelOne(): Level {
   return level;
 }
 
+/**
+ * This class is responsible for managing the state of the Mario game, and for sending commands to the server
+ */
 export default class MarioAreaController extends GameAreaController<MarioGameState, MarioEvents> {
   protected _level: Level = createNewLevelOne();
 
@@ -106,7 +109,6 @@ export default class MarioAreaController extends GameAreaController<MarioGameSta
    */
   get status(): GameStatus {
     const status = this._model.game?.state.status;
-    console.log('STATUS', status);
     if (!status) {
       return 'WAITING_FOR_PLAYERS';
     }

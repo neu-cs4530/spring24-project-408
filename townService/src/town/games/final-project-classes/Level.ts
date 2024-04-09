@@ -219,7 +219,6 @@ export abstract class Level {
             default:
                 this._gameState = 'isWinner';
                 console.log('WINNER WOOOO LEVEL COMPLETE!! its a me mario');
-                console.log('bruh the state should be winner');
                 console.log(`Gamestate is: ${  this._gameState}`);
                 console.log(`Final score is: ${  this._score.toString()}`);
         }
@@ -452,5 +451,9 @@ export class LevelOne extends Level {
         this._score = 0;
         this._ticksCompleted = 0;
         this._maxDistance = 0;
+        for (const enemy of this._enemies) {
+            enemy.isAlive = true;
+            this._map[enemy.y][enemy.x] = enemy;
+        }
     }
 }  

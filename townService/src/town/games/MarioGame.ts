@@ -56,8 +56,6 @@ export default class MarioGame extends Game<MarioGameState, MarioMove> {
       this.state.winner = undefined;
       this.state.score = 0;
     }
-    console.log('FROM GAME');
-    console.log(`THE CURRENT SCORE: ${this._level._score.toString()}`);
   }
 
   private _convertToDirection(move: MarioMove): string {

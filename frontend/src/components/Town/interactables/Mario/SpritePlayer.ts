@@ -1,6 +1,13 @@
 import SpriteLevel from './Sprite';
 import { GameUnit } from './final-project-classes/GameObject';
 import { TILE_MULT } from './Sprite';
+/**
+ * A class that represents the player sprite in the Mario game
+ *
+ * @param scene the scene for the Mario game
+ * @param x the x position of the player
+ * @param y the y position of the player
+ */
 export default class SpritePlayer {
   _scene: SpriteLevel;
 
@@ -17,39 +24,31 @@ export default class SpritePlayer {
     this._sprite = this._scene.physics.add.sprite(x, y, 'player').setSize(16, 16);
   }
 
+  /**
+   * Get the sprite of the player
+   */
   get sprite() {
     return this._sprite;
   }
 
+  /**
+   * Update the player sprite
+   *
+   * If the player is not alive, then the sprite is deleted
+   * Else, the sprite is updated to the current position of the player
+   */
   update() {
     if (!this._scene.model.mario.isAlive) {
-      //this._scene.player?.freeze();
       this.delete();
     } else {
-      /**
-      if (this._scene.keys?.right.isDown) {
-        //this.sprite.setVelocityX(TILE_MULT);
-        this.sprite.setFlipX(false);
-        //change velocity
-      } else if (this._scene.keys?.left.isDown) {
-        //this.sprite.setVelocityX(-TILE_MULT);
-        this.sprite.setFlipX(true);
-        //change velocity
-      } else if (this._scene.keys?.up.isDown) {
-        //change velocity
-      } else {
-        this.sprite.setAccelerationX(0);
-      }*/
       this.sprite.setX(this._scene.model.mario.x * TILE_MULT + 16);
       this.sprite.setY(this._scene.model.mario.y * TILE_MULT + 16);
     }
   }
 
-  /** 
-  freeze() {
-    this._sprite.body.moves = false;
-  }*/
-
+  /**
+   * Delete the player sprite
+   */
   delete() {
     this._sprite.destroy();
   }
