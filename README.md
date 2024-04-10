@@ -48,3 +48,8 @@ automatically connect to the town with the friendly name "DEBUG_TOWN" (creating 
 
 In the `frontend` directory, run `npm start` (again, you'll need to run `npm install` the very first time). After several moments (or minutes, depending on the speed of your machine), a browser will open with the frontend running locally.
 The frontend will automatically re-compile and reload in your browser if you change any files in the `frontend/src` directory.
+
+### Running Super Mario
+Super Mario is Group 408's addition to Covey.Town! This feature allows players to join a 'MarioArea' within Covey.Town and try their hand at reaching the end of a level by overcoming obstacles like a Goomba and a pitfall. To access this feature locally, simply unpack the zip file and follow the above instructions for running the app locally. You may need to install `ion-phaser` - to do this, navigate to the frontend directory and run the command `npm i -s @ion-phaser/react`. 
+
+To access the feature through the deployed app, visit the following URL: [App](https://spring24-project-408.onrender.com)
