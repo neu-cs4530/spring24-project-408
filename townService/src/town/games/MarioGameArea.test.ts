@@ -30,7 +30,6 @@ class MarioTestingGame extends Game<MarioGameState, MarioMove> {
   }
 
   public endGame(winner?: string) {
-    console.log(winner);
     this.state = {
       ...this.state,
       status: 'OVER',

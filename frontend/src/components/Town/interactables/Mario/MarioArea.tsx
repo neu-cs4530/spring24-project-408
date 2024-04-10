@@ -47,14 +47,12 @@ export default function MarioArea({
   const [player, setPlayer] = useState<PlayerController | undefined>(gameAreaController.player);
   const [joiningGame, setJoiningGame] = useState(false);
   const [gameStatus, setGameStatus] = useState<GameStatus>('WAITING_FOR_PLAYERS');
-  const [moveCount, setMoveCount] = useState<number>(gameAreaController.moveCount);
   const toast = useToast();
 
   useEffect(() => {
     const gameUpdated = () => {
       setGameStatus(gameAreaController.status);
       setPlayer(gameAreaController.player);
-      setMoveCount(gameAreaController.moveCount);
     };
     const gameEnd = () => {
       const winner = gameAreaController.winner;

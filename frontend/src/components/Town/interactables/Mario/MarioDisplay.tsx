@@ -73,7 +73,7 @@ export default function App({ gameAreaController, gameStatus }: MarioGameProps):
     };
   } else if (gameStatus === 'IN_PROGRESS') {
     currentGame = queuedGame;
-  } else {
+  } else if (level._gameState === 'isDead' || level._gameState === 'isWinner') {
     if (currentGame) {
       currentGame.scene = undefined;
     }
