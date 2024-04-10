@@ -118,7 +118,7 @@ export default function MarioArea({
       <List aria-label='list of players in the game'>
         <ListItem>Mario: {player?.userName || '(No player yet!)'}</ListItem>
       </List>
-      <App gameAreaController={gameAreaController} />
+      <App gameAreaController={gameAreaController} gameStatus={gameStatus} />
     </>
   );
 }

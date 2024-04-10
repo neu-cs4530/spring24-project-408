@@ -5,9 +5,11 @@ import Phaser from 'phaser';
 import SpriteLevel from './Sprite';
 // eslint-disable-next-line import/no-extraneous-dependencies
 import { IonPhaser } from '@ion-phaser/react';
+import { GameStatus } from '../../../../types/CoveyTownSocket';
 
 export type MarioGameProps = {
   gameAreaController: MarioAreaController;
+  gameStatus: GameStatus;
 };
 
 let currentGame:
@@ -18,7 +20,7 @@ let currentGame:
       parent: string;
       pixelArt: boolean;
       backgroundColor: string;
-      scene: SpriteLevel;
+      scene: SpriteLevel | undefined;
       physics: { default: string; arcade: { gravity: { y: number } } };
     }
   | undefined = undefined;
@@ -31,7 +33,7 @@ let queuedGame:
       parent: string;
       pixelArt: boolean;
       backgroundColor: string;
-      scene: SpriteLevel;
+      scene: SpriteLevel | undefined;
       physics: { default: string; arcade: { gravity: { y: number } } };
     }
   | undefined = undefined;
@@ -49,10 +51,10 @@ let queuedGame:
  *
  * @param gameAreaController the controller for the Mario game
  */
-export default function App({ gameAreaController }: MarioGameProps): JSX.Element {
+export default function App({ gameAreaController, gameStatus }: MarioGameProps): JSX.Element {
   const [level, setLevel] = useState(gameAreaController.level);
 
-  if (gameAreaController.status !== 'IN_PROGRESS') {
+  if (gameStatus === 'WAITING_FOR_PLAYERS') {
     currentGame = undefined;
     queuedGame = {
       type: Phaser.AUTO,
@@ -69,8 +71,13 @@ export default function App({ gameAreaController }: MarioGameProps): JSX.Element
         },
       },
     };
-  } else {
+  } else if (gameStatus === 'IN_PROGRESS') {
     currentGame = queuedGame;
+  } else {
+    if (currentGame) {
+      currentGame.scene = undefined;
+    }
+    queuedGame = undefined;
   }
 
   useEffect(() => {
